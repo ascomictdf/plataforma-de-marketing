@@ -2208,8 +2208,9 @@ async function platformMe(){
   try{
     const r=await fetch('/api/auth/me',{credentials:'include'});
     const d=await r.json().catch(()=>({}));
+    window.__platformDbError=(r.status>=500)?(d.message||'Falha de configuração do banco.'):'';
     return !!(r.ok&&d.authenticated);
-  }catch(e){return false;}
+  }catch(e){window.__platformDbError='Não foi possível acessar a API da plataforma.';return false;}
 }
 async function doPlatformLogin(){
   const email=document.getElementById('platformLoginEmail'), pass=document.getElementById('platformLoginPass'), err=document.getElementById('platformLoginError');
@@ -2218,11 +2219,15 @@ async function doPlatformLogin(){
   if(btn){btn.disabled=true;btn.textContent='Entrando...';}
   try{
     const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({email:platformCred(email?.value),password:pass?.value||''})});
-    if(!r.ok)throw new Error('INVALID');
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok){
+      if(r.status>=500)throw new Error(d.message||'Falha no servidor. Confira DATABASE_URL e AUTH_SECRET na Vercel.');
+      throw new Error('Login ou senha inválidos.');
+    }
     if(pass)pass.value='';
     location.reload();
   }catch(e){
-    if(err){err.textContent='Login ou senha inválidos.';err.style.display='flex';}
+    if(err){err.textContent=e.message||'Login ou senha inválidos.';err.style.display='flex';}
     pass?.focus();
   }finally{
     if(btn){btn.disabled=false;btn.textContent='Entrar';}
@@ -2273,7 +2278,10 @@ async function submitPasswordResetFromLink(){
   },{once:true});
 }
 async function bindPlatformLogin(){
-  setPlatformLocked(!(await platformMe()));
+  const logged=await platformMe();
+  setPlatformLocked(!logged);
+  const err=document.getElementById('platformLoginError');
+  if(!logged&&window.__platformDbError&&err){err.textContent='Servidor/banco não configurado: '+window.__platformDbError;err.style.display='flex';}
   document.getElementById('platformLoginBtn')?.addEventListener('click',doPlatformLogin);
   document.getElementById('platformLoginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')doPlatformLogin();});
   document.getElementById('platformLoginEmail')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('platformLoginPass')?.focus();});
@@ -5035,14 +5043,21 @@ $('#importFile').addEventListener('change',e=>{
 async function boot(){
   applyTheme(currentTheme());
   DataBackend.loadCfg();Gemini.loadCfg();Auth.load();Operator.load();
-  try{
-    state=normalize(await DataBackend.loadAll(false));compactState();
-    try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){} // cache p/ offline
-    setSync(DataBackend.connected()?'ok':'local');
-  }catch(err){
-    console.error(err);
-    if(DataBackend.connected()){toast('Não foi possível conectar ao banco. Usando dados locais.','warn');setSync('erro');}
-    else{toast('Falha ao carregar. Usando base local.','warn');setSync('local');}
+  const logged=await platformMe();
+  if(logged){
+    try{
+      state=normalize(await DataBackend.loadAll(false));compactState();
+      try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){} // cache p/ offline
+      setSync(DataBackend.connected()?'ok':'local');
+    }catch(err){
+      console.error(err);
+      if(err&&err.message==='UNAUTHORIZED')setPlatformLocked(true);
+      else if(DataBackend.connected()){toast('Não foi possível conectar ao banco. Usando dados locais.','warn');setSync('erro');}
+      else{toast('Falha ao carregar. Usando base local.','warn');setSync('local');}
+      state=normalize(DataBackend._localOrSeed());compactState();
+    }
+  }else{
+    setSync('local');
     state=normalize(DataBackend._localOrSeed());compactState();
   }
   applyBrand();
