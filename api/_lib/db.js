@@ -25,6 +25,7 @@ async function ensureDb() {
     await db`
       create table if not exists app_users (
         id bigserial primary key,
+        name text,
         email text not null unique,
         password_hash text not null,
         role text not null default 'admin',
@@ -34,13 +35,14 @@ async function ensureDb() {
         updated_at timestamptz not null default now()
       )
     `;
+    await db`alter table app_users add column if not exists name text`;
 
     const email = (process.env.ADMIN_EMAIL || 'ascom@ictdf.org.br').trim().toLowerCase();
     const password = process.env.ADMIN_PASSWORD || 'ascomictdf';
     const exists = await db`select id from app_users where email = ${email} limit 1`;
     if (!exists.length) {
       const hash = await bcrypt.hash(password, 12);
-      await db`insert into app_users (email, password_hash, role) values (${email}, ${hash}, 'admin')`;
+      await db`insert into app_users (name, email, password_hash, role) values ('Administrador', ${email}, ${hash}, 'admin')`;
     }
   })();
   return initPromise;

@@ -1,12 +1,12 @@
 const { ensureDb, sql } = require('./_lib/db');
-const { requireUser } = require('./_lib/auth');
+const { requireUser, requireAdmin } = require('./_lib/auth');
 const { method, readBody } = require('./_lib/http');
 
 module.exports = async function handler(req, res) {
   if (!method(req, res, ['GET', 'PUT'])) return;
   try {
     await ensureDb();
-    const user = requireUser(req, res);
+    const user = req.method === 'GET' ? requireUser(req, res) : requireAdmin(req, res);
     if (!user) return;
 
     if (req.method === 'GET') {

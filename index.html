@@ -2209,8 +2209,9 @@ async function platformMe(){
     const r=await fetch('/api/auth/me',{credentials:'include'});
     const d=await r.json().catch(()=>({}));
     window.__platformDbError=(r.status>=500)?(d.message||'Falha de configuração do banco.'):'';
+    window.__platformUser=(r.ok&&d.authenticated)?d.user:null;
     return !!(r.ok&&d.authenticated);
-  }catch(e){window.__platformDbError='Não foi possível acessar a API da plataforma.';return false;}
+  }catch(e){window.__platformUser=null;window.__platformDbError='Não foi possível acessar a API da plataforma.';return false;}
 }
 async function doPlatformLogin(){
   const email=document.getElementById('platformLoginEmail'), pass=document.getElementById('platformLoginPass'), err=document.getElementById('platformLoginError');
@@ -2395,14 +2396,14 @@ const DataBackend={
     if(!r.ok)throw new Error('HTTP '+r.status+' — '+(await r.text()).slice(0,180));
   }
 };
-/* ============ AUTENTICAÇÃO (Supabase Auth) — login fica só neste navegador ============ */
+/* ============ AUTENTICAÇÃO DA PLATAFORMA (Vercel API) ============ */
 const AUTH_KEY='ictdf_hub_auth';
 const Auth={
   token:'', refresh:'', email:'', role:'', expiresAt:0,
   load(){try{const a=JSON.parse(localStorage.getItem(AUTH_KEY)||'null');if(a){this.token=a.token||'';this.refresh=a.refresh||'';this.email=a.email||'';this.role=a.role||'';this.expiresAt=a.expiresAt||0;}}catch(e){}},
   store(){try{localStorage.setItem(AUTH_KEY,JSON.stringify({token:this.token,refresh:this.refresh,email:this.email,role:this.role,expiresAt:this.expiresAt}));}catch(e){}},
   clear(){this.token='';this.refresh='';this.email='';this.role='';this.expiresAt=0;try{localStorage.removeItem(AUTH_KEY);}catch(e){}},
-  loggedIn(){return !!this.token;},
+  loggedIn(){return !!window.__platformUser;},
   _role(user){const app=(user&&user.app_metadata)||{}, um=(user&&user.user_metadata)||{};return app.role||um.role||'editor';}, // servidor (RLS) usa app_metadata; user_metadata é só fallback de exibição
   async login(email,password){
     const r=await fetch(DataBackend.authBase()+'/token?grant_type=password',{method:'POST',headers:{'apikey':DataBackend.key,'Content-Type':'application/json'},body:JSON.stringify({email,password})});
@@ -2420,16 +2421,23 @@ const Auth={
     }catch(e){return false;}
   },
   async createUser(nome,email,password,role){
-    const r=await fetch(DataBackend.authBase()+'/signup',{method:'POST',headers:{'apikey':DataBackend.key,'Content-Type':'application/json'},body:JSON.stringify({email,password,data:{nome:nome||'',role:role||'editor'}})});
+    const r=await fetch('/api/users',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({nome,email,password,role})});
     let d={};try{d=await r.json();}catch(e){}
-    if(!r.ok)throw new Error(d.error_description||d.msg||d.error||('Erro '+r.status));
-    return d; // NÃO troca a sessão atual (o admin continua logado)
+    if(!r.ok)throw new Error(d.message||d.error||('Erro '+r.status));
+    return d;
+  },
+  async deleteUser(email){
+    const r=await fetch('/api/users',{method:'DELETE',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({email})});
+    let d={};try{d=await r.json();}catch(e){}
+    if(!r.ok)throw new Error(d.message||d.error||('Erro '+r.status));
+    return d;
   },
   logout(){this.clear();}
 };
 function requireAuth(){return !!(state.config&&state.config.requireAuth);}
-function isViewer(){return Auth.role==='visualizador';}
-function readonly(){return requireAuth()&&!(Auth.loggedIn()&&!isViewer());}
+function currentPlatformRole(){return (window.__platformUser&&window.__platformUser.role)||'';}
+function isViewer(){return currentPlatformRole()==='visualizador';}
+function readonly(){return Auth.loggedIn()&&isViewer();}
 function applyReadonly(){document.body.classList.toggle('readonly',readonly());updateAuthUI();}
 /* ============ IA — Gemini (chave fica só neste navegador) ============ */
 const GEMINI_KEY='ictdf_hub_gemini';
@@ -4427,11 +4435,20 @@ function renderUsuariosConfig(){
   const card=$('#cfgUsuarios');if(!card)return;
   if(!DataBackend.connected()){card.style.display='none';return;}
   card.style.display='';
-  const us=(state.config.usuarios||[]), podeGerir=!readonly();
+  if(Auth.loggedIn()&&!window.__usersLoaded&&!window.__usersLoading){
+    window.__usersLoading=true;
+    fetch('/api/users',{credentials:'include'}).then(r=>r.ok?r.json():Promise.reject(r)).then(d=>{
+      state.config.usuarios=(d.users||[]).map(u=>({nome:u.name||u.email,email:u.email,role:u.role}));
+      window.__usersLoaded=true;
+      renderUsuariosConfig();
+    }).catch(()=>{}).finally(()=>{window.__usersLoading=false;});
+  }
+  const us=(state.config.usuarios||[]), podeGerir=['admin','editor'].includes(currentPlatformRole());
   const roleBadge=r=>r==='visualizador'?'<span class="user-role viewer">👁️ Visualizador</span>':'<span class="user-role editor">🛡️ Editor</span>';
   card.innerHTML=`<div class="cfg-head"><h3>👥 Usuários e acessos</h3><span class="cfg-cnt">${us.length}</span></div>
-    <p class="hint" style="margin:-6px 0 14px">Crie logins para a equipe direto aqui. <b>Editor</b> edita tudo; <b>Visualizador</b> só vê (mesmo logado). As pessoas entram pelo botão <b>Entrar</b> (topo). 🔒 Com a <b>segurança no servidor</b> ativa (SQL abaixo), o acesso de editor só vale após rodar o <b>"SQL p/ tornar editor"</b> — é isso que impede um visualizador de escrever de verdade. ${requireAuth()?'':'<b>Ative "Exigir login para editar" no card do Banco de dados.</b>'}</p>
-    ${us.map((u,i)=>`<div class="cfg-item">${roleBadge(u.role)}<span class="nm">${esc(u.nome||u.email)} <small style="color:var(--texto-suave)">· ${esc(u.email)}</small></span>${podeGerir?`<button class="ico-mini" data-promote="${esc(u.email)}" title="Copiar SQL para tornar editor">🔑</button><button class="rm" data-rmuser="${i}" title="Remover desta lista">${RM_SVG}</button>`:''}</div>`).join('')||'<p class="hint" style="margin:0 0 12px">Nenhum usuário cadastrado por aqui ainda.</p>'}
+    <p class="hint" style="margin:-6px 0 14px">Crie logins para a equipe direto aqui. Os usuários são salvos na tabela <code>app_users</code> do Neon Postgres. <b>Editor</b> edita tudo; <b>Visualizador</b> entra na plataforma em modo somente leitura.</p>
+    ${window.__usersLoading?'<p class="hint" style="margin:0 0 12px">Carregando usuários do banco...</p>':''}
+    ${us.map((u,i)=>`<div class="cfg-item">${roleBadge(u.role)}<span class="nm">${esc(u.nome||u.email)} <small style="color:var(--texto-suave)">· ${esc(u.email)}</small></span>${podeGerir?`<button class="rm" data-rmuser="${i}" data-email="${esc(u.email)}" title="Remover usuário">${RM_SVG}</button>`:''}</div>`).join('')||'<p class="hint" style="margin:0 0 12px">Nenhum usuário cadastrado por aqui ainda.</p>'}
     ${podeGerir?`<div class="add-box" style="margin-top:8px"><h4>Novo usuário</h4>
       <div class="field" style="margin-bottom:9px"><input type="text" id="nu-nome" placeholder="Nome da pessoa" /></div>
       <div class="field" style="margin-bottom:9px"><input type="email" id="nu-email" placeholder="email@exemplo.com" autocomplete="off" /></div>
@@ -4441,8 +4458,17 @@ function renderUsuariosConfig(){
       <div class="ia-test" id="nu-out" style="display:none"></div>
     </div>`:'<p class="hint" style="margin:0">Entre como editor/administrador (botão <b>Entrar</b>, no topo) para cadastrar novos usuários.</p>'}`;
   $('#nu-add')?.addEventListener('click',createUserFlow);
-  $$('#cfgUsuarios [data-promote]').forEach(b=>b.addEventListener('click',()=>{copyText(buildPromoteSql(b.dataset.promote));toast('SQL copiado! Cole no SQL Editor do Supabase e rode para dar acesso de editor.','ok');}));
-  $$('#cfgUsuarios [data-rmuser]').forEach(b=>b.addEventListener('click',()=>{state.config.usuarios.splice(+b.dataset.rmuser,1);save();renderUsuariosConfig();toast('Removido da lista. (A conta no Supabase continua — apague no painel se quiser revogar o acesso.)','warn');}));
+  $$('#cfgUsuarios [data-rmuser]').forEach(b=>b.addEventListener('click',async()=>{
+    const email=b.dataset.email;
+    if(!confirm('Remover o usuário '+email+'?'))return;
+    try{
+      await Auth.deleteUser(email);
+      state.config.usuarios.splice(+b.dataset.rmuser,1);
+      window.__usersLoaded=false;
+      renderUsuariosConfig();
+      toast('Usuário removido do banco.','warn');
+    }catch(err){toast('Falha ao remover usuário: '+err.message,'warn');}
+  }));
 }
 async function createUserFlow(){
   const nome=$('#nu-nome').value.trim(), email=$('#nu-email').value.trim(), pass=$('#nu-pass').value, role=$('#nu-role').value;
@@ -4453,11 +4479,12 @@ async function createUserFlow(){
   try{
     const d=await Auth.createUser(nome,email,pass,role);
     state.config.usuarios=state.config.usuarios||[];
-    if(!state.config.usuarios.some(u=>(u.email||'').toLowerCase()===email.toLowerCase()))state.config.usuarios.push({nome:nome||email,email,role});
-    save();
-    const precisaConfirmar=d&&d.user&&!d.user.email_confirmed_at&&!d.user.confirmed_at;
-    let msg='✅ Usuário criado!'+(precisaConfirmar?' Ele precisa confirmar o e-mail antes de entrar — ou desative "Confirm email" no Supabase para liberar na hora.':' Já pode entrar com e-mail e senha.');
-    if(role!=='visualizador')msg+=' Para o acesso de EDITOR valer no servidor, clique no 🔑 ao lado do usuário e rode o SQL no Supabase.';
+    const cleanEmail=email.toLowerCase().replace(/\\@/g,'@');
+    const existing=state.config.usuarios.find(u=>(u.email||'').toLowerCase()===cleanEmail);
+    if(existing){existing.nome=nome||cleanEmail;existing.role=role;}
+    else state.config.usuarios.push({nome:nome||cleanEmail,email:cleanEmail,role});
+    window.__usersLoaded=false;
+    let msg='✅ Usuário salvo no banco! Já pode entrar com e-mail e senha.';
     toast('Usuário criado!','ok');
     renderUsuariosConfig();
     const o=$('#nu-out');if(o){o.style.display='';o.className='ia-test ok';o.textContent=msg;}

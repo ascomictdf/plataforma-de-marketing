@@ -56,6 +56,14 @@ function requireUser(req, res) {
   return null;
 }
 
+function requireAdmin(req, res) {
+  const user = requireUser(req, res);
+  if (!user) return null;
+  if (['admin', 'editor'].includes(user.role)) return user;
+  res.status(403).json({ error: 'FORBIDDEN' });
+  return null;
+}
+
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
@@ -64,4 +72,4 @@ function randomToken() {
   return crypto.randomBytes(32).toString('base64url');
 }
 
-module.exports = { signSession, setSessionCookie, clearSessionCookie, currentUser, requireUser, sha256, randomToken };
+module.exports = { signSession, setSessionCookie, clearSessionCookie, currentUser, requireUser, requireAdmin, sha256, randomToken };

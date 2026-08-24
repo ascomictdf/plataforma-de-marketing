@@ -19,8 +19,12 @@ Agora o navegador chama apenas endpoints internos:
 - `POST /api/auth/logout`
 - `POST /api/auth/request-reset`
 - `POST /api/auth/reset`
+- `GET /api/users`
+- `POST /api/users`
+- `DELETE /api/users`
 - `GET /api/state`
 - `PUT /api/state`
+- `GET /api/health`
 
 O banco fica atrás da API da Vercel. Isso reduz problemas de CORS, chave exposta,
 sessão local, políticas de acesso no cliente e desconexões por configuração do navegador.
@@ -82,6 +86,7 @@ create table if not exists app_state (
 
 create table if not exists app_users (
   id bigserial primary key,
+  name text,
   email text not null unique,
   password_hash text not null,
   role text not null default 'admin',
@@ -91,6 +96,9 @@ create table if not exists app_users (
   updated_at timestamptz not null default now()
 );
 ```
+
+O endpoint `GET /api/health` deve retornar `{"ok":true,"database":"connected"}` quando
+as variáveis da Vercel e o Neon estiverem configurados corretamente.
 
 ## Deploy na Vercel
 
