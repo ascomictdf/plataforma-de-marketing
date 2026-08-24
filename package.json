@@ -1,0 +1,17 @@
+{
+  "name": "plat-mkt-hub",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "check": "node --check api/auth/login.js && node --check api/auth/me.js && node --check api/auth/logout.js && node --check api/auth/request-reset.js && node --check api/auth/reset.js && node --check api/state.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
+    "bcryptjs": "^3.0.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "vercel": "^46.0.0"
+  }
+}
