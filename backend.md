@@ -24,10 +24,17 @@ Agora o navegador chama apenas endpoints internos:
 - `DELETE /api/users`
 - `GET /api/state`
 - `PUT /api/state`
+- `GET /api/review`
+- `POST /api/review`
 - `GET /api/health`
 
 O banco fica atrás da API da Vercel. Isso reduz problemas de CORS, chave exposta,
 sessão local, políticas de acesso no cliente e desconexões por configuração do navegador.
+
+O link de aprovação (`?aprovar=1`) usa `/api/review`, que é público apenas para leitura
+do estado necessário e para registrar aprovação/solicitação de alteração de uma arte.
+Assim outros setores conseguem aprovar sem criar login, enquanto a plataforma principal
+continua exigindo autenticação.
 
 ## Banco escolhido
 

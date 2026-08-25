@@ -94,6 +94,7 @@ async function call(handler, method, body, cookie) {
   const me = require(path.join('..', 'api', 'auth', 'me'));
   const users = require(path.join('..', 'api', 'users'));
   const state = require(path.join('..', 'api', 'state'));
+  const review = require(path.join('..', 'api', 'review'));
 
   const adminLogin = await call(login, 'POST', { email: 'ascom@ictdf.org.br', password: 'ascomictdf' });
   assert.equal(adminLogin.statusCode, 200, 'admin login deve funcionar');
@@ -117,6 +118,12 @@ async function call(handler, method, body, cookie) {
 
   const loaded = await call(state, 'GET', null, adminCookie);
   assert.equal(loaded.payload.data.agents[0].nome, 'Agente Teste', 'estado salvo deve ser lido do banco');
+
+  await call(state, 'PUT', { data: { agents: [], campanhas: [{ id: 'c1', posts: [{ id: 'p1', titulo: 'Arte Teste', aprov: 'pendente' }] }], posts: [] } }, adminCookie);
+  const publicReview = await call(review, 'POST', { postId: 'p1', status: 'aprovado', revisor: 'Diretoria' });
+  assert.equal(publicReview.statusCode, 200, 'link publico deve aprovar sem login');
+  const reviewed = await call(state, 'GET', null, adminCookie);
+  assert.equal(reviewed.payload.data.campanhas[0].posts[0].aprov, 'aprovado', 'aprovacao publica deve gravar no banco');
 
   const viewer = await call(users, 'POST', { email: 'viewer@ictdf.org.br', password: 'senha123', role: 'visualizador' }, adminCookie);
   assert.equal(viewer.statusCode, 200, 'admin deve criar visualizador');
