@@ -635,7 +635,10 @@ a.open-btn{text-decoration:none}
 .kanban-hint{font-size:12px;color:var(--texto-suave);margin:-6px 0 14px}
 
 /* LISTA (tarefas + aprovação) */
-.tarefas-shell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.task-cols-tools{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.task-col-tool{display:inline-flex;align-items:center;gap:7px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:11px;padding:7px 8px 7px 10px;box-shadow:var(--sombra);font-size:12.5px;font-weight:800}
+.task-col-tool .kdot{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
+.task-col-tool .icon-btn{width:26px;height:26px;border-radius:8px}
 .tlist{display:flex;flex-direction:column;gap:10px}
 .tgroup{border:1px solid var(--cinza-borda);border-radius:14px;background:var(--cinza-card);box-shadow:var(--sombra);overflow:hidden;margin-bottom:12px}
 .tgroup-head{display:flex;align-items:center;gap:10px;padding:13px 15px;background:var(--surface-2);border-bottom:1px solid var(--cinza-borda);font-weight:900;font-size:13px}
@@ -649,17 +652,14 @@ a.open-btn{text-decoration:none}
 .trow .tr-meta{display:flex;gap:7px;align-items:center;margin-top:5px;flex-wrap:wrap}
 .trow .tr-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
 .trow select.tstat{padding:7px 10px;border:1.5px solid var(--cinza-borda);border-radius:9px;font-size:12.5px;font-family:inherit;background:var(--cinza-card);color:var(--texto);outline:none;cursor:pointer}
-.task-notes-panel{position:sticky;top:86px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:16px;padding:14px;box-shadow:var(--sombra)}
-.tn-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.tn-head h3{font-size:15px;font-weight:900}
-.tn-head span{margin-left:auto;background:var(--surface-2);border:1px solid var(--cinza-borda);color:var(--texto-suave);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:800}
-.tn-add textarea{width:100%;min-height:82px;resize:vertical;border:1.5px solid var(--cinza-borda);border-radius:12px;background:var(--cinza-card);color:var(--texto);font-family:inherit;font-size:13.5px;padding:10px;outline:none;margin-bottom:8px}
-.tn-add textarea:focus{border-color:var(--azul-300);box-shadow:0 0 0 3px var(--azul-50)}
-#taskNotesList{display:flex;flex-direction:column;gap:9px;margin-top:12px;max-height:56vh;overflow-y:auto}
-.tnote{border:1px solid var(--cinza-borda);border-left:4px solid var(--coral);border-radius:12px;padding:10px;background:var(--surface-2)}
-.tnote p{font-size:13px;line-height:1.45;white-space:pre-wrap}
-.tnote .tn-meta{display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--texto-suave);font-size:11px;font-weight:700}
-.tnote .tn-del{margin-left:auto;border:none;background:transparent;color:var(--vermelho);cursor:pointer;font-weight:900}
+.agent-prompt-box{border:1.5px dashed var(--cinza-borda);border-radius:13px;padding:14px;background:var(--surface-2)}
+.agent-prompt-add{display:grid;grid-template-columns:minmax(160px,.7fr) minmax(220px,1fr) auto;gap:8px;align-items:start}
+.agent-prompt-add textarea{min-height:44px}
+.agent-prompt-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.agent-prompt-item{display:flex;align-items:flex-start;gap:9px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:11px;padding:9px 10px}
+.agent-prompt-item b{display:block;font-size:13px}
+.agent-prompt-item span{display:block;color:var(--texto-suave);font-size:12px;line-height:1.35;max-height:36px;overflow:hidden}
+.agent-prompt-item .icon-btn{margin-left:auto;flex:0 0 28px;width:28px;height:28px}
 
 /* FLUXOS DE PROJETO (mapa de etapas) */
 .fluxo-card{background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--sombra);margin-bottom:18px}
@@ -829,8 +829,7 @@ body.review-on{overflow:hidden}
   .topbar{padding:13px 16px}
   .field-row{grid-template-columns:1fr}
   .topbar-actions .label-hide{display:none}
-  .tarefas-shell{grid-template-columns:1fr}
-  .task-notes-panel{position:static}
+  .agent-prompt-add{grid-template-columns:1fr}
 }
 .scrim{display:none;position:fixed;inset:0;background:rgba(7,18,40,.4);z-index:25}
 .scrim.show{display:block}
@@ -1305,17 +1304,7 @@ body.review-on{overflow:hidden}
             Nova tarefa
           </button>
         </div>
-        <div class="tarefas-shell">
-          <div id="tarefasBoard"></div>
-          <aside class="task-notes-panel">
-            <div class="tn-head"><h3>Anotações</h3><span id="taskNotesCount">0</span></div>
-            <div class="tn-add">
-              <textarea id="taskNoteText" placeholder="Anotação rápida para apoiar a execução das tarefas..."></textarea>
-              <button class="btn btn-dark btn-sm" id="addTaskNote">Adicionar</button>
-            </div>
-            <div id="taskNotesList"></div>
-          </aside>
-        </div>
+        <div id="tarefasBoard"></div>
       </section>
 
       <!-- FLUXOS DE PROJETO -->
@@ -1670,7 +1659,7 @@ body.review-on{overflow:hidden}
           <section class="doc-sec" id="doc-changelog">
             <h3>17. Histórico de versões</h3>
             <ul class="doc-log">
-              <li><b>v2.4 — 24/08/2026</b><br><b>Tarefas mais flexíveis</b>: a tela de tarefas ganhou criação rápida de novas colunas, lista agrupada por etapa, painel lateral de anotações e aprovação pública sem exigir login no link compartilhado. A integração Gemini/Gerar com IA foi retirada da interface.</li>
+              <li><b>v2.4 — 24/08/2026</b><br><b>Tarefas e agentes mais flexíveis</b>: a tela de tarefas ganhou criação, ordenação e exclusão confirmada de colunas, além da lista agrupada por etapa. O cadastro de agentes agora permite adicionar prompts na criação, e os cards exibem atalhos para abrir o chat e os prompts quando existirem. A aprovação pública não exige login no link compartilhado. A integração Gemini/Gerar com IA foi retirada da interface.</li>
               <li><b>v2.3 — 27/06/2026</b><br><b>Contatos — setor e pastas</b>: o cadastro de contato ganhou o campo <b>Setor</b> (com sugestões dos setores já usados) e a opção de organizar os contatos em <b>pastas</b> — com filtro por pasta no topo e um gerenciador para criar, renomear e remover pastas.</li>
               <li><b>v2.2 — 27/06/2026</b><br><b>Lista de contatos</b>: nova seção para cadastrar contatos (nome, celular e observações), com busca e atalho para o WhatsApp. <b>Aprovação — quem revisou</b>: ao aprovar ou solicitar alteração pelo link, a pessoa informa o nome, que aparece no cartão da arte como "Revisado por: [nome]". <b>Link de aprovação</b>: a lista "Artes neste link" ficou mais alta, facilitando a seleção.</li>
               <li><b>v2.1 — 27/06/2026</b><br><b>Ordenação de listas</b>: as telas de <b>Tarefas</b>, <b>Fluxos de projeto</b> e <b>Aprovação de artes</b> ganharam um seletor para ordenar os itens — Tarefas (mais recentes, prazo, prioridade, campanha), Fluxos (recentes, nome, campanha, progresso) e Aprovação (data, campanha, título, status). Vale tanto no Kanban (dentro de cada coluna) quanto na Lista.</li>
@@ -1774,6 +1763,17 @@ body.review-on{overflow:hidden}
       <div class="field">
         <label>Anotações</label>
         <textarea id="f-obs" placeholder="Instruções de uso, cuidados, contexto…"></textarea>
+      </div>
+      <div class="field">
+        <label>Prompts do agente</label>
+        <div class="agent-prompt-box">
+          <div class="agent-prompt-add">
+            <input type="text" id="f-prompt-title" placeholder="Título do prompt" />
+            <textarea id="f-prompt-text" placeholder="Modelo do prompt. Ex.: Crie uma legenda sobre {{Tema}} com tom {{Tom}}."></textarea>
+            <button class="btn btn-dark btn-sm" id="f-add-prompt" type="button">Adicionar</button>
+          </div>
+          <div class="agent-prompt-list" id="f-prompt-list"></div>
+        </div>
       </div>
       <div class="field">
         <label>Ícone</label>
@@ -2685,7 +2685,7 @@ function normalize(s){
   s.config.integracoes.inbox=Object.assign({enabled:false,defColuna:'',defCampanhaId:null,defResponsavel:'',defPrioridade:'media',tabela:'hub_inbox',map:{titulo:'titulo',desc:'descricao',prioridade:'prioridade',responsavel:'responsavel',externalId:'id'}},s.config.integracoes.inbox||{});
   s.config.integracoes.conectores=(s.config.integracoes.conectores||[]);
   s.integracaoLog=s.integracaoLog||[];     // histórico de tarefas criadas por integração
-  s.taskNotes=(s.taskNotes||[]).map(n=>({id:n.id||id(),texto:n.texto||'',createdAt:n.createdAt||new Date().toISOString(),autor:n.autor||'',...n})).filter(n=>(n.texto||'').trim());
+  delete s.taskNotes;
   s.contatos=(s.contatos||[]).map(c=>({nome:'',celular:'',obs:'',setor:'',pastaId:null,createdAt:c.createdAt||new Date().toISOString(),...c})); // lista de contatos
   s.contatoPastas=(s.contatoPastas||[]).map(p=>({id:p.id||id(),nome:p.nome||'',...p})); // pastas para organizar contatos
   s.campanhas=(s.campanhas||[]).map(c=>{
@@ -2712,6 +2712,7 @@ function normalize(s){
 }
 let _remoteTimer=null;
 function compactState(){
+  delete state.taskNotes;
   state.agents=(state.agents||[]).map(a=>Object.assign(a,{arquivos:(a.arquivos||[]).filter(f=>f&&f.tipo==='link'&&f.url).map(f=>({id:f.id||id(),nome:f.nome||f.url,tipo:'link',url:f.url}))}));
   state.tarefas=(state.tarefas||[]).map(t=>Object.assign(t,{log:(t.log||[]).slice(-30)}));
   state.integracaoLog=(state.integracaoLog||[]).slice(0,80);
@@ -2907,6 +2908,7 @@ function agentCardHTML(a){
       <span class="cat-pill" style="background:${tipoCor(a.cat)};color:#fff">${esc(tipoNome(a.cat))}</span>
       <span class="status ${a.status}"><span class="dot"></span>${statusLabel(a.status)}</span>
       <div class="spacer"></div>
+      ${np?`<button class="open-btn" data-agent-prompt="${a.id}" title="Abrir prompts do agente">Prompt</button>`:''}
       <button class="open-btn" data-open="${a.id}">Abrir<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
   </div>`;
@@ -3285,30 +3287,47 @@ function tarefaRowHTML(t){
     <div class="tr-actions"><select class="tstat" data-tid="${t.id}">${tarCols().map(c=>`<option value="${c.id}"${t.status===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select><button class="icon-btn" data-taredit="${t.id}" title="Editar">${EDIT_SVG}</button><button class="icon-btn danger" data-tardel="${t.id}" title="Excluir">${RM_SVG}</button></div>
   </div>`;
 }
-function renderTaskNotes(){
-  const notes=state.taskNotes||[];
-  const cnt=$('#taskNotesCount'), list=$('#taskNotesList');
-  if(cnt)cnt.textContent=notes.length;
-  if(!list)return;
-  list.innerHTML=notes.length?notes.map(n=>`<div class="tnote"><p>${esc(n.texto)}</p><div class="tn-meta"><span>${fmtDate((n.createdAt||'').slice(0,10))}</span>${n.autor?`<span>· ${esc(n.autor)}</span>`:''}<button class="tn-del" data-tndel="${n.id}" title="Remover">×</button></div></div>`).join(''):'<p class="hint" style="margin:0">Sem anotações ainda.</p>';
-  $$('#taskNotesList [data-tndel]').forEach(b=>b.addEventListener('click',()=>{state.taskNotes=(state.taskNotes||[]).filter(n=>n.id!==b.dataset.tndel);save();renderTaskNotes();toast('Anotação removida.','warn');}));
-}
-function addTaskNote(){
-  const inp=$('#taskNoteText');if(!inp)return;
-  const texto=inp.value.trim();if(!texto){toast('Escreva a anotação.','warn');inp.focus();return;}
-  state.taskNotes=state.taskNotes||[];
-  state.taskNotes.unshift({id:id(),texto,createdAt:new Date().toISOString(),autor:currentColaboradorNome()||''});
-  inp.value='';save();renderTaskNotes();toast('Anotação adicionada.','ok');
-}
 function addTaskColumnQuick(){
   const nome=prompt('Nome da nova coluna de tarefas:');if(!nome||!nome.trim())return;
   state.config.tarColunas=tarCols();
   state.config.tarColunas.push({id:id(),nome:nome.trim(),cor:'#2E5BBE'});
   save();renderTarefas();renderConfig();toast('Coluna adicionada!','ok');
 }
+function moveTaskColumn(cid,dir){
+  const cols=[...tarCols()], i=cols.findIndex(c=>c.id===cid), j=i+dir;
+  if(i<0||j<0||j>=cols.length)return;
+  [cols[i],cols[j]]=[cols[j],cols[i]];
+  state.config.tarColunas=cols;
+  save();renderTarefas();renderConfig();toast('Ordem das colunas atualizada.','ok');
+}
+function deleteTaskColumn(cid){
+  const cols=tarCols(), col=cols.find(c=>c.id===cid);
+  if(!col)return;
+  if(cols.length<=1){toast('Mantenha ao menos uma coluna.','warn');return;}
+  const restantes=cols.filter(c=>c.id!==cid), destino=restantes[0].id;
+  const movidas=(state.tarefas||[]).filter(t=>t.status===cid).length;
+  openConfirmDelete(col.nome,()=>{
+    state.tarefas.forEach(t=>{if(t.status===cid)t.status=destino;});
+    state.config.tarColunas=restantes;
+    save();renderTarefas();renderConfig();renderBadges();
+    toast(movidas?`Coluna removida. ${movidas} tarefa(s) movida(s) para "${tarStatusNome(destino)}".`:'Coluna removida.','warn');
+  },'Excluir coluna',movidas?`Existem <b>${movidas} tarefa(s)</b> nesta coluna. Elas serão movidas para <b>${esc(tarStatusNome(destino))}</b>.`:null);
+}
+function taskColumnsToolsHTML(){
+  const cols=tarCols();
+  return `<div class="task-cols-tools">${cols.map((col,i)=>`<div class="task-col-tool">
+    <span class="kdot" style="background:${col.cor}"></span><span>${esc(col.nome)}</span>
+    <button class="icon-btn" data-tcolmove="${col.id}" data-dir="-1" title="Mover para a esquerda" ${i===0?'disabled':''}>←</button>
+    <button class="icon-btn" data-tcolmove="${col.id}" data-dir="1" title="Mover para a direita" ${i===cols.length-1?'disabled':''}>→</button>
+    <button class="icon-btn danger" data-tcoldel="${col.id}" title="Excluir coluna">${RM_SVG}</button>
+  </div>`).join('')}</div>`;
+}
+function bindTaskColumnTools(){
+  $$('#tarefasBoard [data-tcolmove]').forEach(b=>b.addEventListener('click',()=>moveTaskColumn(b.dataset.tcolmove,+b.dataset.dir)));
+  $$('#tarefasBoard [data-tcoldel]').forEach(b=>b.addEventListener('click',()=>deleteTaskColumn(b.dataset.tcoldel)));
+}
 function renderTarefas(){
   renderBadges();
-  renderTaskNotes();
   $('#tarCampFilter').innerHTML=campSelectHTML();$('#tarCampFilter').value=tarCamp;
   $('#tarPrioFilter').value=tarPrio;
   $('#tarSortFilter').value=tarSort;
@@ -3317,17 +3336,19 @@ function renderTarefas(){
   $('#tarCount').textContent=`${list.length} tarefa${list.length!==1?'s':''}`;
   const board=$('#tarefasBoard');
   if(tarView==='kanban'){
-    board.innerHTML=`<p class="kanban-hint">Arraste os cartões entre as colunas para mudar o status.</p><div class="kanban">`+tarCols().map(col=>{
+    board.innerHTML=taskColumnsToolsHTML()+`<p class="kanban-hint">Arraste os cartões entre as colunas para mudar o status.</p><div class="kanban">`+tarCols().map(col=>{
       const items=list.filter(t=>t.status===col.id);
-      return `<div class="kcol" data-kcol="${col.id}"><div class="kcol-head"><span class="kdot" style="background:${col.cor}"></span>${col.nome}<span class="kcnt">${items.length}</span></div>${items.map(tarefaCardHTML).join('')||'<p class="hint" style="margin:4px 4px 2px">— vazio —</p>'}<div class="kdrop-zone">Solte aqui</div></div>`;
+      return `<div class="kcol" data-kcol="${col.id}"><div class="kcol-head"><span class="kdot" style="background:${col.cor}"></span>${esc(col.nome)}<span class="kcnt">${items.length}</span></div>${items.map(tarefaCardHTML).join('')||'<p class="hint" style="margin:4px 4px 2px">— vazio —</p>'}<div class="kdrop-zone">Solte aqui</div></div>`;
     }).join('')+`</div>`;
+    bindTaskColumnTools();
     bindKanbanDnD(board,(tid,ns)=>{const t=tarefaById(tid);if(t&&t.status!==ns){changeTarefaStatus(t,ns);save();renderTarefas();toast('Tarefa: '+tarStatusNome(ns),'info');}});
     $$('#tarefasBoard [data-tmove]').forEach(b=>b.addEventListener('click',()=>{const t=tarefaById(b.dataset.tmove);if(t&&t.status!==b.dataset.status){changeTarefaStatus(t,b.dataset.status);save();renderTarefas();toast('Tarefa: '+tarStatusNome(b.dataset.status),'info');}}));
   }else{
-    board.innerHTML=list.length?`<div class="tlist">`+tarCols().map(col=>{
+    board.innerHTML=taskColumnsToolsHTML()+(list.length?`<div class="tlist">`+tarCols().map(col=>{
       const items=list.filter(t=>t.status===col.id);
       return `<section class="tgroup"><div class="tgroup-head"><span class="kdot" style="background:${col.cor}"></span>${esc(col.nome)}<span class="tg-count">${items.length} tarefa${items.length!==1?'s':''}</span></div><div class="tgroup-body">${items.map(tarefaRowHTML).join('')||'<div class="tgroup-empty">Nenhuma tarefa nesta etapa.</div>'}</div></section>`;
-    }).join('')+`</div>`:`<div class="empty"><div class="big">✅</div><h3>Nenhuma tarefa</h3><p>Crie tarefas e organize por status, campanha e prazo.</p><button class="btn btn-primary" onclick="openTarefaModal()">Nova tarefa</button></div>`;
+    }).join('')+`</div>`:`<div class="empty"><div class="big">✅</div><h3>Nenhuma tarefa</h3><p>Crie tarefas e organize por status, campanha e prazo.</p><button class="btn btn-primary" onclick="openTarefaModal()">Nova tarefa</button></div>`);
+    bindTaskColumnTools();
     $$('#tarefasBoard .tstat').forEach(sel=>sel.addEventListener('change',()=>{const t=tarefaById(sel.dataset.tid);if(t){changeTarefaStatus(t,sel.value);save();renderTarefas();}}));
   }
 }
@@ -4094,8 +4115,6 @@ $('#saveFluxo').addEventListener('click',()=>{
 });
 $('#addFluxoBtn').addEventListener('click',()=>openFluxoModal());
 $('#addTaskColBtn')?.addEventListener('click',addTaskColumnQuick);
-$('#addTaskNote')?.addEventListener('click',addTaskNote);
-$('#taskNoteText')?.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter')addTaskNote();});
 $('#fluxCampFilter').addEventListener('change',e=>{fluxCamp=e.target.value;renderFluxos();});
 $('#fluxSortFilter').addEventListener('change',e=>{fluxSort=e.target.value;renderFluxos();});
 
@@ -4605,14 +4624,7 @@ function renderConfig(){
   $('#newTarCol').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addTarCol').click();});
   $$('#cfgTarCols [data-tarcoledit]').forEach(inp=>inp.addEventListener('change',()=>{const i=+inp.dataset.tarcoledit,v=inp.value.trim();if(!v){inp.value=tarCols()[i].nome;return;}state.config.tarColunas=tarCols();state.config.tarColunas[i].nome=v;save();renderConfig();if(view==='tarefas')renderTarefas();}));
   $$('#cfgTarCols [data-rmtarcol]').forEach(b=>b.addEventListener('click',()=>{
-    const cid=b.dataset.rmtarcol;
-    if(tarCols().length<=1){toast('Mantenha ao menos uma coluna.','warn');return;}
-    const restantes=tarCols().filter(c=>c.id!==cid), destino=restantes[0].id;
-    const movidas=(state.tarefas||[]).filter(t=>t.status===cid).length;
-    state.tarefas.forEach(t=>{if(t.status===cid)t.status=destino;});
-    state.config.tarColunas=restantes;
-    save();renderConfig();if(view==='tarefas')renderTarefas();renderBadges();
-    toast(movidas?`Coluna removida. ${movidas} tarefa(s) movida(s).`:'Coluna removida.','warn');
+    deleteTaskColumn(b.dataset.rmtarcol);
   }));
   // binds — tipos
   $('#addTipo').addEventListener('click',()=>{
@@ -4640,8 +4652,13 @@ function renderConfig(){
 }
 
 /* ============ DRAWER (detalhe / prompts / arquivos) ============ */
-function openAgentDetail(aid){
+function setDrawerTab(tab){
+  $$('.drawer-tab').forEach(x=>x.classList.toggle('active',x.dataset.dtab===tab));
+  $$('.dtab').forEach(d=>d.classList.toggle('active',d.id==='dtab-'+tab));
+}
+function openAgentDetail(aid,tab='sobre'){
   currentAgentId=aid;renderDrawer();
+  setDrawerTab(tab);
   $('#drawerOverlay').classList.add('open');$('#agentDrawer').classList.add('open');
 }
 function closeDrawer(){$('#drawerOverlay').classList.remove('open');$('#agentDrawer').classList.remove('open');currentAgentId=null;}
@@ -4844,11 +4861,42 @@ $('#globalSearch').addEventListener('input',e=>{filters.search=e.target.value;
 
 /* ============ MODAL AGENTE ============ */
 let selEmoji=EMOJIS[0];
+let agentModalPrompts=[];
 function buildEmojiPick(){
   $('#emojiPick').innerHTML=EMOJIS.map(e=>`<button class="e ${e===selEmoji?'sel':''}" data-emoji="${e}">${e}</button>`).join('');
   $$('#emojiPick .e').forEach(b=>b.addEventListener('click',()=>{selEmoji=b.dataset.emoji;$$('#emojiPick .e').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');}));
 }
 function refreshPastasList(){const set=new Set([...(state.config.pastas||[]),...state.agents.map(a=>a.pasta).filter(Boolean)]);$('#pastasList').innerHTML=[...set].sort().map(p=>`<option value="${esc(p)}">`).join('');}
+function promptDataFromText(titulo,texto,existing){
+  const tokens=parseTokens(texto);
+  const old=new Map(((existing&&existing.campos)||[]).map(c=>[c.nome,c]));
+  return {
+    id:(existing&&existing.id)||id(),
+    titulo:(titulo||'Prompt').trim(),
+    texto:texto.trim(),
+    campos:tokens.map(t=>({nome:t,tipo:(old.get(t)||{}).tipo||'texto',opcoes:(old.get(t)||{}).opcoes||[]}))
+  };
+}
+function renderAgentModalPrompts(){
+  const list=$('#f-prompt-list');if(!list)return;
+  list.innerHTML=agentModalPrompts.length?agentModalPrompts.map(p=>`<div class="agent-prompt-item">
+    <div><b>${esc(p.titulo||'Prompt')}</b><span>${esc(p.texto||'')}</span></div>
+    <button class="icon-btn danger" data-fpdel="${p.id}" title="Remover prompt">${RM_SVG}</button>
+  </div>`).join(''):'<p class="hint" style="margin:0">Nenhum prompt adicionado neste agente.</p>';
+  $$('#f-prompt-list [data-fpdel]').forEach(b=>b.addEventListener('click',()=>{
+    agentModalPrompts=agentModalPrompts.filter(p=>p.id!==b.dataset.fpdel);
+    renderAgentModalPrompts();
+  }));
+}
+function addAgentModalPrompt(){
+  const titulo=$('#f-prompt-title').value.trim()||'Prompt';
+  const texto=$('#f-prompt-text').value.trim();
+  if(!texto){toast('Escreva o modelo do prompt.','warn');$('#f-prompt-text').focus();return;}
+  agentModalPrompts.push(promptDataFromText(titulo,texto));
+  $('#f-prompt-title').value='';$('#f-prompt-text').value='';
+  renderAgentModalPrompts();
+  toast('Prompt adicionado ao agente.','ok');
+}
 window.openAgentModal=function(a,campanhaId){
   refreshPastasList();
   // popula selects a partir das configurações
@@ -4869,6 +4917,8 @@ window.openAgentModal=function(a,campanhaId){
   $('#f-status').value=a?a.status:'ativo';
   $('#f-tags').value=a?(a.tags||[]).join(', '):'';
   $('#f-obs').value=a?(a.obs||''):'';
+  agentModalPrompts=(a&&a.prompts?JSON.parse(JSON.stringify(a.prompts)):[]).map(p=>promptDataFromText(p.titulo||'Prompt',p.texto||'',p));
+  $('#f-prompt-title').value='';$('#f-prompt-text').value='';renderAgentModalPrompts();
   const cid=a?a.campanhaId:campanhaId;const camp=cid?campById(cid):null;
   const cl=$('#f-campLabel');if(camp){cl.style.display='';cl.innerHTML='📣 Vinculado à campanha: <b>'+esc(camp.nome)+'</b>';}else cl.style.display='none';
   const cr=$('#f-created');if(a&&a.createdAt){cr.style.display='';cr.innerHTML='🗓️ Criado em '+fmtDate(a.createdAt);}else cr.style.display='none';
@@ -4881,19 +4931,22 @@ function closeAgentModal(){$('#agentModal').classList.remove('open')}
 $('#saveAgent').addEventListener('click',()=>{
   const nome=$('#f-nome').value.trim(), link=$('#f-link').value.trim(), ia=$('#f-ia').checked;
   if(!nome){toast('Dê um nome ao agente.','warn');$('#f-nome').focus();return}
-  if(!link&&!ia){toast('Cole o link do chatbot (ou ative "Agente de geração com IA").','warn');$('#f-link').focus();return}
+  if(!link&&!ia){toast('Cole o link do chatbot.','warn');$('#f-link').focus();return}
   const tags=$('#f-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
   const campanhaId=$('#f-campanha').value||null;
-  const data={nome,link,ia,desc:$('#f-desc').value.trim(),cat:$('#f-cat').value,area:$('#f-area').value,pasta:$('#f-pasta').value.trim(),responsavel:$('#f-resp').value.trim(),obs:$('#f-obs').value.trim(),status:$('#f-status').value,tags,icone:selEmoji,campanhaId};
+  const prompts=agentModalPrompts.map(p=>promptDataFromText(p.titulo,p.texto,p));
+  const data={nome,link,ia,desc:$('#f-desc').value.trim(),cat:$('#f-cat').value,area:$('#f-area').value,pasta:$('#f-pasta').value.trim(),responsavel:$('#f-resp').value.trim(),obs:$('#f-obs').value.trim(),status:$('#f-status').value,tags,icone:selEmoji,campanhaId,prompts};
   const eid=$('#f-id').value;
   if(eid){const a=agentById(eid);Object.assign(a,data);toast('Agente atualizado!','ok');if(currentAgentId===eid)renderDrawer();}
-  else{state.agents.unshift({id:id(),createdAt:new Date().toISOString(),prompts:[],arquivos:[],...data});toast('Agente cadastrado!','ok');}
+  else{state.agents.unshift({id:id(),createdAt:new Date().toISOString(),arquivos:[],...data});toast('Agente cadastrado!','ok');}
   save();closeAgentModal();
   renderStats();renderRecent();renderAreaFilter();
   if(view==='agentes')renderAgents();else renderAgents();
   if(view==='campanha')renderCampanhaDetail();
   renderCampanhas();
 });
+$('#f-add-prompt').addEventListener('click',addAgentModalPrompt);
+$('#f-prompt-text').addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter')addAgentModalPrompt();});
 
 /* ============ MODAL CAMPANHA ============ */
 let selColor=CAMP_COLORS[0];
@@ -5050,11 +5103,12 @@ $('#confirmDelBtn').addEventListener('click',()=>{const cb=confirmCb;closeConfir
 /* ============ DELEGAÇÃO ============ */
 document.body.addEventListener('click',e=>{
   const t=e.target;
-  const open=t.closest('[data-open]'), edit=t.closest('[data-edit]'), del=t.closest('[data-del]'), detail=t.closest('[data-detail]');
+  const open=t.closest('[data-open]'), promptBtn=t.closest('[data-agent-prompt]'), edit=t.closest('[data-edit]'), del=t.closest('[data-del]'), detail=t.closest('[data-detail]');
   const copen=t.closest('[data-copen]'), cedit=t.closest('[data-cedit]'), cdel=t.closest('[data-cdel]'), camp=t.closest('[data-camp]');
   if(edit){openAgentModal(agentById(edit.dataset.edit));return;}
   if(del){const a=agentById(del.dataset.del);openConfirmDelete(a.nome,()=>{state.agents=state.agents.filter(x=>x.id!==a.id);save();renderStats();renderRecent();renderAgents();if(view==='campanha')renderCampanhaDetail();renderCampanhas();if(currentAgentId===a.id)closeDrawer();toast('Agente excluído.','warn');},'Excluir agente');return;}
   if(open){const a=agentById(open.dataset.open);window.open(safeUrl(a.link),'_blank','noopener');toast('Abrindo '+a.nome+'…','info');return;}
+  if(promptBtn){openAgentDetail(promptBtn.dataset.agentPrompt,'prompts');return;}
   if(cedit){openCampModal(campById(cedit.dataset.cedit));return;}
   if(cdel){const c=campById(cdel.dataset.cdel);const n=state.agents.filter(a=>a.campanhaId===c.id).length;
     const aviso=n?('Os <b>'+n+' agente(s)</b> vinculados a esta campanha também serão excluídos.'):null;
@@ -5088,8 +5142,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#etapaModal')
 
 /* drawer tabs */
 $$('.drawer-tab').forEach(tb=>tb.addEventListener('click',()=>{
-  $$('.drawer-tab').forEach(x=>x.classList.remove('active'));tb.classList.add('active');
-  $$('.dtab').forEach(d=>d.classList.toggle('active',d.id==='dtab-'+tb.dataset.dtab));
+  setDrawerTab(tb.dataset.dtab);
 }));
 
 /* ============ TRIGGERS ============ */
