@@ -1282,6 +1282,7 @@ body.review-on{overflow:hidden}
         <div class="toolbar">
           <select id="gcalCampFilter" class="chip"></select>
           <select id="gcalAprovFilter" class="chip"></select>
+          <select id="gcalSortFilter" class="chip" title="Reorganizar artes"><option value="data">↕ Data (mais próxima)</option><option value="titulo">↕ Nome (A→Z)</option></select>
           <div class="date-filter">
             <select id="gcalDateFilter" class="chip">
               <option value="todos">Todo o período</option>
@@ -1321,7 +1322,7 @@ body.review-on{overflow:hidden}
           </div>
           <select id="tarCampFilter" class="chip"></select>
           <select id="tarPrioFilter" class="chip"><option value="todas">Todas prioridades</option><option value="alta">Alta</option><option value="media">Média</option><option value="baixa">Baixa</option></select>
-          <select id="tarSortFilter" class="chip" title="Ordenar tarefas"><option value="recentes">↕ Mais recentes</option><option value="prazo">↕ Prazo (mais próximo)</option><option value="prioridade">↕ Prioridade (alta→baixa)</option><option value="campanha">↕ Campanha (A→Z)</option></select>
+          <select id="tarSortFilter" class="chip" title="Reorganizar tarefas"><option value="recentes">↕ Mais recentes</option><option value="prazo">↕ Data / prazo (mais próximo)</option><option value="titulo">↕ Nome (A→Z)</option><option value="prioridade">↕ Prioridade (alta→baixa)</option><option value="campanha">↕ Campanha (A→Z)</option></select>
           <div class="date-filter">
             <select id="tarDateFilter" class="chip">
               <option value="todos">Todo o período</option>
@@ -1380,7 +1381,7 @@ body.review-on{overflow:hidden}
           </div>
           <select id="aprCampFilter" class="chip"></select>
           <select id="aprStatusFilter" class="chip"></select>
-          <select id="aprSortFilter" class="chip" title="Ordenar artes"><option value="data">↕ Data (mais próxima)</option><option value="campanha">↕ Campanha (A→Z)</option><option value="titulo">↕ Título (A→Z)</option><option value="status">↕ Status de aprovação</option></select>
+          <select id="aprSortFilter" class="chip" title="Reorganizar artes"><option value="data">↕ Data (mais próxima)</option><option value="titulo">↕ Nome (A→Z)</option><option value="campanha">↕ Campanha (A→Z)</option><option value="status">↕ Status de aprovação</option></select>
           <div class="date-filter">
             <select id="aprDateFilter" class="chip">
               <option value="todos">Todo o período</option>
@@ -2721,7 +2722,7 @@ let calView='agenda';       // 'agenda' | 'mes'
 let currentCalMonth=new Date();
 let calFilterStatus='todos', calFilterCanal='todos', calDateMode='todos', calDateStart='', calDateEnd='', calCollapsed=false, calShowAll=false, calRenderedCampId=null;
 // novas views
-let gcalView='agenda', gcalMonth=new Date(), gcalCamp='todas', gcalAprov='todos', gcalDateMode='todos', gcalDateStart='', gcalDateEnd='';
+let gcalView='agenda', gcalMonth=new Date(), gcalCamp='todas', gcalAprov='todos', gcalSort='data', gcalDateMode='todos', gcalDateStart='', gcalDateEnd='';
 let tarView='kanban', tarCamp='todas', tarPrio='todas', tarSort='recentes', tarDateMode='todos', tarDateStart='', tarDateEnd='';
 let aprView='kanban', aprCamp='todas', aprStatus='todos', aprSort='data', aprDateMode='todos', aprDateStart='', aprDateEnd='';
 let fluxCamp='todas', fluxSort='recentes';
@@ -3258,7 +3259,7 @@ function postRowHTML(p,campId){
   return `<div class="post-row" style="--ps:${cor}">
     <div class="pr-main">
       <div class="pr-title">${esc(p.titulo)}</div>
-      <div class="pr-meta">${campChip}${p.canal?`<span class="chan">📣 ${esc(p.canal)}</span>`:''}<span class="post-status" style="background:${cor}22;color:${cor}">${postStatusLabel(p.status)}</span><span class="aprov-badge ${p.aprov||'enviar'}"><span class="dot"></span>${aprovLabel(p.aprov)}</span></div>
+      <div class="pr-meta">${campChip}${p.data?`<span class="meta-i">🗓️ ${fmtShort(p.data)}</span>`:''}${p.canal?`<span class="chan">📣 ${esc(p.canal)}</span>`:''}<span class="post-status" style="background:${cor}22;color:${cor}">${postStatusLabel(p.status)}</span><span class="aprov-badge ${p.aprov||'enviar'}"><span class="dot"></span>${aprovLabel(p.aprov)}</span></div>
       ${p.obs?`<div class="pr-obs">${esc(p.obs)}</div>`:''}
     </div>
     <div class="pr-actions">
@@ -3321,7 +3322,13 @@ function gcalEntries(){
   list=list.filter(x=>inDateRange(x.p.data,gcalDateMode,gcalDateStart,gcalDateEnd));
   const q=filters.search.toLowerCase().trim();
   if(q)list=list.filter(x=>postMatchesQuery(x.p,x.campId,q));
-  return list;
+  return list.sort(gcalSortCmp);
+}
+function gcalSortCmp(a,b){
+  const pa=a.p,pb=b.p;let r=0;
+  if(gcalSort==='titulo')r=(pa.titulo||'').toLowerCase().localeCompare((pb.titulo||'').toLowerCase());
+  else {const av=pa.data||'￿',bv=pb.data||'￿';r=av.localeCompare(bv);}
+  return r!==0?r:(pa.data||'').localeCompare(pb.data||'')||((pa.titulo||'').toLowerCase().localeCompare((pb.titulo||'').toLowerCase()));
 }
 function campSelectHTML(extra){return `<option value="todas">Todas as campanhas</option><option value="sem">Sem campanha</option>`+state.campanhas.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');}
 function renderGeralCalendar(){
@@ -3329,6 +3336,7 @@ function renderGeralCalendar(){
   $('#gcalCampFilter').innerHTML=campSelectHTML();$('#gcalCampFilter').value=gcalCamp;
   $('#gcalAprovFilter').innerHTML=`<option value="todos">Toda aprovação</option>`+APROV_COLS.map(a=>`<option value="${a.id}">${esc(a.nome)}</option>`).join('');
   $('#gcalAprovFilter').value=gcalAprov;
+  $('#gcalSortFilter').value=gcalSort;
   syncDateControls('gcal',gcalDateMode,gcalDateStart,gcalDateEnd);
   $$('#gcalViewToggle button').forEach(b=>b.classList.toggle('on',b.dataset.cv===gcalView));
   const entries=gcalEntries();
@@ -3338,7 +3346,11 @@ function renderGeralCalendar(){
 function renderGeralAgenda(entries){
   const el=$('#geralCalendar');
   if(!entries.length){el.innerHTML=`<div class="empty"><div class="big">🗓️</div><h3>Nenhuma arte no calendário</h3><p>Crie artes/posts com data — com ou sem campanha.</p><button class="btn btn-primary" onclick="openPostModal('')">Nova arte / post</button></div>`;return;}
-  const sorted=[...entries].sort((a,b)=>(a.p.data||'').localeCompare(b.p.data||''));
+  const sorted=[...entries].sort(gcalSortCmp);
+  if(gcalSort==='titulo'){
+    el.innerHTML=`<div class="tlist">${sorted.map(x=>postRowHTML(x.p,x.campId)).join('')}</div>`;
+    return;
+  }
   const groups={};sorted.forEach(x=>{(groups[x.p.data]=groups[x.p.data]||[]).push(x)});
   const today=toISODate(new Date());
   el.innerHTML=Object.keys(groups).sort().map(date=>{
@@ -3370,6 +3382,7 @@ function renderGeralMonth(entries){
 }
 $('#gcalCampFilter').addEventListener('change',e=>{gcalCamp=e.target.value;renderGeralCalendar();});
 $('#gcalAprovFilter').addEventListener('change',e=>{gcalAprov=e.target.value;renderGeralCalendar();});
+$('#gcalSortFilter').addEventListener('change',e=>{gcalSort=e.target.value;renderGeralCalendar();});
 $('#gcalDateFilter').addEventListener('change',e=>{gcalDateMode=e.target.value;renderGeralCalendar();});
 $('#gcalDateStart').addEventListener('input',e=>{gcalDateStart=e.target.value;renderGeralCalendar();});
 $('#gcalDateEnd').addEventListener('input',e=>{gcalDateEnd=e.target.value;renderGeralCalendar();});
@@ -3380,9 +3393,10 @@ $('#gcalAddBtn').addEventListener('click',()=>openPostModal(gcalCamp!=='todas'&&
 function tarefaSortCmp(a,b){
   let r=0;
   if(tarSort==='prazo'){const av=a.prazo||'￿',bv=b.prazo||'￿';r=av.localeCompare(bv);}
+  else if(tarSort==='titulo')r=(a.titulo||'').toLowerCase().localeCompare((b.titulo||'').toLowerCase());
   else if(tarSort==='prioridade'){const o={alta:0,media:1,baixa:2};r=(o[a.prioridade]??9)-(o[b.prioridade]??9);}
   else if(tarSort==='campanha'){const an=a.campanhaId?((campById(a.campanhaId)||{}).nome||'').toLowerCase():'￿';const bn=b.campanhaId?((campById(b.campanhaId)||{}).nome||'').toLowerCase():'￿';r=an.localeCompare(bn);}
-  return r!==0?r:(b.createdAt||'').localeCompare(a.createdAt||''); // desempate: mais recentes primeiro
+  return r!==0?r:(a.prazo||'￿').localeCompare(b.prazo||'￿')||((a.titulo||'').toLowerCase().localeCompare((b.titulo||'').toLowerCase()))||(b.createdAt||'').localeCompare(a.createdAt||''); // desempate: data, nome e mais recentes
 }
 function tarefasFiltered(){
   const q=filters.search.toLowerCase().trim();
