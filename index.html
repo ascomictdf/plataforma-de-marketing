@@ -314,18 +314,6 @@ select.chip{padding-right:30px;cursor:pointer}
 .icon-btn svg{width:16px;height:16px}
 .res-chip{font-size:11.5px;font-weight:700;color:var(--texto-suave);display:inline-flex;align-items:center;gap:5px}
 
-/* folder filters + grupos */
-.folder-bar{margin-top:-6px;margin-bottom:20px;gap:8px}
-.folder-lbl{font-size:12.5px;font-weight:700;color:var(--texto-suave);margin-right:2px;align-self:center}
-.chip.folder{padding:7px 13px;font-size:12.5px}
-.chip.folder.active{background:var(--azul-900);color:#fff;border-color:transparent}
-.folder-group{margin-bottom:8px}
-.folder-head{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;color:var(--azul);margin:6px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--cinza-borda);letter-spacing:-.2px}
-[data-theme="dark"] .folder-head{color:#9cc0ff}
-.folder-head .folder-ico{font-size:17px}
-.folder-head .folder-count{margin-left:auto;font-size:12px;font-weight:700;color:var(--texto-suave);background:var(--cinza-card);border:1px solid var(--cinza-borda);padding:2px 11px;border-radius:20px}
-.folder-group>.grid{margin-bottom:26px}
-
 /* CAMPANHAS */
 .camp-cover{height:8px;border-radius:6px;margin:-22px -22px 6px}
 .camp-badge{font-size:11px;font-weight:800;padding:4px 11px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;display:inline-flex;align-items:center;gap:6px}
@@ -640,10 +628,23 @@ a.open-btn{text-decoration:none}
 .kanban-hint{font-size:12px;color:var(--texto-suave);margin:-6px 0 14px}
 
 /* LISTA (tarefas + aprovação) */
-.task-cols-tools{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
-.task-col-tool{display:inline-flex;align-items:center;gap:7px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:11px;padding:7px 8px 7px 10px;box-shadow:var(--sombra);font-size:12.5px;font-weight:800}
+.task-cols-tools{display:flex;flex-direction:column;gap:9px;margin:0 0 14px;padding:12px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:14px;box-shadow:var(--sombra)}
+.task-cols-tools .tools-head{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:900;color:var(--texto-suave)}
+.task-cols-tools .tools-head b{color:var(--texto);font-size:13px}
+.task-cols-tools .tools-head span{margin-left:auto;font-size:12px;font-weight:700;color:var(--texto-suave)}
+.task-cols-rail{display:flex;gap:10px;align-items:center;overflow-x:auto;padding:2px 2px 5px;scrollbar-width:thin}
+.task-col-tool{position:relative;display:inline-flex;align-items:center;gap:8px;min-width:156px;max-width:240px;height:44px;background:var(--surface-2);border:1.5px solid var(--cinza-borda);border-radius:12px;padding:8px 8px 8px 10px;box-shadow:0 8px 20px -18px rgba(7,18,40,.72);font-size:12.5px;font-weight:900;cursor:grab;user-select:none;transition:transform .15s,border-color .15s,box-shadow .15s,opacity .15s;background-clip:padding-box}
+.task-col-tool:hover{border-color:var(--azul-300);box-shadow:0 12px 26px -20px rgba(46,91,190,.95)}
+.task-col-tool.dragging{opacity:.5;transform:scale(.98);cursor:grabbing}
+.task-col-tool.drop-before{box-shadow:-4px 0 0 var(--azul-300),0 12px 26px -20px rgba(46,91,190,.95)}
+.task-col-tool.drop-after{box-shadow:4px 0 0 var(--azul-300),0 12px 26px -20px rgba(46,91,190,.95)}
+.task-col-tool .drag-handle{width:18px;height:24px;display:grid;place-items:center;color:var(--texto-suave);flex:0 0 18px}
+.task-col-tool .drag-handle svg{width:16px;height:16px}
 .task-col-tool .kdot{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
-.task-col-tool .icon-btn{width:26px;height:26px;border-radius:8px}
+.task-col-tool .col-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+.task-col-tool .kcnt{font-size:11.5px;font-weight:800;color:var(--texto-suave);background:var(--cinza-card);border:1px solid var(--cinza-borda);padding:1px 8px;border-radius:20px;flex:0 0 auto}
+.task-col-tool .icon-btn{width:28px;height:28px;border-radius:8px;cursor:pointer;flex:0 0 28px}
+@media(max-width:640px){.task-cols-tools .tools-head{align-items:flex-start;flex-direction:column;gap:3px}.task-cols-tools .tools-head span{margin-left:0}.task-col-tool{min-width:170px}}
 .tlist{display:flex;flex-direction:column;gap:10px}
 .tgroup{border:1px solid var(--cinza-borda);border-radius:14px;background:var(--cinza-card);box-shadow:var(--sombra);overflow:hidden;margin-bottom:12px}
 .tgroup-head{display:flex;align-items:center;gap:10px;padding:13px 15px;background:var(--surface-2);border-bottom:1px solid var(--cinza-borda);font-weight:900;font-size:13px}
@@ -665,6 +666,11 @@ a.open-btn{text-decoration:none}
 .agent-prompt-item b{display:block;font-size:13px}
 .agent-prompt-item span{display:block;color:var(--texto-suave);font-size:12px;line-height:1.35;max-height:36px;overflow:hidden}
 .agent-prompt-item .icon-btn{margin-left:auto;flex:0 0 28px;width:28px;height:28px}
+.camp-checks{display:flex;flex-direction:column;gap:8px;background:var(--surface-2);border:1.5px solid var(--cinza-borda);border-radius:12px;padding:10px 12px;max-height:170px;overflow:auto}
+.camp-check{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;color:var(--texto);cursor:pointer}
+.camp-check input{width:17px;height:17px;accent-color:var(--azul);flex:0 0 17px}
+.camp-check .dot{width:10px;height:10px;border-radius:50%;flex:0 0 10px}
+.camp-check-empty{font-size:12.5px;color:var(--texto-suave);line-height:1.45}
 
 /* FLUXOS DE PROJETO (mapa de etapas) */
 .fluxo-card{background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--sombra);margin-bottom:18px}
@@ -1191,7 +1197,6 @@ body.review-on{overflow:hidden}
           <select id="areaFilter" class="chip"></select>
           <span class="count-pill" id="agentCount"></span>
         </div>
-        <div class="toolbar folder-bar" id="folderFilters"></div>
         <div class="grid" id="agentGrid"></div>
       </section>
 
@@ -1473,7 +1478,6 @@ body.review-on{overflow:hidden}
           <div class="cfg-card" id="cfgTarCols"></div>
           <div class="cfg-card" id="cfgTipos"></div>
           <div class="cfg-card" id="cfgAreas"></div>
-          <div class="cfg-card" id="cfgPastas"></div>
         </div>
         <div class="cfg-card" id="cfgIA" style="margin-top:20px"></div>
         <div class="cfg-card" style="margin-top:20px">
@@ -1548,13 +1552,14 @@ body.review-on{overflow:hidden}
 
           <section class="doc-sec" id="doc-agentes">
             <h3>4. Agentes e subagentes</h3>
-            <p>Cada agente é um chatbot treinado para uma demanda. Campos: nome, descrição, link do chatbot, tipo de demanda (interno/externo), área, pasta/subcategoria, responsável, status (ativo/treino/inativo), tags, ícone e anotações.</p>
+            <p>Cada agente é um chatbot treinado para uma demanda. Campos: nome, descrição, link do chatbot, tipo de demanda (interno/externo), área, campanhas vinculadas, responsável, status (ativo/treino/inativo), tags, ícone e anotações.</p>
             <ul>
               <li><b>Detalhe (drawer):</b> clique no card para abrir. Abas <b>Sobre</b>, <b>Prompts</b> e <b>Links</b>.</li>
               <li><b>Prompts / geradores:</b> escreva um modelo com campos entre <code>{{ }}</code> (ex.: <code>{{Tema}}</code>). Na hora de usar, preencha os campos e gere o texto pronto para copiar.</li>
               <li><b>Links:</b> adicione links de referência. Arquivos devem ficar fora da plataforma, por exemplo no Drive, para reduzir o uso do banco de dados.</li>
               <li><b>Subagentes / links:</b> na aba Sobre é possível cadastrar vários chatbots/links secundários no mesmo agente (ex.: versão Claude, gerador de hashtags).</li>
-              <li><b>Filtros:</b> por tipo, área e pasta. Agentes vinculados a uma campanha aparecem dentro da campanha, não na lista geral.</li>
+              <li><b>Campanhas:</b> um agente pode fazer parte de uma ou mais campanhas. Se nenhuma campanha for marcada, ele fica na lista geral de agentes.</li>
+              <li><b>Filtros:</b> por tipo, área e busca. Agentes vinculados a campanhas aparecem dentro de cada campanha marcada.</li>
             </ul>
           </section>
 
@@ -1656,7 +1661,7 @@ body.review-on{overflow:hidden}
               <li><b>Identidade da plataforma:</b> troque o título, o subtítulo e a logo que aparecem no topo da barra lateral.</li>
               <li><b>Responsáveis:</b> lista de pessoas usada nas caixas de seleção de responsável (agentes, campanhas, tarefas e fluxos). Adicione, remova ou renomeie — ao renomear, a mudança vale para todas as referências existentes.</li>
               <li><b>Colunas de Tarefas:</b> personalize as colunas do Kanban de Tarefas.</li>
-              <li><b>Tipos de demanda, Áreas, Pastas:</b> opções usadas ao cadastrar agentes.</li>
+              <li><b>Tipos de demanda e Áreas:</b> opções usadas ao cadastrar agentes.</li>
               <li><b>Dados:</b> exportar/importar backup e redefinir para os exemplos.</li>
               <li><b>Documentação:</b> abre esta página.</li>
               <li><b>Banco de dados (Vercel / Neon):</b> última opção — ver seção 14.</li>
@@ -1699,7 +1704,7 @@ body.review-on{overflow:hidden}
             <h3>16. Modelo de dados</h3>
             <p>O estado é um objeto com as chaves:</p>
             <ul>
-              <li><code>agents[]</code> — agentes (com <code>subagentes[]</code>, <code>prompts[]</code> e <code>arquivos[]</code> contendo apenas links externos).</li>
+              <li><code>agents[]</code> — agentes (com <code>campanhaIds[]</code> para vínculo com uma ou mais campanhas, <code>subagentes[]</code>, <code>prompts[]</code> e <code>arquivos[]</code> contendo apenas links externos).</li>
               <li><code>campanhas[]</code> — campanhas (com <code>posts[]</code>, <code>logo</code>, <code>paleta[]</code>, <code>responsavel</code>).</li>
               <li><code>posts[]</code> — artes avulsas (sem campanha). Cada arte guarda também <code>revisadoPor</code> e <code>revisadoEm</code> (quem aprovou/revisou pelo link e quando).</li>
               <li><code>contatos[]</code> — lista de contatos (<code>nome</code>, <code>celular</code>, <code>setor</code>, <code>obs</code>, <code>pastaId</code>) e <code>contatoPastas[]</code> (as pastas: <code>id</code>, <code>nome</code>).</li>
@@ -1707,7 +1712,7 @@ body.review-on{overflow:hidden}
               <li><code>projetos[]</code> — fluxos (com <code>etapas[]</code>, cada uma com <code>desc</code> e <code>checklist[]</code>).</li>
               <li><code>sessoes[]</code> — sessões de login dos colaboradores (<code>nome</code>, <code>inicio</code>, <code>fim</code>) — base do tempo de atendimento.</li>
               <li><code>integracaoLog[]</code> — histórico de tarefas criadas por integração. Tarefas vindas de fora carregam <code>origem</code> e <code>externalId</code>.</li>
-              <li><code>config</code> — tipos, áreas, pastas, pessoas, colunas de tarefas, identidade (<code>brand</code>); para os acessos, <code>pins</code> (PIN por pessoa) e <code>cargos</code>; e <code>integracoes</code> (caixa de entrada + conectores das automações).</li>
+              <li><code>config</code> — tipos, áreas, pessoas, colunas de tarefas, identidade (<code>brand</code>); para os acessos, <code>pins</code> (PIN por pessoa) e <code>cargos</code>; e <code>integracoes</code> (caixa de entrada + conectores das automações).</li>
             </ul>
             <p>Cada arte (post) carrega <code>status</code> (publicação) e <code>aprov</code> (aprovação: enviar/pendente/alteracao/aprovado).</p>
           </section>
@@ -1762,7 +1767,6 @@ body.review-on{overflow:hidden}
     </div>
     <div class="modal-body">
       <input type="hidden" id="f-id" />
-      <input type="hidden" id="f-campanha" />
       <div class="field">
         <label>Nome do agente <span class="req">*</span></label>
         <input type="text" id="f-nome" placeholder="Ex.: Redator de Posts Instagram" />
@@ -1797,9 +1801,9 @@ body.review-on{overflow:hidden}
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Pasta / Subcategoria</label>
-          <input type="text" id="f-pasta" list="pastasList" placeholder="Ex.: Conteúdo & Social…" />
-          <datalist id="pastasList"></datalist>
+          <label>Campanhas</label>
+          <div class="camp-checks" id="f-campanhas"></div>
+          <div class="hint">Marque uma ou mais campanhas. Deixe tudo desmarcado se o agente não pertencer a nenhuma campanha.</div>
         </div>
         <div class="field">
           <label>Responsável</label>
@@ -2712,8 +2716,8 @@ function bindAuthUI(){
   $('#login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 }
 
-let state={agents:[],campanhas:[],posts:[],tarefas:[],projetos:[],config:{tipos:[],areas:[],pastas:[]}};
-let filters={cat:'todos',area:'todas',pasta:'todas',search:'',campSt:'todas'};
+let state={agents:[],campanhas:[],posts:[],tarefas:[],projetos:[],config:{tipos:[],areas:[]}};
+let filters={cat:'todos',area:'todas',search:'',campSt:'todas'};
 let view='dashboard';
 let currentCampId=null;     // campanha aberta no detalhe
 let currentAgentId=null;    // agente aberto no drawer
@@ -2734,7 +2738,7 @@ function normalize(s){
   s.config=s.config||{};
   s.config.tipos=(s.config.tipos&&s.config.tipos.length)?s.config.tipos:defaultTipos();
   s.config.areas=s.config.areas||['Social Media','Copywriting','Tráfego Pago','SEO','Branding','Design','Atendimento','Estratégia','E-mail Marketing','Audiovisual','Outro'];
-  s.config.pastas=s.config.pastas||['Conteúdo & Social','Performance','Atendimento ao Público'];
+  delete s.config.pastas;
   s.config.pessoas=s.config.pessoas||['Ana Lima','Bruno Sá','Carla Dias','Diego Reis','Equipe SAC','Equipe Campanha'];
   s.config.tarColunas=(s.config.tarColunas&&s.config.tarColunas.length)?s.config.tarColunas:defaultTarCols();
   s.config.brand=Object.assign({titulo:'Hub de Agentes IA',subtitulo:'Marketing · ICTDF',logo:'',favicon:''},s.config.brand||{});
@@ -2763,7 +2767,11 @@ function normalize(s){
     return pr;
   });
   s.agents=(s.agents||[]).map(a=>{
-    a=({pasta:'',responsavel:'',obs:'',campanhaId:null,ia:false,subagentes:[],prompts:[],arquivos:[],createdAt:a.createdAt||new Date().toISOString(),...a});
+    a=({responsavel:'',obs:'',campanhaId:null,campanhaIds:[],ia:false,subagentes:[],prompts:[],arquivos:[],createdAt:a.createdAt||new Date().toISOString(),...a});
+    const ids=[...(Array.isArray(a.campanhaIds)?a.campanhaIds:[]),a.campanhaId].filter(Boolean);
+    a.campanhaIds=[...new Set(ids)].filter(cid=>s.campanhas.some(c=>c.id===cid));
+    a.campanhaId=a.campanhaIds[0]||null;
+    delete a.pasta;
     a.ia=false;
     a.prompts=(a.prompts||[]).map(p=>({campos:[],...p}));
     a.subagentes=a.subagentes||[];
@@ -2775,7 +2783,13 @@ function normalize(s){
 let _remoteTimer=null;
 function compactState(){
   delete state.taskNotes;
-  state.agents=(state.agents||[]).map(a=>Object.assign(a,{arquivos:(a.arquivos||[]).filter(f=>f&&f.tipo==='link'&&f.url).map(f=>({id:f.id||id(),nome:f.nome||f.url,tipo:'link',url:f.url}))}));
+  if(state.config)delete state.config.pastas;
+  state.agents=(state.agents||[]).map(a=>{
+    a.campanhaIds=[...new Set([...(Array.isArray(a.campanhaIds)?a.campanhaIds:[]),a.campanhaId].filter(Boolean))].filter(cid=>state.campanhas.some(c=>c.id===cid));
+    a.campanhaId=a.campanhaIds[0]||null;
+    delete a.pasta;
+    return Object.assign(a,{arquivos:(a.arquivos||[]).filter(f=>f&&f.tipo==='link'&&f.url).map(f=>({id:f.id||id(),nome:f.nome||f.url,tipo:'link',url:f.url}))});
+  });
   state.tarefas=(state.tarefas||[]).map(t=>Object.assign(t,{log:(t.log||[]).slice(-30)}));
   state.integracaoLog=(state.integracaoLog||[]).slice(0,80);
 }
@@ -2848,6 +2862,12 @@ function campById(id){return state.campanhas.find(c=>c.id===id)}
 function agentById(id){return state.agents.find(a=>a.id===id)}
 function campNome(id){const c=campById(id);return c?c.nome:''}
 function campCor(id){const c=campById(id);return c?c.cor:'#94A3B8'}
+function agentCampIds(a){return [...new Set([...(Array.isArray(a.campanhaIds)?a.campanhaIds:[]),a.campanhaId].filter(Boolean))].filter(cid=>campById(cid))}
+function agentInCamp(a,cid){return agentCampIds(a).includes(cid)}
+function agentCampanhas(a){return agentCampIds(a).map(campById).filter(Boolean)}
+function agentCampNames(a){return agentCampanhas(a).map(c=>c.nome)}
+function agentCampaignText(a){const names=agentCampNames(a);return names.length?names.join(', '):'Nenhuma campanha'}
+function agentPrimaryCamp(a){return agentCampanhas(a)[0]||null}
 // ----- aprovação de artes -----
 const APROV_COLS=[{id:'enviar',nome:'Enviar para aprovação',cor:'#2E5BBE'},{id:'pendente',nome:'Pendente de aprovação',cor:'#F59E0B'},{id:'alteracao',nome:'Em alteração',cor:'#E11D48'},{id:'aprovado',nome:'Aprovado',cor:'#16A34A'}];
 function aprovLabel(s){return (APROV_COLS.find(c=>c.id===s)||{}).nome||'Enviar para aprovação'}
@@ -2915,10 +2935,10 @@ function toast(msg,type='ok'){
 }
 function matchesSearch(a){
   const q=filters.search.toLowerCase().trim();if(!q)return true;
-  return [a.nome,a.desc,a.area,a.responsavel,a.pasta,(a.tags||[]).join(' ')].join(' ').toLowerCase().includes(q);
+  return [a.nome,a.desc,a.area,a.responsavel,agentCampaignText(a),(a.tags||[]).join(' ')].join(' ').toLowerCase().includes(q);
 }
 // agentes "gerais" = sem campanha
-function generalAgents(){return state.agents.filter(a=>!a.campanhaId)}
+function generalAgents(){return state.agents.filter(a=>!agentCampIds(a).length)}
 
 /* ============ TEMA ============ */
 function applyTheme(t){
@@ -2977,18 +2997,21 @@ function renderUpcoming(){
 /* ============ CARD DE AGENTE ============ */
 function agentCardHTML(a){
   const tags=(a.tags||[]).slice(0,4).map(t=>`<span class="tag">#${esc(t)}</span>`).join('');
-  const camp=a.campanhaId?campById(a.campanhaId):null;
+  const camp=agentPrimaryCamp(a);
+  const camps=agentCampanhas(a);
   const accent=camp?camp.cor:accentFor(a.cat);
   const np=(a.prompts||[]).length, nf=(a.arquivos||[]).length, ns=(a.subagentes||[]).length;
   const meta=[];
   if(a.responsavel)meta.push(`<span class="meta-i">👤 ${esc(a.responsavel)}</span>`);
+  camps.slice(0,3).forEach(c=>meta.push(`<span class="kcamp-chip" style="background:${c.cor}">${esc(c.nome)}</span>`));
+  if(camps.length>3)meta.push(`<span class="meta-i">+${camps.length-3} campanha${camps.length-3>1?'s':''}</span>`);
   if(ns)meta.push(`<span class="meta-i">🔗 ${ns+1} links</span>`);
   if(np)meta.push(`<span class="meta-i">📝 ${np} prompt${np>1?'s':''}</span>`);
   if(nf)meta.push(`<span class="meta-i">🔗 ${nf} link${nf>1?'s':''}</span>`);
   return `<div class="card clickable" style="--accent:${accent}" data-detail="${a.id}">
     <div class="card-top">
       <div class="avatar">${esc(a.icone||'🤖')}</div>
-      <div class="titles"><h3>${esc(a.nome)}${a.ia?' <span class="ia-badge" title="Agente de geração com IA (Gemini)">'+IA_SPARK+'IA</span>':''}</h3><div class="area">${esc(a.area||'')}${a.pasta?' · '+esc(a.pasta):''}</div></div>
+      <div class="titles"><h3>${esc(a.nome)}${a.ia?' <span class="ia-badge" title="Agente de geração com IA (Gemini)">'+IA_SPARK+'IA</span>':''}</h3><div class="area">${esc(a.area||'')}${camps.length?' · '+esc(agentCampaignText(a)):''}</div></div>
       <div class="card-menu">
         <button class="icon-btn" data-edit="${a.id}" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
         <button class="icon-btn danger" data-del="${a.id}" title="Excluir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0v14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6"/></svg></button>
@@ -3008,40 +3031,22 @@ function agentCardHTML(a){
 }
 
 /* ============ AGENTES (view) ============ */
-const PASTA_GERAL='Geral';
-function pastaOf(a){return (a.pasta&&a.pasta.trim())||PASTA_GERAL}
 function renderAreaFilter(){
   const areas=[...new Set(generalAgents().map(a=>a.area).filter(Boolean))].sort();
   const sel=$('#areaFilter');
   sel.innerHTML=`<option value="todas">Todas as áreas</option>`+areas.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('');
   sel.value=filters.area;
 }
-function renderFolderFilters(){
-  const base=generalAgents().filter(a=>filters.cat==='todos'||a.cat===filters.cat);
-  const pastas=[...new Set(base.map(pastaOf))].sort((x,y)=>x===PASTA_GERAL?1:y===PASTA_GERAL?-1:x.localeCompare(y));
-  const wrap=$('#folderFilters');
-  if(pastas.length<=1){wrap.innerHTML='';filters.pasta='todas';return}
-  if(filters.pasta!=='todas'&&!pastas.includes(filters.pasta))filters.pasta='todas';
-  wrap.innerHTML=`<span class="folder-lbl">Pastas:</span><div class="chip folder ${filters.pasta==='todas'?'active':''}" data-pasta="todas">Todas</div>`+
-    pastas.map(p=>`<div class="chip folder ${filters.pasta===p?'active':''}" data-pasta="${esc(p)}">📁 ${esc(p)}</div>`).join('');
-  $$('#folderFilters .folder').forEach(c=>c.addEventListener('click',()=>{filters.pasta=c.dataset.pasta;renderAgents()}));
-}
 function renderAgents(){
-  renderFolderFilters();
   const list=generalAgents().filter(a=>
     (filters.cat==='todos'||a.cat===filters.cat)&&
     (filters.area==='todas'||a.area===filters.area)&&
-    (filters.pasta==='todas'||pastaOf(a)===filters.pasta)&&
     matchesSearch(a));
   const grid=$('#agentGrid');
   if(!list.length){
     grid.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="big">🔭</div><h3>Nenhum agente encontrado</h3><p>Ajuste os filtros ou cadastre um novo agente.</p><button class="btn btn-primary" onclick="openAgentModal()">Novo Agente</button></div>`;
   }else{
-    const groups={};list.forEach(a=>{(groups[pastaOf(a)]=groups[pastaOf(a)]||[]).push(a)});
-    const names=Object.keys(groups).sort((x,y)=>x===PASTA_GERAL?1:y===PASTA_GERAL?-1:x.localeCompare(y));
-    grid.innerHTML=names.length>1
-      ? names.map(n=>`<div class="folder-group" style="grid-column:1/-1"><div class="folder-head"><span class="folder-ico">📁</span>${esc(n)}<span class="folder-count">${groups[n].length}</span></div><div class="grid">${groups[n].map(agentCardHTML).join('')}</div></div>`).join('')
-      : list.map(agentCardHTML).join('');
+    grid.innerHTML=list.map(agentCardHTML).join('');
   }
   $('#agentCount').textContent=`${list.length} agente${list.length!==1?'s':''}`;
   renderTipoNav();renderCatFilters();
@@ -3059,7 +3064,7 @@ function renderCatFilters(){
 
 /* ============ CAMPANHAS ============ */
 function campCardHTML(c){
-  const nAg=state.agents.filter(a=>a.campanhaId===c.id).length;
+  const nAg=state.agents.filter(a=>agentInCamp(a,c.id)).length;
   const paleta=c.paleta||[];
   const idRow=(c.logo||paleta.length)?`<div class="camp-card-id">
     ${c.logo?`<div class="camp-mini-logo"><img src="${c.logo}" alt="Logo ${esc(c.nome)}" /></div>`:''}
@@ -3097,7 +3102,7 @@ function renderCampanhas(){
 function renderCampanhaDetail(){
   const c=campById(currentCampId);
   if(!c){go('campanhas');return}
-  const nAg=state.agents.filter(a=>a.campanhaId===c.id).length;
+  const nAg=state.agents.filter(a=>agentInCamp(a,c.id)).length;
   $('#campDetailHead').innerHTML=`<div class="camp-detail-head" style="background:linear-gradient(135deg,${c.cor},${c.cor}cc)">
     <button class="back" id="campBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Campanhas</button>
     <div class="ch-title">${c.logo?`<div class="ch-logo"><img src="${c.logo}" alt="Logo de ${esc(c.nome)}" /></div>`:''}<div><h2>${esc(c.nome)}</h2><p>${esc(c.desc||'')}</p></div></div>
@@ -3111,7 +3116,7 @@ function renderCampanhaDetail(){
       ${c.responsavel?`<span class="meta-i" style="background:rgba(255,255,255,.18);color:#fff">👤 ${esc(c.responsavel)}</span>`:''}
       <button class="icon-btn" id="campEditBtn" title="Editar campanha" style="background:rgba(255,255,255,.18);border-color:transparent;color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
     </div></div>`;
-  const ags=state.agents.filter(a=>a.campanhaId===c.id);
+  const ags=state.agents.filter(a=>agentInCamp(a,c.id));
   $('#campAgentGrid').innerHTML=ags.length?ags.map(agentCardHTML).join('')
     :`<div class="empty" style="grid-column:1/-1"><div class="big">🤖</div><h3>Sem agentes nesta campanha</h3><p>Crie agentes exclusivos para esta campanha.</p><button class="btn btn-primary" onclick="openAgentModal(null,'${c.id}')">Novo agente desta campanha</button></div>`;
   // bind
@@ -3431,12 +3436,30 @@ function addTaskColumnQuick(){
   state.config.tarColunas.push({id:id(),nome:nome.trim(),cor:'#2E5BBE'});
   save();renderTarefas();renderConfig();toast('Coluna adicionada!','ok');
 }
-function moveTaskColumn(cid,dir){
-  const cols=[...tarCols()], i=cols.findIndex(c=>c.id===cid), j=i+dir;
-  if(i<0||j<0||j>=cols.length)return;
-  [cols[i],cols[j]]=[cols[j],cols[i]];
+function reorderTaskColumn(cid,targetId,placeAfter=false){
+  if(!cid||!targetId||cid===targetId)return false;
+  const cols=[...tarCols()], before=cols.map(c=>c.id).join('|');
+  const from=cols.findIndex(c=>c.id===cid);
+  if(from<0||!cols.some(c=>c.id===targetId))return false;
+  const [moved]=cols.splice(from,1);
+  let to=cols.findIndex(c=>c.id===targetId);
+  if(to<0)return false;
+  if(placeAfter)to+=1;
+  cols.splice(to,0,moved);
+  if(before===cols.map(c=>c.id).join('|'))return false;
   state.config.tarColunas=cols;
   save();renderTarefas();renderConfig();toast('Ordem das colunas atualizada.','ok');
+  return true;
+}
+function moveTaskColumnToEnd(cid){
+  const cols=[...tarCols()], before=cols.map(c=>c.id).join('|');
+  const from=cols.findIndex(c=>c.id===cid);
+  if(from<0||from===cols.length-1)return false;
+  const [moved]=cols.splice(from,1);cols.push(moved);
+  if(before===cols.map(c=>c.id).join('|'))return false;
+  state.config.tarColunas=cols;
+  save();renderTarefas();renderConfig();toast('Ordem das colunas atualizada.','ok');
+  return true;
 }
 function deleteTaskColumn(cid){
   const cols=tarCols(), col=cols.find(c=>c.id===cid);
@@ -3453,16 +3476,52 @@ function deleteTaskColumn(cid){
 }
 function taskColumnsToolsHTML(){
   const cols=tarCols();
-  return `<div class="task-cols-tools">${cols.map((col,i)=>`<div class="task-col-tool">
-    <span class="kdot" style="background:${col.cor}"></span><span>${esc(col.nome)}</span>
-    <button class="icon-btn" data-tcolmove="${col.id}" data-dir="-1" title="Mover para a esquerda" ${i===0?'disabled':''}>←</button>
-    <button class="icon-btn" data-tcolmove="${col.id}" data-dir="1" title="Mover para a direita" ${i===cols.length-1?'disabled':''}>→</button>
+  const grip='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"/></svg>';
+  const count=id=>(state.tarefas||[]).filter(t=>t.status===id).length;
+  return `<div class="task-cols-tools"><div class="tools-head"><b>Ordem das colunas</b><span>Arraste para reorganizar</span></div><div class="task-cols-rail" id="taskColsRail">${cols.map(col=>`<div class="task-col-tool" draggable="true" data-tcol="${col.id}" title="Arraste para reposicionar ${esc(col.nome)}">
+    <span class="drag-handle" aria-hidden="true">${grip}</span>
+    <span class="kdot" style="background:${col.cor}"></span><span class="col-name">${esc(col.nome)}</span><span class="kcnt">${count(col.id)}</span>
     <button class="icon-btn danger" data-tcoldel="${col.id}" title="Excluir coluna">${RM_SVG}</button>
-  </div>`).join('')}</div>`;
+  </div>`).join('')}</div></div>`;
 }
 function bindTaskColumnTools(){
-  $$('#tarefasBoard [data-tcolmove]').forEach(b=>b.addEventListener('click',()=>moveTaskColumn(b.dataset.tcolmove,+b.dataset.dir)));
-  $$('#tarefasBoard [data-tcoldel]').forEach(b=>b.addEventListener('click',()=>deleteTaskColumn(b.dataset.tcoldel)));
+  let draggingId=null;
+  const rail=$('#taskColsRail');
+  const clearDrop=()=>$$('#tarefasBoard .task-col-tool.drop-before,#tarefasBoard .task-col-tool.drop-after').forEach(x=>x.classList.remove('drop-before','drop-after'));
+  $$('#tarefasBoard [data-tcol]').forEach(chip=>{
+    chip.addEventListener('dragstart',e=>{
+      if(e.target.closest('button')){e.preventDefault();return;}
+      draggingId=chip.dataset.tcol;
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',draggingId);
+    });
+    chip.addEventListener('dragend',()=>{chip.classList.remove('dragging');clearDrop();draggingId=null;});
+    chip.addEventListener('dragover',e=>{
+      const id=draggingId||e.dataTransfer.getData('text/plain');
+      if(!id||id===chip.dataset.tcol)return;
+      e.preventDefault();
+      const r=chip.getBoundingClientRect(), after=e.clientX>r.left+r.width/2;
+      clearDrop();chip.classList.add(after?'drop-after':'drop-before');
+      e.dataTransfer.dropEffect='move';
+    });
+    chip.addEventListener('dragleave',e=>{if(!chip.contains(e.relatedTarget))chip.classList.remove('drop-before','drop-after');});
+    chip.addEventListener('drop',e=>{
+      const id=draggingId||e.dataTransfer.getData('text/plain');
+      if(!id||id===chip.dataset.tcol)return;
+      e.preventDefault();e.stopPropagation();
+      const r=chip.getBoundingClientRect(), after=e.clientX>r.left+r.width/2;
+      clearDrop();reorderTaskColumn(id,chip.dataset.tcol,after);draggingId=null;
+    });
+  });
+  if(rail){
+    rail.addEventListener('dragover',e=>{if(draggingId){e.preventDefault();e.dataTransfer.dropEffect='move';}});
+    rail.addEventListener('drop',e=>{if(!draggingId||e.target.closest('[data-tcol]'))return;e.preventDefault();clearDrop();moveTaskColumnToEnd(draggingId);draggingId=null;});
+  }
+  $$('#tarefasBoard [data-tcoldel]').forEach(b=>{
+    b.addEventListener('mousedown',e=>e.stopPropagation());
+    b.addEventListener('click',e=>{e.stopPropagation();deleteTaskColumn(b.dataset.tcoldel);});
+  });
 }
 function renderTarefas(){
   renderBadges();
@@ -4754,10 +4813,6 @@ function renderConfig(){
   $('#cfgAreas').innerHTML=`<div class="cfg-head"><h3>🗂️ Áreas</h3><span class="cfg-cnt">${cfg.areas.length}</span></div>`+
     cfg.areas.map((x,i)=>`<div class="cfg-item"><span class="nm">${esc(x)}</span><button class="rm" data-rmarea="${i}" title="Remover">${RM_SVG}</button></div>`).join('')+
     `<div class="cfg-add"><input type="text" id="newArea" placeholder="Nova área" /><button class="btn btn-dark btn-sm" id="addArea">Adicionar</button></div>`;
-  // Pastas
-  $('#cfgPastas').innerHTML=`<div class="cfg-head"><h3>📁 Pastas / Subcategorias</h3><span class="cfg-cnt">${cfg.pastas.length}</span></div>`+
-    cfg.pastas.map((x,i)=>`<div class="cfg-item"><span class="nm">${esc(x)}</span><button class="rm" data-rmpasta="${i}" title="Remover">${RM_SVG}</button></div>`).join('')+
-    `<div class="cfg-add"><input type="text" id="newPasta" placeholder="Nova pasta" /><button class="btn btn-dark btn-sm" id="addPasta">Adicionar</button></div>`;
   // Responsáveis (pessoas)
   $('#cfgPessoas').innerHTML=`<div class="cfg-head"><h3>👤 Responsáveis</h3><span class="cfg-cnt">${pessoas().length}</span></div>`+
     `<p class="hint" style="margin:-6px 0 12px">Estes nomes aparecem nas caixas de seleção de responsável (agentes, campanhas, tarefas e fluxos). Edite o nome direto no campo.</p>`+
@@ -4806,10 +4861,6 @@ function renderConfig(){
   $('#addArea').addEventListener('click',()=>{const v=$('#newArea').value.trim();if(!v)return;if(!cfg.areas.includes(v))cfg.areas.push(v);save();renderConfig();toast('Área adicionada!','ok');});
   $('#newArea').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addArea').click();});
   $$('#cfgAreas [data-rmarea]').forEach(b=>b.addEventListener('click',()=>{cfg.areas.splice(+b.dataset.rmarea,1);save();renderConfig();toast('Área removida.','warn');}));
-  // binds — pastas
-  $('#addPasta').addEventListener('click',()=>{const v=$('#newPasta').value.trim();if(!v)return;if(!cfg.pastas.includes(v))cfg.pastas.push(v);save();renderConfig();toast('Pasta adicionada!','ok');});
-  $('#newPasta').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addPasta').click();});
-  $$('#cfgPastas [data-rmpasta]').forEach(b=>b.addEventListener('click',()=>{cfg.pastas.splice(+b.dataset.rmpasta,1);save();renderConfig();toast('Pasta removida.','warn');}));
 }
 
 /* ============ DRAWER (detalhe / prompts / arquivos) ============ */
@@ -4825,12 +4876,12 @@ function openAgentDetail(aid,tab='sobre'){
 function closeDrawer(){$('#drawerOverlay').classList.remove('open');$('#agentDrawer').classList.remove('open');currentAgentId=null;}
 function renderDrawer(){
   const a=agentById(currentAgentId);if(!a){closeDrawer();return}
-  const camp=a.campanhaId?campById(a.campanhaId):null;
+  const camp=agentPrimaryCamp(a), camps=agentCampanhas(a);
   const accent=camp?camp.cor:(a.cat==='externo'?'#E52521':'#173A86');
   $('#drawerHead').style.setProperty('--accent',accent);
   $('#drawerHead').classList.add('solid');
   $('#drawerHead').innerHTML=`<button class="x" id="drawerClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-    <div class="d-top"><div class="d-avatar-wrap"><div class="avatar">${esc(a.icone||'🤖')}</div>${camp&&camp.logo?`<div class="d-camp-badge" title="Campanha: ${esc(camp.nome)}"><img src="${camp.logo}" alt="Logo ${esc(camp.nome)}" /></div>`:''}</div><div><h3>${esc(a.nome)}${a.ia?' <span class="ia-badge ia-badge-light" title="Agente de geração com IA (Gemini)">'+IA_SPARK+'Gemini</span>':''}</h3><div class="sub">${esc(a.area||'')}${a.pasta?' · '+esc(a.pasta):''}${camp?' · 📣 '+esc(camp.nome):''}</div></div></div>
+    <div class="d-top"><div class="d-avatar-wrap"><div class="avatar">${esc(a.icone||'🤖')}</div>${camp&&camp.logo?`<div class="d-camp-badge" title="Campanha: ${esc(camp.nome)}"><img src="${camp.logo}" alt="Logo ${esc(camp.nome)}" /></div>`:''}</div><div><h3>${esc(a.nome)}${a.ia?' <span class="ia-badge ia-badge-light" title="Agente de geração com IA (Gemini)">'+IA_SPARK+'Gemini</span>':''}</h3><div class="sub">${esc(a.area||'')}${camps.length?' · 📣 '+esc(agentCampaignText(a)):''}</div></div></div>
     <div class="d-actions">
       ${a.link?`<button class="btn btn-primary" id="drawerOpenLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Abrir agente</button>`:''}
       <button class="btn btn-glass" id="drawerEdit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Editar</button>
@@ -4843,14 +4894,13 @@ function renderDrawer(){
   renderDtabSobre(a);renderDtabPrompts(a);renderDtabArquivos(a);
 }
 function renderDtabSobre(a){
-  const camp=a.campanhaId?campById(a.campanhaId):null;
+  const camps=agentCampanhas(a);
   const iaBlock=a.ia?`<div class="ia-drawer"><div class="ia-drawer-head">${IA_SPARK}<b>Gerar texto com IA (Gemini)</b></div><p class="hint" style="margin:0 0 9px">Peça à IA para gerar o conteúdo deste agente — direto aqui, sem sair da plataforma.</p><div id="iaDrawer"></div></div>`:'';
   $('#dtab-sobre').innerHTML=iaBlock+`
     <div class="info-desc">${esc(a.desc||'Sem descrição.')}</div>`+`
     <div class="info-row"><span class="k">Tipo</span><span class="v">${a.cat==='interno'?'Demanda interna':'Demanda externa'}</span></div>
     <div class="info-row"><span class="k">Área</span><span class="v">${esc(a.area||'—')}</span></div>
-    <div class="info-row"><span class="k">Pasta</span><span class="v">${esc(a.pasta||'Geral')}</span></div>
-    ${camp?`<div class="info-row"><span class="k">Campanha</span><span class="v">${esc(camp.nome)}</span></div>`:''}
+    <div class="info-row"><span class="k">Campanhas</span><span class="v">${camps.length?camps.map(c=>`<span class="kcamp-chip" style="background:${c.cor}">${esc(c.nome)}</span>`).join(' '):'Nenhuma campanha'}</span></div>
     <div class="info-row"><span class="k">Responsável</span><span class="v">${esc(a.responsavel||'—')}</span></div>
     <div class="info-row"><span class="k">Status</span><span class="v"><span class="status ${a.status}"><span class="dot"></span>${statusLabel(a.status)}</span></span></div>
     <div class="info-row"><span class="k">Criado em</span><span class="v">${fmtDate(a.createdAt)}</span></div>
@@ -5033,7 +5083,25 @@ function buildEmojiPick(){
   $('#emojiPick').innerHTML=EMOJIS.map(e=>`<button class="e ${e===selEmoji?'sel':''}" data-emoji="${e}">${e}</button>`).join('');
   $$('#emojiPick .e').forEach(b=>b.addEventListener('click',()=>{selEmoji=b.dataset.emoji;$$('#emojiPick .e').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');}));
 }
-function refreshPastasList(){const set=new Set([...(state.config.pastas||[]),...state.agents.map(a=>a.pasta).filter(Boolean)]);$('#pastasList').innerHTML=[...set].sort().map(p=>`<option value="${esc(p)}">`).join('');}
+function renderAgentCampaignChecks(selected){
+  const box=$('#f-campanhas');if(!box)return;
+  selected=new Set(selected||[]);
+  if(!(state.campanhas||[]).length){
+    box.innerHTML='<div class="camp-check-empty">Nenhuma campanha cadastrada. O agente ficará sem campanha.</div>';
+    updateAgentCampaignHint();
+    return;
+  }
+  box.innerHTML=state.campanhas.map(c=>`<label class="camp-check"><input type="checkbox" data-agentcamp="${c.id}" ${selected.has(c.id)?'checked':''} /><span class="dot" style="background:${c.cor}"></span><span>${esc(c.nome)}</span></label>`).join('');
+  $$('#f-campanhas [data-agentcamp]').forEach(i=>i.addEventListener('change',updateAgentCampaignHint));
+  updateAgentCampaignHint();
+}
+function selectedAgentCampaignIds(){return $$('#f-campanhas [data-agentcamp]:checked').map(i=>i.dataset.agentcamp);}
+function updateAgentCampaignHint(){
+  const cl=$('#f-campLabel');if(!cl)return;
+  const names=selectedAgentCampaignIds().map(campNome).filter(Boolean);
+  if(names.length){cl.style.display='';cl.innerHTML='📣 Campanhas marcadas: <b>'+esc(names.join(', '))+'</b>';}
+  else cl.style.display='none';
+}
 function promptDataFromText(titulo,texto,existing){
   const tokens=parseTokens(texto);
   const old=new Map(((existing&&existing.campos)||[]).map(c=>[c.nome,c]));
@@ -5065,7 +5133,6 @@ function addAgentModalPrompt(){
   toast('Prompt adicionado ao agente.','ok');
 }
 window.openAgentModal=function(a,campanhaId){
-  refreshPastasList();
   // popula selects a partir das configurações
   const tps=tipos();
   $('#f-cat').innerHTML=tps.map(t=>`<option value="${t.id}">${esc(t.nome)}</option>`).join('');
@@ -5073,21 +5140,18 @@ window.openAgentModal=function(a,campanhaId){
   $('#f-area').innerHTML=areas.map(x=>`<option>${esc(x)}</option>`).join('');
   $('#agentModalTitle').textContent=a?'Editar agente':'Novo Agente';
   $('#f-id').value=a?a.id:'';
-  $('#f-campanha').value=a?(a.campanhaId||''):(campanhaId||'');
   $('#f-nome').value=a?a.nome:'';
   $('#f-desc').value=a?a.desc:'';
   $('#f-link').value=a?a.link:'';
   $('#f-cat').value=a?a.cat:(tps[0]?tps[0].id:'interno');
   $('#f-area').value=a?a.area:(areas[0]||'');
-  $('#f-pasta').value=a?(a.pasta||''):'';
+  renderAgentCampaignChecks(a?agentCampIds(a):(campanhaId?[campanhaId]:[]));
   $('#f-resp').innerHTML=pessoaOptions(a?(a.responsavel||''):'');
   $('#f-status').value=a?a.status:'ativo';
   $('#f-tags').value=a?(a.tags||[]).join(', '):'';
   $('#f-obs').value=a?(a.obs||''):'';
   agentModalPrompts=(a&&a.prompts?JSON.parse(JSON.stringify(a.prompts)):[]).map(p=>promptDataFromText(p.titulo||'Prompt',p.texto||'',p));
   $('#f-prompt-title').value='';$('#f-prompt-text').value='';renderAgentModalPrompts();
-  const cid=a?a.campanhaId:campanhaId;const camp=cid?campById(cid):null;
-  const cl=$('#f-campLabel');if(camp){cl.style.display='';cl.innerHTML='📣 Vinculado à campanha: <b>'+esc(camp.nome)+'</b>';}else cl.style.display='none';
   const cr=$('#f-created');if(a&&a.createdAt){cr.style.display='';cr.innerHTML='🗓️ Criado em '+fmtDate(a.createdAt);}else cr.style.display='none';
   selEmoji=a?(a.icone||EMOJIS[0]):EMOJIS[0];buildEmojiPick();
   resetIaPanel('iaAgent');
@@ -5100,9 +5164,10 @@ $('#saveAgent').addEventListener('click',()=>{
   if(!nome){toast('Dê um nome ao agente.','warn');$('#f-nome').focus();return}
   if(!link&&!ia){toast('Cole o link do chatbot.','warn');$('#f-link').focus();return}
   const tags=$('#f-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
-  const campanhaId=$('#f-campanha').value||null;
+  const campanhaIds=selectedAgentCampaignIds();
+  const campanhaId=campanhaIds[0]||null;
   const prompts=agentModalPrompts.map(p=>promptDataFromText(p.titulo,p.texto,p));
-  const data={nome,link,ia,desc:$('#f-desc').value.trim(),cat:$('#f-cat').value,area:$('#f-area').value,pasta:$('#f-pasta').value.trim(),responsavel:$('#f-resp').value.trim(),obs:$('#f-obs').value.trim(),status:$('#f-status').value,tags,icone:selEmoji,campanhaId,prompts};
+  const data={nome,link,ia,desc:$('#f-desc').value.trim(),cat:$('#f-cat').value,area:$('#f-area').value,responsavel:$('#f-resp').value.trim(),obs:$('#f-obs').value.trim(),status:$('#f-status').value,tags,icone:selEmoji,campanhaIds,campanhaId,prompts};
   const eid=$('#f-id').value;
   if(eid){const a=agentById(eid);Object.assign(a,data);toast('Agente atualizado!','ok');if(currentAgentId===eid)renderDrawer();}
   else{state.agents.unshift({id:id(),createdAt:new Date().toISOString(),arquivos:[],...data});toast('Agente cadastrado!','ok');}
@@ -5288,9 +5353,15 @@ document.body.addEventListener('click',e=>{
   if(open){const a=agentById(open.dataset.open);window.open(safeUrl(a.link),'_blank','noopener');toast('Abrindo '+a.nome+'…','info');return;}
   if(promptBtn){openAgentDetail(promptBtn.dataset.agentPrompt,'prompts');return;}
   if(cedit){openCampModal(campById(cedit.dataset.cedit));return;}
-  if(cdel){const c=campById(cdel.dataset.cdel);const n=state.agents.filter(a=>a.campanhaId===c.id).length;
-    const aviso=n?('Os <b>'+n+' agente(s)</b> vinculados a esta campanha também serão excluídos.'):null;
-    openConfirmDelete(c.nome,()=>{state.agents=state.agents.filter(a=>a.campanhaId!==c.id);state.campanhas=state.campanhas.filter(x=>x.id!==c.id);save();renderCampanhas();renderStats();renderRecent();renderAgents();if(view==='campanha'&&currentCampId===c.id)go('campanhas');toast('Campanha excluída.','warn');},'Excluir campanha',aviso);return;}
+  if(cdel){const c=campById(cdel.dataset.cdel);const n=state.agents.filter(a=>agentInCamp(a,c.id)).length;
+    const aviso=n?('A campanha será removida da lista de <b>'+n+' agente(s)</b>, mas os agentes serão mantidos.'):null;
+    openConfirmDelete(c.nome,()=>{
+      state.agents.forEach(a=>{
+        a.campanhaIds=agentCampIds(a).filter(cid=>cid!==c.id);
+        a.campanhaId=a.campanhaIds[0]||null;
+      });
+      state.campanhas=state.campanhas.filter(x=>x.id!==c.id);save();renderCampanhas();renderStats();renderRecent();renderAgents();if(view==='campanha'&&currentCampId===c.id)go('campanhas');toast('Campanha excluída.','warn');
+    },'Excluir campanha',aviso);return;}
   if(copen){currentCampId=copen.dataset.copen;go('campanha');return;}
   if(camp){currentCampId=camp.dataset.camp;go('campanha');return;}
   if(detail){openAgentDetail(detail.dataset.detail);return;}
