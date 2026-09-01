@@ -181,13 +181,13 @@ html:not(.platform-locked) .platform-login{display:none}
 /* esconde controles de edição no modo somente leitura (a segurança real é a RLS no servidor) */
 body.readonly #addBtn,body.readonly #importBtn,body.readonly #heroAdd,
 body.readonly #addCampBtn,body.readonly #addCampAgentBtn,body.readonly #addPostBtn,
-body.readonly #gcalAddBtn,body.readonly #addTarefaBtn,body.readonly #addFluxoBtn,
+body.readonly #gcalAddBtn,body.readonly #addAprovPostBtn,body.readonly #addTarefaBtn,body.readonly #addFluxoBtn,
 body.readonly #campEditBtn,body.readonly #np-add,
 body.readonly .card-menu,body.readonly .status-switch,
 body.readonly [data-edit],body.readonly [data-del],body.readonly [data-cedit],body.readonly [data-cdel],
 body.readonly [data-postedit],body.readonly [data-postdel],body.readonly [data-taredit],body.readonly [data-tardel],
 body.readonly [data-fluxedit],body.readonly [data-fluxdel],body.readonly [data-pedit],body.readonly [data-pdel],
-body.readonly [data-steprm],body.readonly [data-sadel],body.readonly [data-rmcolor],
+body.readonly [data-steprm],body.readonly [data-sadel],body.readonly [data-rmcolor],body.readonly [data-apradd],
 body.readonly #drawerEdit,body.readonly .add-box,body.readonly .fluxo-add,
 body.readonly .cfg-add,body.readonly .cfg-item .rm,body.readonly .cfg-item .cfg-edit,
 body.readonly #cfgReset,body.readonly .tstat,body.readonly .kc-actions,
@@ -558,6 +558,11 @@ select.chip{padding-right:30px;cursor:pointer}
 [data-theme="dark"] .cal-collapse:hover{color:#9cc0ff}
 .cal-collapse svg{width:18px;height:18px;transition:transform .25s}
 .cal-collapse.collapsed svg{transform:rotate(-90deg)}
+.date-filter{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.date-filter .date-input{width:150px;border-radius:12px;cursor:text}
+.date-filter .date-sep{font-size:12px;font-weight:800;color:var(--texto-suave)}
+.list-toggle-row{display:flex;justify-content:center;margin:12px 0 4px}
+.aprov-col-add{width:100%;justify-content:center}
 .cal-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .cal-nav h3{font-size:17px;font-weight:800;text-transform:capitalize;min-width:170px;text-align:center}
 .cal-nav .nav-arrow{width:34px;height:34px;border-radius:10px;border:1px solid var(--cinza-borda);background:var(--cinza-card);cursor:pointer;display:grid;place-items:center;color:var(--texto);font-size:18px;font-weight:800;transition:.15s}
@@ -1232,6 +1237,18 @@ body.review-on{overflow:hidden}
           <div id="calControls" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
             <select id="calStatusFilter" class="chip"></select>
             <select id="calCanalFilter" class="chip"></select>
+            <div class="date-filter">
+              <select id="calDateFilter" class="chip">
+                <option value="todos">Todo o período</option>
+                <option value="7">Última semana</option>
+                <option value="15">Últimos 15 dias</option>
+                <option value="30">Último mês</option>
+                <option value="custom">Personalizado</option>
+              </select>
+              <input type="date" id="calDateStart" class="chip date-input" style="display:none" />
+              <span class="date-sep" id="calDateSep" style="display:none">até</span>
+              <input type="date" id="calDateEnd" class="chip date-input" style="display:none" />
+            </div>
             <div class="seg" id="calViewToggle" style="margin:0">
               <button data-cv="agenda" class="on">📋 Agenda</button>
               <button data-cv="mes">🗓️ Mês</button>
@@ -1265,6 +1282,18 @@ body.review-on{overflow:hidden}
         <div class="toolbar">
           <select id="gcalCampFilter" class="chip"></select>
           <select id="gcalAprovFilter" class="chip"></select>
+          <div class="date-filter">
+            <select id="gcalDateFilter" class="chip">
+              <option value="todos">Todo o período</option>
+              <option value="7">Última semana</option>
+              <option value="15">Últimos 15 dias</option>
+              <option value="30">Último mês</option>
+              <option value="custom">Personalizado</option>
+            </select>
+            <input type="date" id="gcalDateStart" class="chip date-input" style="display:none" />
+            <span class="date-sep" id="gcalDateSep" style="display:none">até</span>
+            <input type="date" id="gcalDateEnd" class="chip date-input" style="display:none" />
+          </div>
           <div class="seg" id="gcalViewToggle" style="margin:0">
             <button data-cv="agenda" class="on">📋 Agenda</button>
             <button data-cv="mes">🗓️ Mês</button>
@@ -1293,6 +1322,18 @@ body.review-on{overflow:hidden}
           <select id="tarCampFilter" class="chip"></select>
           <select id="tarPrioFilter" class="chip"><option value="todas">Todas prioridades</option><option value="alta">Alta</option><option value="media">Média</option><option value="baixa">Baixa</option></select>
           <select id="tarSortFilter" class="chip" title="Ordenar tarefas"><option value="recentes">↕ Mais recentes</option><option value="prazo">↕ Prazo (mais próximo)</option><option value="prioridade">↕ Prioridade (alta→baixa)</option><option value="campanha">↕ Campanha (A→Z)</option></select>
+          <div class="date-filter">
+            <select id="tarDateFilter" class="chip">
+              <option value="todos">Todo o período</option>
+              <option value="7">Última semana</option>
+              <option value="15">Últimos 15 dias</option>
+              <option value="30">Último mês</option>
+              <option value="custom">Personalizado</option>
+            </select>
+            <input type="date" id="tarDateStart" class="chip date-input" style="display:none" />
+            <span class="date-sep" id="tarDateSep" style="display:none">até</span>
+            <input type="date" id="tarDateEnd" class="chip date-input" style="display:none" />
+          </div>
           <div class="spacer"></div>
           <span class="count-pill" id="tarCount"></span>
           <button class="btn btn-ghost" id="addTaskColBtn" title="Adicionar coluna ao fluxo de tarefas">
@@ -1338,9 +1379,23 @@ body.review-on{overflow:hidden}
             <button data-av="lista">☰ Lista</button>
           </div>
           <select id="aprCampFilter" class="chip"></select>
+          <select id="aprStatusFilter" class="chip"></select>
           <select id="aprSortFilter" class="chip" title="Ordenar artes"><option value="data">↕ Data (mais próxima)</option><option value="campanha">↕ Campanha (A→Z)</option><option value="titulo">↕ Título (A→Z)</option><option value="status">↕ Status de aprovação</option></select>
+          <div class="date-filter">
+            <select id="aprDateFilter" class="chip">
+              <option value="todos">Todo o período</option>
+              <option value="7">Última semana</option>
+              <option value="15">Últimos 15 dias</option>
+              <option value="30">Último mês</option>
+              <option value="custom">Personalizado</option>
+            </select>
+            <input type="date" id="aprDateStart" class="chip date-input" style="display:none" />
+            <span class="date-sep" id="aprDateSep" style="display:none">até</span>
+            <input type="date" id="aprDateEnd" class="chip date-input" style="display:none" />
+          </div>
           <div class="spacer"></div>
           <span class="count-pill" id="aprCount"></span>
+          <button class="btn btn-primary" id="addAprovPostBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Nova arte</button>
           <button class="btn btn-dark" id="shareAprovBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>Gerar link de aprovação</button>
         </div>
         <div id="aprovBoard"></div>
@@ -2577,7 +2632,8 @@ function renderNotifs(){
 
 /* ============ SINCRONIZAÇÃO EM TEMPO QUASE-REAL (polling) ============ */
 let aprovSnap={}, pollTimer=null;
-function buildAprovSnap(){aprovSnap={};allPostsFlat().forEach(x=>{aprovSnap[x.p.id]=x.p.aprov;});}
+function aprovSignature(p){return [p.aprov||'',p.revisadoEm||'',p.revisadoPor||'',p.aprovComentario||''].join('|');}
+function buildAprovSnap(){aprovSnap={};allPostsFlat().forEach(x=>{aprovSnap[x.p.id]=aprovSignature(x.p);});}
 async function pollCloud(){
   if(!DataBackend.connected())return;
   try{
@@ -2589,12 +2645,17 @@ async function pollCloud(){
     let mudou=false;
     flat.forEach(x=>{
       const prev=aprovSnap[x.p.id];
-      if(prev!==undefined && prev!==x.p.aprov && (x.p.aprov==='aprovado'||x.p.aprov==='alteracao')){
-        addNotif({tipo:x.p.aprov,titulo:x.p.titulo,msg:x.p.aprov==='aprovado'?'Arte aprovada':('Alteração solicitada'+(x.p.aprovComentario?': '+x.p.aprovComentario:''))});
+      const sig=aprovSignature(x.p);
+      if(prev!==undefined && prev!==sig && x.p.revisadoEm && (x.p.aprov==='aprovado'||x.p.aprov==='alteracao')){
+        const quem=x.p.revisadoPor?` por ${x.p.revisadoPor}`:'';
+        addNotif({tipo:x.p.aprov,titulo:x.p.titulo,msg:x.p.aprov==='aprovado'?('Arte aprovada'+quem):('Alteração solicitada'+quem+(x.p.aprovComentario?': '+x.p.aprovComentario:''))});
         toast((x.p.aprov==='aprovado'?'✅ Aprovada: ':'✏️ Alteração: ')+x.p.titulo, x.p.aprov==='aprovado'?'ok':'warn');
       }
-      aprovSnap[x.p.id]=x.p.aprov;
-      const f=findPost(x.p.id); if(f&&f.p.aprov!==x.p.aprov){f.p.aprov=x.p.aprov;mudou=true;}
+      aprovSnap[x.p.id]=sig;
+      const f=findPost(x.p.id);
+      if(f){
+        ['aprov','aprovComentario','revisadoPor','revisadoEm'].forEach(k=>{if(f.p[k]!==x.p[k]){f.p[k]=x.p[k];mudou=true;}});
+      }
     });
     if(mudou){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}renderBadges();if(view==='aprovacao')renderAprov();if(view==='calendario')renderGeralCalendar();if(view==='campanha')renderCampCalendar();if(document.body.classList.contains('review-on'))renderReview();}
   }catch(err){console.error(err);setSync('erro');}
@@ -2658,11 +2719,11 @@ let currentAgentId=null;    // agente aberto no drawer
 let fileAddMode='link';     // agentes aceitam apenas links, para economizar banco
 let calView='agenda';       // 'agenda' | 'mes'
 let currentCalMonth=new Date();
-let calFilterStatus='todos', calFilterCanal='todos', calCollapsed=false;
+let calFilterStatus='todos', calFilterCanal='todos', calDateMode='todos', calDateStart='', calDateEnd='', calCollapsed=false, calShowAll=false, calRenderedCampId=null;
 // novas views
-let gcalView='agenda', gcalMonth=new Date(), gcalCamp='todas', gcalAprov='todos';
-let tarView='kanban', tarCamp='todas', tarPrio='todas', tarSort='recentes';
-let aprView='kanban', aprCamp='todas', aprSort='data';
+let gcalView='agenda', gcalMonth=new Date(), gcalCamp='todas', gcalAprov='todos', gcalDateMode='todos', gcalDateStart='', gcalDateEnd='';
+let tarView='kanban', tarCamp='todas', tarPrio='todas', tarSort='recentes', tarDateMode='todos', tarDateStart='', tarDateEnd='';
+let aprView='kanban', aprCamp='todas', aprStatus='todos', aprSort='data', aprDateMode='todos', aprDateStart='', aprDateEnd='';
 let fluxCamp='todas', fluxSort='recentes';
 
 function normPost(p){return {canal:'',status:'planejado',aprov:'enviar',aprovComentario:'',revisadoPor:'',revisadoEm:'',link:'',obs:'',...p}}
@@ -2739,6 +2800,37 @@ function fmtDate(iso){try{return new Date(iso).toLocaleDateString('pt-BR',{day:'
 function fmtSize(b){if(!b)return '';if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(0)+' KB';return (b/1048576).toFixed(1)+' MB';}
 function statusLabel(s){return {ativo:'Ativo',treino:'Em treino',inativo:'Inativo'}[s]||s}
 function toISODate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function isoKey(v){if(!v)return '';if(/^\d{4}-\d{2}-\d{2}/.test(v))return v.slice(0,10);const d=new Date(v);return isNaN(d)?'':toISODate(d);}
+function daysAgo(n){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-n);return toISODate(d);}
+function inDateRange(iso,mode,start,end){
+  if(mode==='todos')return true;
+  const key=isoKey(iso);if(!key)return false;
+  let a=start||'',b=end||'';
+  if(mode==='7'){a=daysAgo(6);b=toISODate(new Date());}
+  else if(mode==='15'){a=daysAgo(14);b=toISODate(new Date());}
+  else if(mode==='30'){a=daysAgo(29);b=toISODate(new Date());}
+  if(a&&key<a)return false;
+  if(b&&key>b)return false;
+  return true;
+}
+function syncDateControls(prefix,mode,start,end){
+  const sel=$('#'+prefix+'DateFilter'), a=$('#'+prefix+'DateStart'), sep=$('#'+prefix+'DateSep'), b=$('#'+prefix+'DateEnd');
+  if(!sel)return;
+  sel.value=mode;
+  const custom=mode==='custom';
+  if(a){a.style.display=custom?'':'none';a.value=start||'';}
+  if(sep)sep.style.display=custom?'':'none';
+  if(b){b.style.display=custom?'':'none';b.value=end||'';}
+}
+function postMatchesQuery(p,campId,q){
+  if(!q)return true;
+  return [p.titulo,p.canal,p.obs,p.link,postStatusLabel(p.status),aprovLabel(p.aprov),campId?campNome(campId):'Sem campanha'].join(' ').toLowerCase().includes(q);
+}
+function tarefaDateKey(t){return t.prazo||isoKey(t.completedAt)||isoKey(t.createdAt);}
+function tarefaMatchesQuery(t,q){
+  if(!q)return true;
+  return [t.titulo,t.desc,t.responsavel,t.prioridade,tarStatusNome(t.status),t.campanhaId?campNome(t.campanhaId):'Sem campanha'].join(' ').toLowerCase().includes(q);
+}
 function monShort(iso){try{return new Date(iso+'T00:00:00').toLocaleDateString('pt-BR',{month:'short'}).replace('.','');}catch(e){return ''}}
 function postStatusColor(s){return {planejado:'#2E5BBE',produzido:'#F59E0B',publicado:'#16A34A'}[s]||'#94A3B8'}
 function postStatusLabel(s){return {planejado:'Planejado',produzido:'Produzido',publicado:'Publicado'}[s]||s}
@@ -3082,7 +3174,13 @@ function renderCampBrand(){
   $('#brandColorAdd').addEventListener('click',()=>pushColor(hex.value.trim()||pick.value));
   $('#brandColorCamp').addEventListener('click',()=>pushColor(c.cor||'#173A86'));
   hex.addEventListener('keydown',e=>{if(e.key==='Enter')pushColor(hex.value.trim()||pick.value);});
-  $$('#campBrand [data-rmcolor]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();c.paleta.splice(+b.dataset.rmcolor,1);save();renderCampBrand();renderCampanhas();toast('Cor removida.','warn');}));
+  $$('#campBrand [data-rmcolor]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    const idx=+b.dataset.rmcolor, cor=c.paleta[idx];
+    openConfirmDelete(cor,()=>{
+      c.paleta.splice(idx,1);save();renderCampBrand();renderCampanhas();toast('Cor removida.','warn');
+    },'Excluir cor da paleta','Confirme antes de remover esta cor da identidade visual da campanha.');
+  }));
   $$('#campBrand [data-copyhex]').forEach(s=>s.addEventListener('click',()=>copyText(s.dataset.copyhex)));
 }
 // upload da logo (lê como dataURL)
@@ -3118,7 +3216,16 @@ $('#appFaviconInput').addEventListener('change',e=>{
 
 /* ============ CALENDÁRIO EDITORIAL ============ */
 function filteredPosts(c){
-  return (c.posts||[]).filter(p=>(calFilterStatus==='todos'||p.status===calFilterStatus)&&(calFilterCanal==='todos'||(p.canal||'')===calFilterCanal));
+  const q=filters.search.toLowerCase().trim();
+  return (c.posts||[]).filter(p=>
+    (calFilterStatus==='todos'||p.status===calFilterStatus)&&
+    (calFilterCanal==='todos'||(p.canal||'')===calFilterCanal)&&
+    inDateRange(p.data,calDateMode,calDateStart,calDateEnd)&&
+    postMatchesQuery(p,c.id,q)
+  );
+}
+function campPostFiltersActive(){
+  return calFilterStatus!=='todos'||calFilterCanal!=='todos'||calDateMode!=='todos'||!!filters.search.trim();
 }
 function applyCalCollapse(){
   $('#calControls').style.display=calCollapsed?'none':'';
@@ -3128,6 +3235,7 @@ function applyCalCollapse(){
 }
 function renderCampCalendar(){
   const c=campById(currentCampId);if(!c)return;
+  if(calRenderedCampId!==c.id){calRenderedCampId=c.id;calShowAll=false;}
   // filtros
   const canais=[...new Set((c.posts||[]).map(p=>p.canal).filter(Boolean))].sort();
   $('#calStatusFilter').innerHTML=`<option value="todos">Todos os status</option><option value="planejado">Planejado</option><option value="produzido">Produzido</option><option value="publicado">Publicado</option>`;
@@ -3135,9 +3243,10 @@ function renderCampCalendar(){
   if(calFilterCanal!=='todos'&&!canais.includes(calFilterCanal))calFilterCanal='todos';
   $('#calCanalFilter').innerHTML=`<option value="todos">Todos os canais</option>`+canais.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
   $('#calCanalFilter').value=calFilterCanal;
+  syncDateControls('cal',calDateMode,calDateStart,calDateEnd);
   // contador
   const total=(c.posts||[]).length, shown=filteredPosts(c).length;
-  $('#calCount').textContent=(calFilterStatus==='todos'&&calFilterCanal==='todos')?`${total} post${total!==1?'s':''}`:`${shown} de ${total}`;
+  $('#calCount').textContent=campPostFiltersActive()?`${shown} de ${total}`:`${total} post${total!==1?'s':''}`;
   applyCalCollapse();
   if(calCollapsed)return;
   if(calView==='mes')renderMonthView(c);else renderAgendaView(c);
@@ -3162,10 +3271,11 @@ function postRowHTML(p,campId){
 function renderAgendaView(c){
   const posts=[...filteredPosts(c)].sort((a,b)=>(a.data||'').localeCompare(b.data||''));
   if(!posts.length){
-    const filtro=calFilterStatus!=='todos'||calFilterCanal!=='todos';
-    $('#campCalendar').innerHTML=`<div class="empty"><div class="big">🗓️</div><h3>${filtro?'Nenhum post com esse filtro':'Nenhum post no calendário'}</h3><p>${filtro?'Ajuste os filtros de status/canal acima.':'Adicione os posts da campanha com data de publicação e link.'}</p>${filtro?'':'<button class="btn btn-primary" onclick="openPostModal(currentCampId)">Novo post</button>'}</div>`;return;}
+    const filtro=campPostFiltersActive();
+    $('#campCalendar').innerHTML=`<div class="empty"><div class="big">🗓️</div><h3>${filtro?'Nenhum post com esse filtro':'Nenhum post no calendário'}</h3><p>${filtro?'Ajuste os filtros acima.':'Adicione os posts da campanha com data de publicação e link.'}</p>${filtro?'':'<button class="btn btn-primary" onclick="openPostModal(currentCampId)">Novo post</button>'}</div>`;return;}
   const today=toISODate(new Date());
-  const groups={};posts.forEach(p=>{(groups[p.data]=groups[p.data]||[]).push(p)});
+  const visible=calShowAll?posts:posts.slice(0,3);
+  const groups={};visible.forEach(p=>{(groups[p.data]=groups[p.data]||[]).push(p)});
   $('#campCalendar').innerHTML=Object.keys(groups).sort().map(date=>{
     const isToday=date===today, isPast=date<today;
     let rest='';try{rest=new Date(date+'T00:00:00').toLocaleDateString('pt-BR',{weekday:'short',month:'short',year:'numeric'});}catch(e){rest=date;}
@@ -3173,7 +3283,8 @@ function renderAgendaView(c){
       <div class="agenda-date ${isToday?'today':''} ${isPast&&!isToday?'past':''}"><span class="ad-day">${date.slice(8,10)}</span><span class="ad-rest">${rest}${isToday?' · Hoje':''}</span></div>
       <div class="agenda-posts">${groups[date].map(p=>postRowHTML(p)).join('')}</div>
     </div>`;
-  }).join('');
+  }).join('')+(posts.length>3?`<div class="list-toggle-row"><button class="btn btn-ghost btn-sm" id="campCalendarShowAll">${calShowAll?'Mostrar menos':'Visualizar Todos'}</button></div>`:'');
+  $('#campCalendarShowAll')?.addEventListener('click',()=>{calShowAll=!calShowAll;renderAgendaView(c);});
 }
 function renderMonthView(c){
   const base=currentCalMonth, y=base.getFullYear(), m=base.getMonth();
@@ -3207,6 +3318,9 @@ function gcalEntries(){
   if(gcalCamp==='sem')list=list.filter(x=>!x.campId);
   else if(gcalCamp!=='todas')list=list.filter(x=>x.campId===gcalCamp);
   if(gcalAprov!=='todos')list=list.filter(x=>x.p.aprov===gcalAprov);
+  list=list.filter(x=>inDateRange(x.p.data,gcalDateMode,gcalDateStart,gcalDateEnd));
+  const q=filters.search.toLowerCase().trim();
+  if(q)list=list.filter(x=>postMatchesQuery(x.p,x.campId,q));
   return list;
 }
 function campSelectHTML(extra){return `<option value="todas">Todas as campanhas</option><option value="sem">Sem campanha</option>`+state.campanhas.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');}
@@ -3215,6 +3329,7 @@ function renderGeralCalendar(){
   $('#gcalCampFilter').innerHTML=campSelectHTML();$('#gcalCampFilter').value=gcalCamp;
   $('#gcalAprovFilter').innerHTML=`<option value="todos">Toda aprovação</option>`+APROV_COLS.map(a=>`<option value="${a.id}">${esc(a.nome)}</option>`).join('');
   $('#gcalAprovFilter').value=gcalAprov;
+  syncDateControls('gcal',gcalDateMode,gcalDateStart,gcalDateEnd);
   $$('#gcalViewToggle button').forEach(b=>b.classList.toggle('on',b.dataset.cv===gcalView));
   const entries=gcalEntries();
   $('#gcalCount').textContent=`${entries.length} arte${entries.length!==1?'s':''}`;
@@ -3255,6 +3370,9 @@ function renderGeralMonth(entries){
 }
 $('#gcalCampFilter').addEventListener('change',e=>{gcalCamp=e.target.value;renderGeralCalendar();});
 $('#gcalAprovFilter').addEventListener('change',e=>{gcalAprov=e.target.value;renderGeralCalendar();});
+$('#gcalDateFilter').addEventListener('change',e=>{gcalDateMode=e.target.value;renderGeralCalendar();});
+$('#gcalDateStart').addEventListener('input',e=>{gcalDateStart=e.target.value;renderGeralCalendar();});
+$('#gcalDateEnd').addEventListener('input',e=>{gcalDateEnd=e.target.value;renderGeralCalendar();});
 $$('#gcalViewToggle button').forEach(b=>b.addEventListener('click',()=>{gcalView=b.dataset.cv;renderGeralCalendar();}));
 $('#gcalAddBtn').addEventListener('click',()=>openPostModal(gcalCamp!=='todas'&&gcalCamp!=='sem'?gcalCamp:''));
 
@@ -3267,7 +3385,13 @@ function tarefaSortCmp(a,b){
   return r!==0?r:(b.createdAt||'').localeCompare(a.createdAt||''); // desempate: mais recentes primeiro
 }
 function tarefasFiltered(){
-  return (state.tarefas||[]).filter(t=>(tarCamp==='todas'||(tarCamp==='sem'?!t.campanhaId:t.campanhaId===tarCamp))&&(tarPrio==='todas'||t.prioridade===tarPrio)).sort(tarefaSortCmp);
+  const q=filters.search.toLowerCase().trim();
+  return (state.tarefas||[]).filter(t=>
+    (tarCamp==='todas'||(tarCamp==='sem'?!t.campanhaId:t.campanhaId===tarCamp))&&
+    (tarPrio==='todas'||t.prioridade===tarPrio)&&
+    inDateRange(tarefaDateKey(t),tarDateMode,tarDateStart,tarDateEnd)&&
+    tarefaMatchesQuery(t,q)
+  ).sort(tarefaSortCmp);
 }
 function tarefaCardHTML(t){
   const camp=t.campanhaId?campById(t.campanhaId):null;
@@ -3331,6 +3455,7 @@ function renderTarefas(){
   $('#tarCampFilter').innerHTML=campSelectHTML();$('#tarCampFilter').value=tarCamp;
   $('#tarPrioFilter').value=tarPrio;
   $('#tarSortFilter').value=tarSort;
+  syncDateControls('tar',tarDateMode,tarDateStart,tarDateEnd);
   $$('#tarViewToggle button').forEach(b=>b.classList.toggle('on',b.dataset.tv===tarView));
   const list=tarefasFiltered();
   $('#tarCount').textContent=`${list.length} tarefa${list.length!==1?'s':''}`;
@@ -3380,6 +3505,9 @@ $$('#tarViewToggle button').forEach(b=>b.addEventListener('click',()=>{tarView=b
 $('#tarCampFilter').addEventListener('change',e=>{tarCamp=e.target.value;renderTarefas();});
 $('#tarPrioFilter').addEventListener('change',e=>{tarPrio=e.target.value;renderTarefas();});
 $('#tarSortFilter').addEventListener('change',e=>{tarSort=e.target.value;renderTarefas();});
+$('#tarDateFilter').addEventListener('change',e=>{tarDateMode=e.target.value;renderTarefas();});
+$('#tarDateStart').addEventListener('input',e=>{tarDateStart=e.target.value;renderTarefas();});
+$('#tarDateEnd').addEventListener('input',e=>{tarDateEnd=e.target.value;renderTarefas();});
 
 /* ============ CONTATOS ============ */
 let contatoSearch='', contatoPastaFilter='todas';
@@ -4161,6 +4289,10 @@ function aprovFiltered(){
   let list=allPostsFlat();
   if(aprCamp==='sem')list=list.filter(x=>!x.campId);
   else if(aprCamp!=='todas')list=list.filter(x=>x.campId===aprCamp);
+  if(aprStatus!=='todos')list=list.filter(x=>x.p.aprov===aprStatus);
+  list=list.filter(x=>inDateRange(x.p.data,aprDateMode,aprDateStart,aprDateEnd));
+  const q=filters.search.toLowerCase().trim();
+  if(q)list=list.filter(x=>postMatchesQuery(x.p,x.campId,q));
   return list.sort(aprovSortCmp);
 }
 function aprovCardHTML(x){
@@ -4173,11 +4305,19 @@ function aprovCardHTML(x){
     <div class="kc-foot">${p.link?`<a class="open-btn btn-sm" href="${safeUrl(p.link)}" target="_blank" rel="noopener">Abrir<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>`:''}<div class="kc-actions"><button class="icon-btn" data-postedit="${p.id}" title="Editar arte">${EDIT_SVG}</button></div></div>
   </div>`;
 }
-function moveAprov(pid,ns){const f=findPost(pid);if(f&&f.p.aprov!==ns){f.p.aprov=ns;aprovSnap[pid]=ns;save();syncPosts();toast('Aprovação: '+aprovLabel(ns),'info');}}
+function setPostApproval(p,ns){
+  p.aprov=ns;
+  if(ns==='pendente')p.status='produzido';
+  if(ns!=='alteracao')p.aprovComentario='';
+}
+function moveAprov(pid,ns){const f=findPost(pid);if(f&&f.p.aprov!==ns){setPostApproval(f.p,ns);aprovSnap[pid]=aprovSignature(f.p);save();syncPosts();toast(ns==='pendente'?'Aprovação: '+aprovLabel(ns)+' · publicação marcada como Produzido':'Aprovação: '+aprovLabel(ns),'info');}}
 function renderAprov(){
   renderBadges();
   $('#aprCampFilter').innerHTML=campSelectHTML();$('#aprCampFilter').value=aprCamp;
+  $('#aprStatusFilter').innerHTML=`<option value="todos">Todos os status</option>`+APROV_COLS.map(a=>`<option value="${a.id}">${esc(a.nome)}</option>`).join('');
+  $('#aprStatusFilter').value=aprStatus;
   $('#aprSortFilter').value=aprSort;
+  syncDateControls('apr',aprDateMode,aprDateStart,aprDateEnd);
   $$('#aprViewToggle button').forEach(b=>b.classList.toggle('on',b.dataset.av===aprView));
   const list=aprovFiltered();
   $('#aprCount').textContent=`${list.length} arte${list.length!==1?'s':''}`;
@@ -4185,11 +4325,13 @@ function renderAprov(){
   if(aprView==='kanban'){
     board.innerHTML=`<p class="kanban-hint">Arraste os cartões entre as colunas — o status muda também no calendário editorial.</p><div class="kanban">`+APROV_COLS.map(col=>{
       const items=list.filter(x=>x.p.aprov===col.id);
-      return `<div class="kcol" data-kcol="${col.id}"><div class="kcol-head"><span class="kdot" style="background:${col.cor}"></span>${col.nome}<span class="kcnt">${items.length}</span></div>${items.map(aprovCardHTML).join('')||'<p class="hint" style="margin:4px 4px 2px">— vazio —</p>'}</div>`;
+      const add=col.id==='enviar'?`<button class="btn btn-ghost btn-sm aprov-col-add" data-apradd="${col.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Adicionar nova arte</button>`:'';
+      return `<div class="kcol" data-kcol="${col.id}"><div class="kcol-head"><span class="kdot" style="background:${col.cor}"></span>${col.nome}<span class="kcnt">${items.length}</span></div>${add}${items.map(aprovCardHTML).join('')||'<p class="hint" style="margin:4px 4px 2px">— vazio —</p>'}</div>`;
     }).join('')+`</div>`;
     bindKanbanDnD(board,(pid,ns)=>moveAprov(pid,ns));
+    $$('#aprovBoard [data-apradd]').forEach(b=>b.addEventListener('click',()=>openPostModal(aprCamp!=='todas'&&aprCamp!=='sem'?aprCamp:'',null,null,{aprov:b.dataset.apradd})));
   }else{
-    if(!list.length){board.innerHTML=`<div class="empty"><div class="big">🖼️</div><h3>Nenhuma arte</h3><p>Crie artes no calendário editorial para acompanhá-las aqui.</p><button class="btn btn-primary" onclick="go('calendario')">Ir ao calendário</button></div>`;return;}
+    if(!list.length){board.innerHTML=`<div class="empty"><div class="big">🖼️</div><h3>Nenhuma arte</h3><p>Crie artes aqui ou no calendário editorial para acompanhá-las nos dois lugares.</p><button class="btn btn-primary" onclick="openPostModal('',null,null,{aprov:'enviar'})">Nova arte</button></div>`;return;}
     board.innerHTML=`<div class="tlist">`+list.map(x=>{
       const p=x.p,camp=x.campId?campById(x.campId):null;
       return `<div class="trow" style="--kc:${aprovColor(p.aprov)}"><div class="tr-main"><div class="tr-title">${esc(p.titulo)}</div><div class="tr-meta">${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:`<span class="kcamp-chip" style="background:#94A3B8">Sem campanha</span>`}${p.canal?`<span class="chan">📣 ${esc(p.canal)}</span>`:''}${p.data?`<span class="meta-i">🗓️ ${fmtShort(p.data)}</span>`:''}</div>${revisadoLine(p)}${p.aprov==='alteracao'&&p.aprovComentario?`<div class="kc-coment" style="margin-top:7px">✏️ ${esc(p.aprovComentario)}</div>`:''}</div><div class="tr-actions"><select class="tstat" data-aprid="${p.id}">${APROV_COLS.map(c=>`<option value="${c.id}"${p.aprov===c.id?' selected':''}>${c.nome}</option>`).join('')}</select><button class="icon-btn" data-postedit="${p.id}" title="Editar arte">${EDIT_SVG}</button></div></div>`;
@@ -4199,7 +4341,12 @@ function renderAprov(){
 }
 $$('#aprViewToggle button').forEach(b=>b.addEventListener('click',()=>{aprView=b.dataset.av;renderAprov();}));
 $('#aprCampFilter').addEventListener('change',e=>{aprCamp=e.target.value;renderAprov();});
+$('#aprStatusFilter').addEventListener('change',e=>{aprStatus=e.target.value;renderAprov();});
 $('#aprSortFilter').addEventListener('change',e=>{aprSort=e.target.value;renderAprov();});
+$('#aprDateFilter').addEventListener('change',e=>{aprDateMode=e.target.value;renderAprov();});
+$('#aprDateStart').addEventListener('input',e=>{aprDateStart=e.target.value;renderAprov();});
+$('#aprDateEnd').addEventListener('input',e=>{aprDateEnd=e.target.value;renderAprov();});
+$('#addAprovPostBtn').addEventListener('click',()=>openPostModal(aprCamp!=='todas'&&aprCamp!=='sem'?aprCamp:'',null,null,{aprov:'enviar'}));
 
 /* ---- Link de aprovação (compartilhável) ---- */
 const WARN_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;flex:0 0 18px;margin-top:1px"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
@@ -4259,7 +4406,7 @@ async function reviewSet(pid,status,comentario,revisor){
   if(status==='alteracao')f.p.aprovComentario=(comentario||'').trim();
   if(status==='aprovado')f.p.aprovComentario='';
   if(revisor){f.p.revisadoPor=revisor;f.p.revisadoEm=new Date().toISOString();try{localStorage.setItem(REVIEW_NAME_KEY,revisor);}catch(e){}}
-  aprovSnap[pid]=status;if(!REVIEW_MODE)save();
+  aprovSnap[pid]=aprovSignature(f.p);if(!REVIEW_MODE)save();
   renderReview();
   toast(status==='aprovado'?'Arte aprovada! ✅':'Alteração solicitada. ✏️',status==='aprovado'?'ok':'info');
 }
@@ -4856,7 +5003,13 @@ $$('#catFilters .chip').forEach(c=>c.addEventListener('click',()=>{filters.cat=c
 $('#areaFilter').addEventListener('change',e=>{filters.area=e.target.value;renderAgents();});
 $$('#campFilters .chip').forEach(c=>c.addEventListener('click',()=>{$$('#campFilters .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');filters.campSt=c.dataset.st;renderCampanhas();}));
 $('#globalSearch').addEventListener('input',e=>{filters.search=e.target.value;
-  if(view==='agentes')renderAgents();else if(view==='campanhas')renderCampanhas();else if(view==='dashboard')renderRecent();
+  if(view==='agentes')renderAgents();
+  else if(view==='campanhas')renderCampanhas();
+  else if(view==='campanha'){calShowAll=false;renderCampCalendar();}
+  else if(view==='calendario')renderGeralCalendar();
+  else if(view==='tarefas')renderTarefas();
+  else if(view==='aprovacao')renderAprov();
+  else if(view==='dashboard')renderRecent();
 });
 
 /* ============ MODAL AGENTE ============ */
@@ -5024,7 +5177,8 @@ $('#savePrompt').addEventListener('click',()=>{
 });
 
 /* ============ MODAL POST (calendário) ============ */
-window.openPostModal=function(campId,p,dataPrefill){
+window.openPostModal=function(campId,p,dataPrefill,opts){
+  opts=opts||{};
   $('#po-campsel').innerHTML=`<option value="">— Sem campanha (geral) —</option>`+state.campanhas.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
   $('#po-campsel').value=campId||'';
   $('#postModalTitle').textContent=p?'Editar arte / post':'Nova arte / post';
@@ -5032,8 +5186,9 @@ window.openPostModal=function(campId,p,dataPrefill){
   $('#po-titulo').value=p?p.titulo:'';
   $('#po-data').value=p?p.data:(dataPrefill||toISODate(new Date()));
   $('#po-canal').value=p?(p.canal||''):'';
-  $('#po-status').value=p?p.status:'planejado';
-  $('#po-aprov').value=p?(p.aprov||'enviar'):'enviar';
+  const defaultAprov=opts.aprov||'enviar';
+  $('#po-status').value=p?p.status:(defaultAprov==='pendente'?'produzido':'planejado');
+  $('#po-aprov').value=p?(p.aprov||'enviar'):defaultAprov;
   $('#po-link').value=p?(p.link||''):'';
   $('#po-obs').value=p?(p.obs||''):'';
   const com=p?(p.aprovComentario||''):'';
@@ -5048,6 +5203,8 @@ $('#savePost').addEventListener('click',()=>{
   if(!data){toast('Escolha a data de publicação.','warn');$('#po-data').focus();return;}
   const targetCamp=$('#po-campsel').value||'';
   const d={titulo,data,canal:$('#po-canal').value.trim(),status:$('#po-status').value,aprov:$('#po-aprov').value,aprovComentario:$('#po-coment').value.trim(),link:$('#po-link').value.trim(),obs:$('#po-obs').value.trim()};
+  if(d.aprov==='pendente')d.status='produzido';
+  if(d.aprov!=='alteracao')d.aprovComentario='';
   const eid=$('#po-id').value;
   if(eid){
     const f=findPost(eid);
@@ -5067,8 +5224,15 @@ $('#savePost').addEventListener('click',()=>{
 $('#addPostBtn').addEventListener('click',()=>openPostModal(currentCampId));
 $$('#calViewToggle button').forEach(b=>b.addEventListener('click',()=>{calView=b.dataset.cv;$$('#calViewToggle button').forEach(x=>x.classList.toggle('on',x===b));renderCampCalendar();}));
 $('#calCollapseBtn').addEventListener('click',()=>{calCollapsed=!calCollapsed;renderCampCalendar();});
-$('#calStatusFilter').addEventListener('change',e=>{calFilterStatus=e.target.value;renderCampCalendar();});
-$('#calCanalFilter').addEventListener('change',e=>{calFilterCanal=e.target.value;renderCampCalendar();});
+$('#calStatusFilter').addEventListener('change',e=>{calFilterStatus=e.target.value;calShowAll=false;renderCampCalendar();});
+$('#calCanalFilter').addEventListener('change',e=>{calFilterCanal=e.target.value;calShowAll=false;renderCampCalendar();});
+$('#calDateFilter').addEventListener('change',e=>{calDateMode=e.target.value;calShowAll=false;renderCampCalendar();});
+$('#calDateStart').addEventListener('input',e=>{calDateStart=e.target.value;calShowAll=false;renderCampCalendar();});
+$('#calDateEnd').addEventListener('input',e=>{calDateEnd=e.target.value;calShowAll=false;renderCampCalendar();});
+$('#po-aprov').addEventListener('change',e=>{
+  $('#po-coment-field').style.display=e.target.value==='alteracao'?'':'none';
+  if(e.target.value==='pendente')$('#po-status').value='produzido';
+});
 
 /* ============ CONFIRMAR EXCLUSÃO (digitar o nome) ============ */
 let confirmCb=null;
