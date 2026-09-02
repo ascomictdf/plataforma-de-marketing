@@ -188,6 +188,10 @@ body.readonly [data-edit],body.readonly [data-del],body.readonly [data-cedit],bo
 body.readonly [data-postedit],body.readonly [data-postdel],body.readonly [data-taredit],body.readonly [data-tardel],
 body.readonly [data-fluxedit],body.readonly [data-fluxdel],body.readonly [data-pedit],body.readonly [data-pdel],
 body.readonly [data-steprm],body.readonly [data-sadel],body.readonly [data-rmcolor],body.readonly [data-apradd],
+body.readonly [data-ctedit],body.readonly [data-ctdel],body.readonly [data-pastarm],body.readonly [data-ckdel],
+body.readonly [data-fdel],body.readonly [data-fpdel],body.readonly [data-connrm],body.readonly [data-acpinrm],
+body.readonly [data-rmuser],body.readonly [data-rmtipo],body.readonly [data-rmarea],
+body.readonly [data-tcoladd],body.readonly [data-tcolrename],body.readonly [data-tcoldel],
 body.readonly #drawerEdit,body.readonly .add-box,body.readonly .fluxo-add,
 body.readonly .cfg-add,body.readonly .cfg-item .rm,body.readonly .cfg-item .cfg-edit,
 body.readonly #cfgReset,body.readonly .tstat,body.readonly .kc-actions,
@@ -388,6 +392,7 @@ select.chip{padding-right:30px;cursor:pointer}
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(7,18,40,.55);backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:40px 20px;overflow-y:auto}
 .overlay.open{display:flex;animation:fadeIn .25s ease}
+#confirmModal{z-index:140}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .modal{background:var(--cinza-card);border-radius:22px;width:100%;max-width:560px;box-shadow:var(--sombra-forte);animation:modalIn .35s cubic-bezier(.34,1.56,.64,1);overflow:hidden}
 @keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
@@ -602,16 +607,28 @@ a.open-btn{text-decoration:none}
 .kcol{background:var(--surface-2);border:1px solid var(--cinza-borda);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:280px;transition:border-color .18s,box-shadow .18s,background .18s}
 .kcol.drop-ready{border-style:dashed}
 .kcol.over{border-color:var(--azul-300);box-shadow:0 0 0 3px var(--azul-50);background:color-mix(in srgb,var(--azul-50) 42%,var(--surface-2))}
-.kcol-head{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;color:var(--texto);padding:4px 4px 2px}
+.kcol.col-dragging{opacity:.55;transform:scale(.99)}
+.kcol.col-drop-before{box-shadow:-5px 0 0 var(--azul-300),var(--sombra);border-color:var(--azul-300)}
+.kcol.col-drop-after{box-shadow:5px 0 0 var(--azul-300),var(--sombra);border-color:var(--azul-300)}
+.kcol-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--texto);padding:4px 4px 6px;cursor:grab;user-select:none}
+.kcol-head:active{cursor:grabbing}
+.kcol-head .drag-handle{width:16px;height:22px;display:grid;place-items:center;color:var(--texto-suave);flex:0 0 16px}
+.kcol-head .drag-handle svg{width:15px;height:15px}
 .kcol-head .kdot{width:10px;height:10px;border-radius:50%;flex:0 0 10px}
+.kcol-head .col-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .kcol-head .kcnt{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--texto-suave);background:var(--cinza-card);border:1px solid var(--cinza-borda);padding:1px 9px;border-radius:20px}
-.kcard{background:var(--cinza-card);border:1px solid var(--cinza-borda);border-left:4px solid var(--kc,var(--azul));border-radius:12px;padding:12px 13px;box-shadow:var(--sombra);cursor:grab;transition:.15s;animation:cardIn .3s ease both}
+.kcol-head .col-actions{display:flex;gap:4px;margin-left:2px;opacity:.78;transition:opacity .15s}
+.kcol:hover .col-actions{opacity:1}
+.kcol-head .icon-btn{width:27px;height:27px;border-radius:8px;flex:0 0 27px}
+.kcol-add{min-height:76px;border:1.5px dashed var(--cinza-borda);background:var(--cinza-card);display:flex;align-items:center;justify-content:center;padding:12px}
+.kcol-add .add-col-btn{width:100%;min-height:50px;border:0;background:transparent;color:var(--texto-suave);font-family:inherit;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border-radius:12px;transition:.15s}
+.kcol-add .add-col-btn:hover{background:var(--surface-2);color:var(--azul)}
+.kcard{height:120px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-left:4px solid var(--kc,var(--azul));border-radius:12px;padding:12px 13px;box-shadow:var(--sombra);cursor:grab;transition:.15s;animation:cardIn .3s ease both;display:flex;flex-direction:column;overflow:hidden}
 .kcard:hover{border-color:var(--azul-300);transform:translateY(-1px)}
 .kcard.dragging{opacity:.5;cursor:grabbing}
-.kcard .kc-title{font-weight:800;font-size:14px;line-height:1.3}
+.kcard .kc-title{font-weight:800;font-size:14px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .kcard .kc-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
-.kcard .kc-desc{font-size:12.5px;color:var(--texto-suave);line-height:1.5;margin-top:6px}
-.kcard .kc-foot{display:flex;align-items:center;gap:6px;margin-top:10px}
+.kcard .kc-foot{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:8px}
 .kcard .kc-actions{display:flex;gap:4px;margin-left:auto}
 .kcamp-chip{font-size:10.5px;font-weight:800;color:#fff;padding:3px 9px;border-radius:7px;white-space:nowrap}
 .prio-chip{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:7px;text-transform:uppercase;letter-spacing:.3px}
@@ -621,38 +638,22 @@ a.open-btn{text-decoration:none}
 [data-theme="dark"] .prio-chip.baixa{background:rgba(148,163,184,.16);color:#aab7c9}
 .kc-coment{font-size:12px;line-height:1.45;color:#be123c;background:#fde7ec;border:1px solid #f6c5d1;border-radius:9px;padding:8px 10px;margin-top:8px}
 [data-theme="dark"] .kc-coment{background:rgba(225,29,72,.14);border-color:rgba(225,29,72,.35);color:#fb7185}
-.kc-move{font-size:11px;font-weight:700;color:var(--texto-suave);background:var(--surface-2);border:1px solid var(--cinza-borda);border-radius:8px;padding:4px 8px;cursor:pointer;white-space:nowrap}
-.kc-move:hover{border-color:var(--azul-300);color:var(--azul)}
 .kdrop-zone{min-height:76px;border:1px dashed var(--cinza-borda);border-radius:12px;display:grid;place-items:center;color:var(--texto-suave);font-size:12px;font-weight:700;margin-top:auto;background:rgba(255,255,255,.28)}
 .kcol.over .kdrop-zone{border-color:var(--azul-300);color:var(--azul);background:var(--azul-50)}
 .kanban-hint{font-size:12px;color:var(--texto-suave);margin:-6px 0 14px}
 
 /* LISTA (tarefas + aprovação) */
-.task-cols-tools{display:flex;flex-direction:column;gap:9px;margin:0 0 14px;padding:12px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:14px;box-shadow:var(--sombra)}
-.task-cols-tools .tools-head{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:900;color:var(--texto-suave)}
-.task-cols-tools .tools-head b{color:var(--texto);font-size:13px}
-.task-cols-tools .tools-head span{margin-left:auto;font-size:12px;font-weight:700;color:var(--texto-suave)}
-.task-cols-rail{display:flex;gap:10px;align-items:center;overflow-x:auto;padding:2px 2px 5px;scrollbar-width:thin}
-.task-col-tool{position:relative;display:inline-flex;align-items:center;gap:8px;min-width:156px;max-width:240px;height:44px;background:var(--surface-2);border:1.5px solid var(--cinza-borda);border-radius:12px;padding:8px 8px 8px 10px;box-shadow:0 8px 20px -18px rgba(7,18,40,.72);font-size:12.5px;font-weight:900;cursor:grab;user-select:none;transition:transform .15s,border-color .15s,box-shadow .15s,opacity .15s;background-clip:padding-box}
-.task-col-tool:hover{border-color:var(--azul-300);box-shadow:0 12px 26px -20px rgba(46,91,190,.95)}
-.task-col-tool.dragging{opacity:.5;transform:scale(.98);cursor:grabbing}
-.task-col-tool.drop-before{box-shadow:-4px 0 0 var(--azul-300),0 12px 26px -20px rgba(46,91,190,.95)}
-.task-col-tool.drop-after{box-shadow:4px 0 0 var(--azul-300),0 12px 26px -20px rgba(46,91,190,.95)}
-.task-col-tool .drag-handle{width:18px;height:24px;display:grid;place-items:center;color:var(--texto-suave);flex:0 0 18px}
-.task-col-tool .drag-handle svg{width:16px;height:16px}
-.task-col-tool .kdot{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
-.task-col-tool .col-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
-.task-col-tool .kcnt{font-size:11.5px;font-weight:800;color:var(--texto-suave);background:var(--cinza-card);border:1px solid var(--cinza-borda);padding:1px 8px;border-radius:20px;flex:0 0 auto}
-.task-col-tool .icon-btn{width:28px;height:28px;border-radius:8px;cursor:pointer;flex:0 0 28px}
-@media(max-width:640px){.task-cols-tools .tools-head{align-items:flex-start;flex-direction:column;gap:3px}.task-cols-tools .tools-head span{margin-left:0}.task-col-tool{min-width:170px}}
 .tlist{display:flex;flex-direction:column;gap:10px}
 .tgroup{border:1px solid var(--cinza-borda);border-radius:14px;background:var(--cinza-card);box-shadow:var(--sombra);overflow:hidden;margin-bottom:12px}
 .tgroup-head{display:flex;align-items:center;gap:10px;padding:13px 15px;background:var(--surface-2);border-bottom:1px solid var(--cinza-borda);font-weight:900;font-size:13px}
 .tgroup-head .kdot{width:10px;height:10px;border-radius:50%;flex:0 0 10px}
+.tgroup-head .tg-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .tgroup-head .tg-count{margin-left:auto;color:var(--texto-suave);font-size:12px}
+.tgroup-head .col-actions{display:flex;gap:4px;margin-left:4px}
+.tgroup-head .icon-btn{width:27px;height:27px;border-radius:8px;flex:0 0 27px}
 .tgroup-body{display:flex;flex-direction:column;gap:8px;padding:10px}
 .tgroup-empty{font-size:12.5px;color:var(--texto-suave);padding:10px 2px}
-.trow{display:flex;align-items:center;gap:12px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-left:4px solid var(--kc,var(--azul));border-radius:12px;padding:12px 15px;box-shadow:var(--sombra)}
+.trow{display:flex;align-items:center;gap:12px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-left:4px solid var(--kc,var(--azul));border-radius:12px;padding:12px 15px;box-shadow:var(--sombra);cursor:pointer}
 .trow .tr-main{flex:1;min-width:0}
 .trow .tr-title{font-weight:800;font-size:14.5px}
 .trow .tr-meta{display:flex;gap:7px;align-items:center;margin-top:5px;flex-wrap:wrap}
@@ -1342,10 +1343,6 @@ body.review-on{overflow:hidden}
           </div>
           <div class="spacer"></div>
           <span class="count-pill" id="tarCount"></span>
-          <button class="btn btn-ghost" id="addTaskColBtn" title="Adicionar coluna ao fluxo de tarefas">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-            Coluna
-          </button>
           <button class="btn btn-primary" id="addTarefaBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
             Nova tarefa
@@ -1610,7 +1607,7 @@ body.review-on{overflow:hidden}
             <h3>9. Tarefas</h3>
             <p>Organização de tarefas em <b>Kanban</b> (arrastar entre colunas) ou <b>Lista</b>. Cada tarefa tem título, descrição, status, prioridade (alta/média/baixa), campanha (opcional), responsável e prazo.</p>
             <ul>
-              <li><b>Colunas personalizáveis:</b> em Configurações você adiciona, renomeia e remove colunas. Ao remover uma coluna, as tarefas dela vão para a primeira coluna.</li>
+              <li><b>Colunas personalizáveis:</b> no próprio quadro você arrasta o cabeçalho para reorganizar, usa o lápis para renomear, a lixeira para excluir e o bloco final para adicionar coluna. Ao remover uma coluna, as tarefas dela vão para a primeira coluna.</li>
               <li>Filtros por campanha e por prioridade.</li>
             </ul>
           </section>
@@ -1660,7 +1657,7 @@ body.review-on{overflow:hidden}
             <ul>
               <li><b>Identidade da plataforma:</b> troque o título, o subtítulo e a logo que aparecem no topo da barra lateral.</li>
               <li><b>Responsáveis:</b> lista de pessoas usada nas caixas de seleção de responsável (agentes, campanhas, tarefas e fluxos). Adicione, remova ou renomeie — ao renomear, a mudança vale para todas as referências existentes.</li>
-              <li><b>Colunas de Tarefas:</b> personalize as colunas do Kanban de Tarefas.</li>
+              <li><b>Colunas de Tarefas:</b> a configuração mostra as colunas atuais; a gestão fica no próprio quadro de Tarefas, no estilo Kanban/Trello.</li>
               <li><b>Tipos de demanda e Áreas:</b> opções usadas ao cadastrar agentes.</li>
               <li><b>Dados:</b> exportar/importar backup e redefinir para os exemplos.</li>
               <li><b>Documentação:</b> abre esta página.</li>
@@ -1720,7 +1717,7 @@ body.review-on{overflow:hidden}
           <section class="doc-sec" id="doc-changelog">
             <h3>17. Histórico de versões</h3>
             <ul class="doc-log">
-              <li><b>v2.4 — 24/08/2026</b><br><b>Tarefas e agentes mais flexíveis</b>: a tela de tarefas ganhou criação, ordenação e exclusão confirmada de colunas, além da lista agrupada por etapa. O cadastro de agentes agora permite adicionar prompts na criação, e os cards exibem atalhos para abrir o chat e os prompts quando existirem. A aprovação pública não exige login no link compartilhado. A integração Gemini/Gerar com IA foi retirada da interface.</li>
+              <li><b>v2.4 — 24/08/2026</b><br><b>Tarefas e agentes mais flexíveis</b>: a tela de tarefas ganhou cards compactos, descrição somente no modal, criação/ordenação/renomeação/exclusão de colunas direto no quadro, além da lista agrupada por etapa. O cadastro de agentes agora permite adicionar prompts na criação, e os cards exibem atalhos para abrir o chat e os prompts quando existirem. A aprovação pública não exige login no link compartilhado. A integração Gemini/Gerar com IA foi retirada da interface.</li>
               <li><b>v2.3 — 27/06/2026</b><br><b>Contatos — setor e pastas</b>: o cadastro de contato ganhou o campo <b>Setor</b> (com sugestões dos setores já usados) e a opção de organizar os contatos em <b>pastas</b> — com filtro por pasta no topo e um gerenciador para criar, renomear e remover pastas.</li>
               <li><b>v2.2 — 27/06/2026</b><br><b>Lista de contatos</b>: nova seção para cadastrar contatos (nome, celular e observações), com busca e atalho para o WhatsApp. <b>Aprovação — quem revisou</b>: ao aprovar ou solicitar alteração pelo link, a pessoa informa o nome, que aparece no cartão da arte como "Revisado por: [nome]". <b>Link de aprovação</b>: a lista "Artes neste link" ficou mais alta, facilitando a seleção.</li>
               <li><b>v2.1 — 27/06/2026</b><br><b>Ordenação de listas</b>: as telas de <b>Tarefas</b>, <b>Fluxos de projeto</b> e <b>Aprovação de artes</b> ganharam um seletor para ordenar os itens — Tarefas (mais recentes, prazo, prioridade, campanha), Fluxos (recentes, nome, campanha, progresso) e Aprovação (data, campanha, título, status). Vale tanto no Kanban (dentro de cada coluna) quanto na Lista.</li>
@@ -2904,14 +2901,15 @@ function bindKanbanDnD(container,onMove){
   if(readonly()){$$('[data-kcard]',container).forEach(c=>c.removeAttribute('draggable'));return;}
   let dragId=null;
   $$('[data-kcard]',container).forEach(card=>{
-    card.addEventListener('dragstart',e=>{dragId=card.dataset.kcard;card.classList.add('dragging');$$('[data-kcol]',container).forEach(c=>c.classList.add('drop-ready'));e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',dragId)}catch(_){}});
+    card.addEventListener('dragstart',e=>{dragId=card.dataset.kcard;card.classList.add('dragging');$$('[data-kcol]',container).forEach(c=>c.classList.add('drop-ready'));e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain','task:'+dragId)}catch(_){}});
     card.addEventListener('dragend',()=>{dragId=null;card.classList.remove('dragging');$$('[data-kcol]',container).forEach(c=>c.classList.remove('over','drop-ready'));});
   });
   $$('[data-kcol]',container).forEach(col=>{
-    col.addEventListener('dragenter',e=>{e.preventDefault();col.classList.add('over');});
-    col.addEventListener('dragover',e=>{e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move';col.classList.add('over');});
+    const isColDrag=e=>{try{return (e.dataTransfer&&e.dataTransfer.getData('text/plain')||'').startsWith('task-col:');}catch(_){return false;}};
+    col.addEventListener('dragenter',e=>{if(isColDrag(e))return;e.preventDefault();col.classList.add('over');});
+    col.addEventListener('dragover',e=>{if(isColDrag(e))return;e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='move';col.classList.add('over');});
     col.addEventListener('dragleave',e=>{if(!col.contains(e.relatedTarget))col.classList.remove('over');});
-    col.addEventListener('drop',e=>{e.preventDefault();$$('[data-kcol]',container).forEach(c=>c.classList.remove('over','drop-ready'));const dId=dragId||(e.dataTransfer&&e.dataTransfer.getData('text/plain'));if(dId)onMove(dId,col.dataset.kcol);});
+    col.addEventListener('drop',e=>{const raw=e.dataTransfer&&e.dataTransfer.getData('text/plain');if((raw||'').startsWith('task-col:'))return;e.preventDefault();$$('[data-kcol]',container).forEach(c=>c.classList.remove('over','drop-ready'));const dId=dragId||((raw||'').startsWith('task:')?raw.slice(5):raw);if(dId)onMove(dId,col.dataset.kcol);});
   });
 }
 // re-render do que estiver afetado por mudança em posts
@@ -3166,7 +3164,7 @@ function renderCampBrand(){
   const pickLogo=()=>$('#brandLogoInput').click();
   $('#brandLogoDrop')?.addEventListener('click',pickLogo);
   $('#brandLogoChange')?.addEventListener('click',pickLogo);
-  $('#brandLogoRemove')?.addEventListener('click',()=>{c.logo='';save();renderCampBrand();renderCampanhas();toast('Logo removida.','warn');});
+  $('#brandLogoRemove')?.addEventListener('click',()=>openConfirmDelete('Logo da campanha',()=>{c.logo='';save();renderCampBrand();renderCampanhas();toast('Logo removida.','warn');},'Remover logo','A campanha ficará sem logo até você enviar uma nova imagem.'));
   // binds — paleta
   const pick=$('#brandColorPick'), hex=$('#brandColorHex');
   pick.addEventListener('input',()=>{hex.value=pick.value.toUpperCase();});
@@ -3414,19 +3412,16 @@ function tarefasFiltered(){
 }
 function tarefaCardHTML(t){
   const camp=t.campanhaId?campById(t.campanhaId):null;
-  const cols=tarCols(), idx=cols.findIndex(c=>c.id===t.status), prev=cols[idx-1], next=cols[idx+1];
-  return `<div class="kcard" style="--kc:${tarStatusCor(t.status)}" draggable="true" data-kcard="${t.id}">
+  return `<div class="kcard" style="--kc:${tarStatusCor(t.status)}" draggable="true" data-kcard="${t.id}" data-taskopen="${t.id}" title="Clique para abrir a tarefa">
     <div class="kc-title">${esc(t.titulo)}</div>
-    ${t.desc?`<div class="kc-desc">${esc(t.desc)}</div>`:''}
     <div class="kc-meta"><span class="prio-chip ${t.prioridade}">${prioLabel(t.prioridade)}</span>${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:''}${t.prazo?`<span class="meta-i">🗓️ ${fmtShort(t.prazo)}</span>`:''}</div>
-    <div class="kc-foot">${prev?`<button class="kc-move" data-tmove="${t.id}" data-status="${prev.id}" title="Mover para ${esc(prev.nome)}">← ${esc(prev.nome)}</button>`:''}${next?`<button class="kc-move" data-tmove="${t.id}" data-status="${next.id}" title="Mover para ${esc(next.nome)}">${esc(next.nome)} →</button>`:''}<div class="kc-actions"><button class="icon-btn" data-taredit="${t.id}" title="Editar">${EDIT_SVG}</button><button class="icon-btn danger" data-tardel="${t.id}" title="Excluir">${RM_SVG}</button></div></div>
-    ${t.responsavel?`<div class="kc-meta"><span class="res-chip">👤 ${esc(t.responsavel)}</span></div>`:''}
+    <div class="kc-foot"><div class="kc-actions"><button class="icon-btn" data-taredit="${t.id}" title="Editar">${EDIT_SVG}</button><button class="icon-btn danger" data-tardel="${t.id}" title="Excluir">${RM_SVG}</button></div></div>
   </div>`;
 }
 function tarefaRowHTML(t){
   const camp=t.campanhaId?campById(t.campanhaId):null;
-  return `<div class="trow" style="--kc:${tarStatusCor(t.status)}">
-    <div class="tr-main"><div class="tr-title">${esc(t.titulo)}</div><div class="tr-meta"><span class="prio-chip ${t.prioridade}">${prioLabel(t.prioridade)}</span>${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:''}${t.responsavel?`<span class="res-chip">👤 ${esc(t.responsavel)}</span>`:''}${t.prazo?`<span class="meta-i">🗓️ ${fmtShort(t.prazo)}</span>`:''}</div></div>
+  return `<div class="trow" style="--kc:${tarStatusCor(t.status)}" data-taskopen="${t.id}" title="Clique para abrir a tarefa">
+    <div class="tr-main"><div class="tr-title">${esc(t.titulo)}</div><div class="tr-meta"><span class="prio-chip ${t.prioridade}">${prioLabel(t.prioridade)}</span>${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:''}${t.prazo?`<span class="meta-i">🗓️ ${fmtShort(t.prazo)}</span>`:''}</div></div>
     <div class="tr-actions"><select class="tstat" data-tid="${t.id}">${tarCols().map(c=>`<option value="${c.id}"${t.status===c.id?' selected':''}>${esc(c.nome)}</option>`).join('')}</select><button class="icon-btn" data-taredit="${t.id}" title="Editar">${EDIT_SVG}</button><button class="icon-btn danger" data-tardel="${t.id}" title="Excluir">${RM_SVG}</button></div>
   </div>`;
 }
@@ -3435,6 +3430,17 @@ function addTaskColumnQuick(){
   state.config.tarColunas=tarCols();
   state.config.tarColunas.push({id:id(),nome:nome.trim(),cor:'#2E5BBE'});
   save();renderTarefas();renderConfig();toast('Coluna adicionada!','ok');
+}
+function renameTaskColumn(cid){
+  const cols=tarCols(), col=cols.find(c=>c.id===cid);
+  if(!col)return;
+  const nome=prompt('Novo nome da coluna:',col.nome);
+  if(nome==null)return;
+  const v=nome.trim();
+  if(!v){toast('Dê um nome à coluna.','warn');return;}
+  state.config.tarColunas=cols;
+  col.nome=v;
+  save();renderTarefas();renderConfig();toast('Coluna renomeada!','ok');
 }
 function reorderTaskColumn(cid,targetId,placeAfter=false){
   if(!cid||!targetId||cid===targetId)return false;
@@ -3474,50 +3480,55 @@ function deleteTaskColumn(cid){
     toast(movidas?`Coluna removida. ${movidas} tarefa(s) movida(s) para "${tarStatusNome(destino)}".`:'Coluna removida.','warn');
   },'Excluir coluna',movidas?`Existem <b>${movidas} tarefa(s)</b> nesta coluna. Elas serão movidas para <b>${esc(tarStatusNome(destino))}</b>.`:null);
 }
-function taskColumnsToolsHTML(){
-  const cols=tarCols();
+function taskColHeadHTML(col,count,mode='kanban'){
   const grip='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"/></svg>';
-  const count=id=>(state.tarefas||[]).filter(t=>t.status===id).length;
-  return `<div class="task-cols-tools"><div class="tools-head"><b>Ordem das colunas</b><span>Arraste para reorganizar</span></div><div class="task-cols-rail" id="taskColsRail">${cols.map(col=>`<div class="task-col-tool" draggable="true" data-tcol="${col.id}" title="Arraste para reposicionar ${esc(col.nome)}">
-    <span class="drag-handle" aria-hidden="true">${grip}</span>
-    <span class="kdot" style="background:${col.cor}"></span><span class="col-name">${esc(col.nome)}</span><span class="kcnt">${count(col.id)}</span>
-    <button class="icon-btn danger" data-tcoldel="${col.id}" title="Excluir coluna">${RM_SVG}</button>
-  </div>`).join('')}</div></div>`;
+  if(mode==='list')return `<div class="tgroup-head"><span class="kdot" style="background:${col.cor}"></span><span class="tg-name">${esc(col.nome)}</span><span class="tg-count">${count} tarefa${count!==1?'s':''}</span><div class="col-actions"><button class="icon-btn" data-tcolrename="${col.id}" title="Renomear coluna">${EDIT_SVG}</button><button class="icon-btn danger" data-tcoldel="${col.id}" title="Excluir coluna">${RM_SVG}</button></div></div>`;
+  return `<div class="kcol-head" draggable="true" data-tcoldrag="${col.id}" title="Arraste a coluna para reorganizar">
+    <span class="drag-handle" aria-hidden="true">${grip}</span><span class="kdot" style="background:${col.cor}"></span><span class="col-title">${esc(col.nome)}</span><span class="kcnt">${count}</span>
+    <div class="col-actions"><button class="icon-btn" data-tcolrename="${col.id}" title="Renomear coluna">${EDIT_SVG}</button><button class="icon-btn danger" data-tcoldel="${col.id}" title="Excluir coluna">${RM_SVG}</button></div>
+  </div>`;
 }
-function bindTaskColumnTools(){
+function addTaskColumnCardHTML(){
+  return `<div class="kcol kcol-add"><button class="add-col-btn" data-tcoladd title="Adicionar coluna"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px"><path d="M12 5v14M5 12h14"/></svg>Adicionar coluna</button></div>`;
+}
+function bindTaskColumnControls(){
+  if(readonly()){$$('#tarefasBoard [data-tcoldrag]').forEach(h=>h.removeAttribute('draggable'));return;}
   let draggingId=null;
-  const rail=$('#taskColsRail');
-  const clearDrop=()=>$$('#tarefasBoard .task-col-tool.drop-before,#tarefasBoard .task-col-tool.drop-after').forEach(x=>x.classList.remove('drop-before','drop-after'));
-  $$('#tarefasBoard [data-tcol]').forEach(chip=>{
-    chip.addEventListener('dragstart',e=>{
+  const clearDrop=()=>$$('#tarefasBoard .kcol.col-drop-before,#tarefasBoard .kcol.col-drop-after').forEach(x=>x.classList.remove('col-drop-before','col-drop-after'));
+  $$('#tarefasBoard [data-tcoldrag]').forEach(head=>{
+    head.addEventListener('dragstart',e=>{
       if(e.target.closest('button')){e.preventDefault();return;}
-      draggingId=chip.dataset.tcol;
-      chip.classList.add('dragging');
+      draggingId=head.dataset.tcoldrag;
+      head.closest('.kcol')?.classList.add('col-dragging');
       e.dataTransfer.effectAllowed='move';
-      e.dataTransfer.setData('text/plain',draggingId);
+      e.dataTransfer.setData('text/plain','task-col:'+draggingId);
     });
-    chip.addEventListener('dragend',()=>{chip.classList.remove('dragging');clearDrop();draggingId=null;});
-    chip.addEventListener('dragover',e=>{
-      const id=draggingId||e.dataTransfer.getData('text/plain');
-      if(!id||id===chip.dataset.tcol)return;
-      e.preventDefault();
-      const r=chip.getBoundingClientRect(), after=e.clientX>r.left+r.width/2;
-      clearDrop();chip.classList.add(after?'drop-after':'drop-before');
+    head.addEventListener('dragend',()=>{$$('#tarefasBoard .kcol.col-dragging').forEach(x=>x.classList.remove('col-dragging'));clearDrop();draggingId=null;});
+  });
+  $$('#tarefasBoard [data-tcolbox]').forEach(col=>{
+    col.addEventListener('dragover',e=>{
+      if(!draggingId)return;
+      e.preventDefault();e.stopImmediatePropagation();
+      const target=col.dataset.tcolbox;
+      if(!target||target===draggingId)return;
+      const r=col.getBoundingClientRect(), after=e.clientX>r.left+r.width/2;
+      clearDrop();col.classList.add(after?'col-drop-after':'col-drop-before');
       e.dataTransfer.dropEffect='move';
     });
-    chip.addEventListener('dragleave',e=>{if(!chip.contains(e.relatedTarget))chip.classList.remove('drop-before','drop-after');});
-    chip.addEventListener('drop',e=>{
-      const id=draggingId||e.dataTransfer.getData('text/plain');
-      if(!id||id===chip.dataset.tcol)return;
-      e.preventDefault();e.stopPropagation();
-      const r=chip.getBoundingClientRect(), after=e.clientX>r.left+r.width/2;
-      clearDrop();reorderTaskColumn(id,chip.dataset.tcol,after);draggingId=null;
+    col.addEventListener('dragleave',e=>{if(!col.contains(e.relatedTarget))col.classList.remove('col-drop-before','col-drop-after');});
+    col.addEventListener('drop',e=>{
+      if(!draggingId)return;
+      e.preventDefault();e.stopImmediatePropagation();
+      const r=col.getBoundingClientRect(), after=e.clientX>r.left+r.width/2;
+      const target=col.dataset.tcolbox;
+      clearDrop();reorderTaskColumn(draggingId,target,after);draggingId=null;
     });
   });
-  if(rail){
-    rail.addEventListener('dragover',e=>{if(draggingId){e.preventDefault();e.dataTransfer.dropEffect='move';}});
-    rail.addEventListener('drop',e=>{if(!draggingId||e.target.closest('[data-tcol]'))return;e.preventDefault();clearDrop();moveTaskColumnToEnd(draggingId);draggingId=null;});
-  }
+  $$('#tarefasBoard [data-tcoladd]').forEach(b=>b.addEventListener('click',addTaskColumnQuick));
+  $$('#tarefasBoard [data-tcolrename]').forEach(b=>{
+    b.addEventListener('mousedown',e=>e.stopPropagation());
+    b.addEventListener('click',e=>{e.stopPropagation();renameTaskColumn(b.dataset.tcolrename);});
+  });
   $$('#tarefasBoard [data-tcoldel]').forEach(b=>{
     b.addEventListener('mousedown',e=>e.stopPropagation());
     b.addEventListener('click',e=>{e.stopPropagation();deleteTaskColumn(b.dataset.tcoldel);});
@@ -3534,19 +3545,18 @@ function renderTarefas(){
   $('#tarCount').textContent=`${list.length} tarefa${list.length!==1?'s':''}`;
   const board=$('#tarefasBoard');
   if(tarView==='kanban'){
-    board.innerHTML=taskColumnsToolsHTML()+`<p class="kanban-hint">Arraste os cartões entre as colunas para mudar o status.</p><div class="kanban">`+tarCols().map(col=>{
+    board.innerHTML=`<p class="kanban-hint">Arraste os cartões entre as colunas para mudar o status. Arraste o cabeçalho da coluna para reorganizar o quadro.</p><div class="kanban">`+tarCols().map(col=>{
       const items=list.filter(t=>t.status===col.id);
-      return `<div class="kcol" data-kcol="${col.id}"><div class="kcol-head"><span class="kdot" style="background:${col.cor}"></span>${esc(col.nome)}<span class="kcnt">${items.length}</span></div>${items.map(tarefaCardHTML).join('')||'<p class="hint" style="margin:4px 4px 2px">— vazio —</p>'}<div class="kdrop-zone">Solte aqui</div></div>`;
-    }).join('')+`</div>`;
-    bindTaskColumnTools();
+      return `<div class="kcol" data-kcol="${col.id}" data-tcolbox="${col.id}">${taskColHeadHTML(col,items.length)}${items.map(tarefaCardHTML).join('')||'<p class="hint" style="margin:4px 4px 2px">— vazio —</p>'}<div class="kdrop-zone">Solte aqui</div></div>`;
+    }).join('')+addTaskColumnCardHTML()+`</div>`;
+    bindTaskColumnControls();
     bindKanbanDnD(board,(tid,ns)=>{const t=tarefaById(tid);if(t&&t.status!==ns){changeTarefaStatus(t,ns);save();renderTarefas();toast('Tarefa: '+tarStatusNome(ns),'info');}});
-    $$('#tarefasBoard [data-tmove]').forEach(b=>b.addEventListener('click',()=>{const t=tarefaById(b.dataset.tmove);if(t&&t.status!==b.dataset.status){changeTarefaStatus(t,b.dataset.status);save();renderTarefas();toast('Tarefa: '+tarStatusNome(b.dataset.status),'info');}}));
   }else{
-    board.innerHTML=taskColumnsToolsHTML()+(list.length?`<div class="tlist">`+tarCols().map(col=>{
+    board.innerHTML=(list.length?`<div class="tlist">`+tarCols().map(col=>{
       const items=list.filter(t=>t.status===col.id);
-      return `<section class="tgroup"><div class="tgroup-head"><span class="kdot" style="background:${col.cor}"></span>${esc(col.nome)}<span class="tg-count">${items.length} tarefa${items.length!==1?'s':''}</span></div><div class="tgroup-body">${items.map(tarefaRowHTML).join('')||'<div class="tgroup-empty">Nenhuma tarefa nesta etapa.</div>'}</div></section>`;
-    }).join('')+`</div>`:`<div class="empty"><div class="big">✅</div><h3>Nenhuma tarefa</h3><p>Crie tarefas e organize por status, campanha e prazo.</p><button class="btn btn-primary" onclick="openTarefaModal()">Nova tarefa</button></div>`);
-    bindTaskColumnTools();
+      return `<section class="tgroup">${taskColHeadHTML(col,items.length,'list')}<div class="tgroup-body">${items.map(tarefaRowHTML).join('')||'<div class="tgroup-empty">Nenhuma tarefa nesta etapa.</div>'}</div></section>`;
+    }).join('')+`<button class="btn btn-ghost btn-sm" data-tcoladd style="align-self:flex-start;margin-top:2px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Adicionar coluna</button></div>`:`<div class="empty"><div class="big">✅</div><h3>Nenhuma tarefa</h3><p>Crie tarefas e organize por status, campanha e prazo.</p><button class="btn btn-primary" onclick="openTarefaModal()">Nova tarefa</button></div>`);
+    bindTaskColumnControls();
     $$('#tarefasBoard .tstat').forEach(sel=>sel.addEventListener('change',()=>{const t=tarefaById(sel.dataset.tid);if(t){changeTarefaStatus(t,sel.value);save();renderTarefas();}}));
   }
 }
@@ -3739,6 +3749,9 @@ function prodTasks(){
     return true;
   });
 }
+function prodPessoaOptions(){
+  return [...new Set([...pessoas(),...(state.tarefas||[]).map(taskOwner)].filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+}
 function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:null;}
 function prodAgg(tasks){
   const done=tasks.filter(t=>isDoneStatus(t.status)),total=tasks.length;
@@ -3797,7 +3810,8 @@ function prodEmptyMini(msg){return `<div class="prod-empty"><div class="big">�
 /* ----- render Produtividade ----- */
 function renderProdutividade(){
   const pSel=$('#prodPessoa');
-  pSel.innerHTML=`<option value="todas">Todas as pessoas</option>`+pessoas().map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  pSel.innerHTML=`<option value="todas">Todas as pessoas</option>`+prodPessoaOptions().map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  if(prodPessoa!=='todas'&&!prodPessoaOptions().includes(prodPessoa))prodPessoa='todas';
   pSel.value=prodPessoa;
   $('#prodCampF').innerHTML=campSelectHTML();$('#prodCampF').value=prodCamp;
   $('#prodPeriodo').value=prodPeriodo;
@@ -3956,7 +3970,7 @@ function renderAcessos(){
   $('#acLogout')?.addEventListener('click',()=>{const n=Operator.nome;endSession();toast('Você saiu'+(n?', '+n:'')+'. Sessão encerrada.','info');renderAcessos();});
   $('#expSessoes')?.addEventListener('click',exportSessoesCSV);
   $$('#acessosBody [data-acpin]').forEach(b=>b.addEventListener('click',()=>setPinFlow(b.dataset.acpin)));
-  $$('#acessosBody [data-acpinrm]').forEach(b=>b.addEventListener('click',()=>{delete state.config.pins[b.dataset.acpinrm];save();renderAcessos();toast('PIN removido.','warn');}));
+  $$('#acessosBody [data-acpinrm]').forEach(b=>b.addEventListener('click',()=>{const nome=b.dataset.acpinrm;openConfirmDelete('PIN de '+nome,()=>{delete state.config.pins[nome];save();renderAcessos();toast('PIN removido.','warn');},'Remover PIN','Depois disso, essa pessoa conseguirá se identificar sem digitar PIN.');}));
 }
 function setPinFlow(nome){
   const v=prompt('Defina um PIN (4 a 6 dígitos) para '+nome+'. Deixe vazio para cancelar:','');
@@ -4237,7 +4251,7 @@ function renderConectores(){
     setObjField(c,el.dataset.field,val);save();
     if(['authTipo'].includes(el.dataset.field))renderIntegracoes();
   }));
-  $$('#intgConns [data-connrm]').forEach(b=>b.addEventListener('click',()=>{const ig=intgCfg();ig.conectores=ig.conectores.filter(x=>x.id!==b.dataset.connrm);save();renderIntegracoes();toast('Conector removido.','warn');}));
+  $$('#intgConns [data-connrm]').forEach(b=>b.addEventListener('click',()=>{const ig=intgCfg(),c=(ig.conectores||[]).find(x=>x.id===b.dataset.connrm);if(!c)return;openConfirmDelete(c.nome||'Conector',()=>{ig.conectores=ig.conectores.filter(x=>x.id!==b.dataset.connrm);save();renderIntegracoes();toast('Conector removido.','warn');},'Excluir conector');}));
   $$('#intgConns [data-conntest]').forEach(b=>b.addEventListener('click',()=>{const c=(intgCfg().conectores||[]).find(x=>x.id===b.dataset.conntest);if(c){toast('Testando conector…','info');pollConector(c,true);}}));
 }
 
@@ -4287,7 +4301,7 @@ function renderFluxos(){
   if(!list.length){wrap.innerHTML=`<div class="empty"><div class="big">🔗</div><h3>Nenhum fluxo de projeto</h3><p>Crie um fluxo e mapeie as etapas do projeto em sequência.</p><button class="btn btn-primary" onclick="openFluxoModal()">Novo fluxo</button></div>`;return;}
   wrap.innerHTML=list.map(fluxoCardHTML).join('');
   $$('#fluxosWrap [data-stepopen]').forEach(b=>b.addEventListener('click',e=>{if(e.target.closest('[data-steprm]'))return;openEtapaModal(b.dataset.pr,b.dataset.stepopen);}));
-  $$('#fluxosWrap [data-steprm]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const pr=projetoById(b.dataset.pr);if(pr){pr.etapas=pr.etapas.filter(x=>x.id!==b.dataset.steprm);save();renderFluxos();}}));
+  $$('#fluxosWrap [data-steprm]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const pr=projetoById(b.dataset.pr),et=pr&&pr.etapas.find(x=>x.id===b.dataset.steprm);if(pr&&et)openConfirmDelete(et.nome,()=>{pr.etapas=pr.etapas.filter(x=>x.id!==b.dataset.steprm);save();renderFluxos();toast('Etapa removida.','warn');},'Excluir etapa');}));
   $$('#fluxosWrap [data-stepadd]').forEach(b=>b.addEventListener('click',()=>{const pr=projetoById(b.dataset.stepadd);const inp=$('#stepinp-'+pr.id);const v=inp.value.trim();if(!v)return;pr.etapas.push({id:id(),nome:v,status:'pendente'});save();renderFluxos();}));
   $$('#fluxosWrap [data-stepinp]').forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const pr=projetoById(inp.dataset.stepinp);const v=inp.value.trim();if(v){pr.etapas.push({id:id(),nome:v,status:'pendente'});save();renderFluxos();}}}));
   $$('#fluxosWrap [data-fluxedit]').forEach(b=>b.addEventListener('click',()=>openFluxoModal(projetoById(b.dataset.fluxedit))));
@@ -4315,7 +4329,6 @@ $('#saveFluxo').addEventListener('click',()=>{
   save();closeFluxoModal();renderFluxos();
 });
 $('#addFluxoBtn').addEventListener('click',()=>openFluxoModal());
-$('#addTaskColBtn')?.addEventListener('click',addTaskColumnQuick);
 $('#fluxCampFilter').addEventListener('change',e=>{fluxCamp=e.target.value;renderFluxos();});
 $('#fluxSortFilter').addEventListener('change',e=>{fluxSort=e.target.value;renderFluxos();});
 
@@ -4339,7 +4352,7 @@ function renderEtapaChecklist(){
   $('#et-ckcount').textContent=et.checklist.length?`· ${done}/${et.checklist.length} feitos`:'';
   $('#et-cklist').innerHTML=et.checklist.map(i=>`<label class="ck-item ${i.feito?'done':''}"><input type="checkbox" data-ckid="${i.id}" ${i.feito?'checked':''} /><span>${esc(i.texto)}</span><button class="ico-mini danger" data-ckdel="${i.id}" title="Remover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></label>`).join('')||'<p class="hint" style="margin:0 0 4px">Nenhum item ainda. Adicione tarefas abaixo.</p>';
   $$('#et-cklist [data-ckid]').forEach(c=>c.addEventListener('change',()=>{const et=curEtapa();const it=et&&et.checklist.find(x=>x.id===c.dataset.ckid);if(it){it.feito=c.checked;save();renderEtapaChecklist();}}));
-  $$('#et-cklist [data-ckdel]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();const et=curEtapa();if(et){et.checklist=et.checklist.filter(x=>x.id!==b.dataset.ckdel);save();renderEtapaChecklist();}}));
+  $$('#et-cklist [data-ckdel]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();const et=curEtapa(),it=et&&et.checklist.find(x=>x.id===b.dataset.ckdel);if(et&&it)openConfirmDelete(it.texto,()=>{et.checklist=et.checklist.filter(x=>x.id!==b.dataset.ckdel);save();renderEtapaChecklist();toast('Item removido.','warn');},'Excluir item da checklist');}));
 }
 function addCkItem(){const et=curEtapa();if(!et)return;const inp=$('#et-ckinp');const v=inp.value.trim();if(!v)return;et.checklist=et.checklist||[];et.checklist.push({id:id(),texto:v,feito:false});inp.value='';save();renderEtapaChecklist();inp.focus();}
 $('#et-ckadd').addEventListener('click',addCkItem);
@@ -4573,9 +4586,9 @@ function renderBrandConfig(){
       </div>
     </div>`;
   $('#appLogoBtn').addEventListener('click',()=>$('#appLogoInput').click());
-  $('#appLogoRm')?.addEventListener('click',()=>{brand().logo='';save();applyBrand();renderBrandConfig();toast('Logo removida.','warn');});
+  $('#appLogoRm')?.addEventListener('click',()=>openConfirmDelete('Logo da plataforma',()=>{brand().logo='';save();applyBrand();renderBrandConfig();toast('Logo removida.','warn');},'Remover logo','A plataforma volta a usar a marca padrão até você enviar outra imagem.'));
   $('#appFavBtn').addEventListener('click',()=>$('#appFaviconInput').click());
-  $('#appFavRm')?.addEventListener('click',()=>{brand().favicon='';save();applyBrand();renderBrandConfig();toast('Favicon removido.','warn');});
+  $('#appFavRm')?.addEventListener('click',()=>openConfirmDelete('Favicon da plataforma',()=>{brand().favicon='';save();applyBrand();renderBrandConfig();toast('Favicon removido.','warn');},'Remover favicon','A aba do navegador volta a usar o ícone padrão.'));
   $('#appTitulo').addEventListener('change',()=>{brand().titulo=$('#appTitulo').value.trim()||DEFAULT_BRAND.titulo;save();applyBrand();});
   $('#appSubtitulo').addEventListener('change',()=>{brand().subtitulo=$('#appSubtitulo').value.trim();save();applyBrand();});
 }
@@ -4723,7 +4736,7 @@ function renderIAConfig(){
     </div>
     <div id="iaTestOut" class="ia-test" style="display:none"></div>`;
   $('#iaSave').addEventListener('click',iaSaveTest);
-  $('#iaClear')?.addEventListener('click',()=>{Gemini.clearCfg();toast('Chave da IA removida.','warn');renderIAConfig();});
+  $('#iaClear')?.addEventListener('click',()=>openConfirmDelete('Chave da IA',()=>{Gemini.clearCfg();toast('Chave da IA removida.','warn');renderIAConfig();},'Remover chave da IA','Os geradores com Gemini param de funcionar neste navegador até uma nova chave ser salva.'));
 }
 async function iaSaveTest(){
   const key=$('#iaKey').value.trim(), model=($('#iaModel').value.trim()||'gemini-2.0-flash');
@@ -4769,14 +4782,15 @@ function renderUsuariosConfig(){
   $('#nu-add')?.addEventListener('click',createUserFlow);
   $$('#cfgUsuarios [data-rmuser]').forEach(b=>b.addEventListener('click',async()=>{
     const email=b.dataset.email;
-    if(!confirm('Remover o usuário '+email+'?'))return;
-    try{
-      await Auth.deleteUser(email);
-      state.config.usuarios.splice(+b.dataset.rmuser,1);
-      window.__usersLoaded=false;
-      renderUsuariosConfig();
-      toast('Usuário removido do banco.','warn');
-    }catch(err){toast('Falha ao remover usuário: '+err.message,'warn');}
+    openConfirmDelete(email,async()=>{
+      try{
+        await Auth.deleteUser(email);
+        state.config.usuarios.splice(+b.dataset.rmuser,1);
+        window.__usersLoaded=false;
+        renderUsuariosConfig();
+        toast('Usuário removido do banco.','warn');
+      }catch(err){toast('Falha ao remover usuário: '+err.message,'warn');}
+    },'Excluir usuário','O acesso desta pessoa será removido do banco de usuários da plataforma.');
   }));
 }
 async function createUserFlow(){
@@ -4820,9 +4834,9 @@ function renderConfig(){
     `<div class="cfg-add"><input type="text" id="newPessoa" placeholder="Nome do responsável" /><button class="btn btn-dark btn-sm" id="addPessoa">Adicionar</button></div>`;
   // Colunas de Tarefas
   $('#cfgTarCols').innerHTML=`<div class="cfg-head"><h3>🗂️ Colunas de Tarefas</h3><span class="cfg-cnt">${tarCols().length}</span></div>`+
-    `<p class="hint" style="margin:-6px 0 12px">Personalize as colunas do quadro de Tarefas. Ao remover, as tarefas vão para a primeira coluna.</p>`+
-    tarCols().map((c,i)=>`<div class="cfg-item"><span class="sw" style="background:${c.cor}"></span><input class="cfg-edit" data-tarcoledit="${i}" value="${esc(c.nome)}" /><button class="rm" data-rmtarcol="${c.id}" title="Remover">${RM_SVG}</button></div>`).join('')+
-    `<div class="cfg-add"><input type="text" id="newTarCol" placeholder="Nova coluna (ex.: Em revisão)" /><input type="color" id="newTarColCor" value="#2E5BBE" title="Cor" /><button class="btn btn-dark btn-sm" id="addTarCol">Adicionar</button></div>`;
+    `<p class="hint" style="margin:-6px 0 12px">As colunas agora são gerenciadas direto no quadro de <b>Tarefas</b>: arraste o cabeçalho para ordenar, use o lápis para renomear, a lixeira para excluir e o bloco final para adicionar.</p>`+
+    tarCols().map(c=>`<div class="cfg-item"><span class="sw" style="background:${c.cor}"></span><span class="nm">${esc(c.nome)}</span></div>`).join('')+
+    `<div class="cfg-add"><button class="btn btn-dark btn-sm" onclick="go('tarefas')">Abrir quadro de tarefas</button></div>`;
   // binds — responsáveis
   $('#addPessoa').addEventListener('click',()=>{const v=$('#newPessoa').value.trim();if(!v)return;if(!pessoas().includes(v))state.config.pessoas.push(v);save();renderConfig();toast('Responsável adicionado!','ok');});
   $('#newPessoa').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addPessoa').click();});
@@ -4834,14 +4848,7 @@ function renderConfig(){
     [...state.agents,...state.campanhas,...state.tarefas,...state.projetos].forEach(o=>{if(o&&o.responsavel===antigo)o.responsavel=novo;});
     save();renderConfig();toast('Nome atualizado em toda a plataforma.','ok');
   }));
-  $$('#cfgPessoas [data-rmpessoa]').forEach(b=>b.addEventListener('click',()=>{state.config.pessoas.splice(+b.dataset.rmpessoa,1);save();renderConfig();toast('Responsável removido.','warn');}));
-  // binds — colunas de tarefas
-  $('#addTarCol').addEventListener('click',()=>{const v=$('#newTarCol').value.trim();if(!v){toast('Dê um nome à coluna.','warn');return;}state.config.tarColunas=tarCols();state.config.tarColunas.push({id:id(),nome:v,cor:$('#newTarColCor').value});save();renderConfig();if(view==='tarefas')renderTarefas();toast('Coluna adicionada!','ok');});
-  $('#newTarCol').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addTarCol').click();});
-  $$('#cfgTarCols [data-tarcoledit]').forEach(inp=>inp.addEventListener('change',()=>{const i=+inp.dataset.tarcoledit,v=inp.value.trim();if(!v){inp.value=tarCols()[i].nome;return;}state.config.tarColunas=tarCols();state.config.tarColunas[i].nome=v;save();renderConfig();if(view==='tarefas')renderTarefas();}));
-  $$('#cfgTarCols [data-rmtarcol]').forEach(b=>b.addEventListener('click',()=>{
-    deleteTaskColumn(b.dataset.rmtarcol);
-  }));
+  $$('#cfgPessoas [data-rmpessoa]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.rmpessoa,n=state.config.pessoas[i];openConfirmDelete(n,()=>{state.config.pessoas.splice(i,1);save();renderConfig();toast('Responsável removido.','warn');},'Excluir responsável','As tarefas e campanhas antigas continuam com o nome salvo, mas ele deixa de aparecer nas novas seleções.');}));
   // binds — tipos
   $('#addTipo').addEventListener('click',()=>{
     const nome=$('#newTipoNome').value.trim();if(!nome){toast('Dê um nome ao tipo.','warn');return;}
@@ -4853,14 +4860,17 @@ function renderConfig(){
     if(tipos().length<=1){toast('Mantenha ao menos um tipo.','warn');return;}
     const usados=state.agents.filter(a=>a.cat===tid).length;
     if(usados){toast(`Há ${usados} agente(s) usando este tipo. Reatribua antes de remover.`,'warn');return;}
-    state.config.tipos=tipos().filter(t=>t.id!==tid);
-    if(filters.cat===tid)filters.cat='todos';
-    save();renderConfig();renderTipoNav();renderCatFilters();toast('Tipo removido.','warn');
+    const tipo=tipos().find(t=>t.id===tid);if(!tipo)return;
+    openConfirmDelete(tipo.nome,()=>{
+      state.config.tipos=tipos().filter(t=>t.id!==tid);
+      if(filters.cat===tid)filters.cat='todos';
+      save();renderConfig();renderTipoNav();renderCatFilters();toast('Tipo removido.','warn');
+    },'Excluir tipo de demanda');
   }));
   // binds — áreas
   $('#addArea').addEventListener('click',()=>{const v=$('#newArea').value.trim();if(!v)return;if(!cfg.areas.includes(v))cfg.areas.push(v);save();renderConfig();toast('Área adicionada!','ok');});
   $('#newArea').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addArea').click();});
-  $$('#cfgAreas [data-rmarea]').forEach(b=>b.addEventListener('click',()=>{cfg.areas.splice(+b.dataset.rmarea,1);save();renderConfig();toast('Área removida.','warn');}));
+  $$('#cfgAreas [data-rmarea]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.rmarea,n=cfg.areas[i];openConfirmDelete(n,()=>{cfg.areas.splice(i,1);save();renderConfig();toast('Área removida.','warn');},'Excluir área');}));
 }
 
 /* ============ DRAWER (detalhe / prompts / arquivos) ============ */
@@ -4920,8 +4930,11 @@ function renderDtabSobre(a){
     save();renderDrawer();renderAgents();if(view==='campanha')renderCampanhaDetail();toast('Link adicionado!','ok');
   });
   $$('#dtab-sobre [data-sadel]').forEach(b=>b.addEventListener('click',()=>{
-    a.subagentes=(a.subagentes||[]).filter(x=>x.id!==b.dataset.sadel);
-    save();renderDrawer();renderAgents();if(view==='campanha')renderCampanhaDetail();toast('Link removido.','warn');
+    const sa=(a.subagentes||[]).find(x=>x.id===b.dataset.sadel);
+    if(!sa)return;
+    openConfirmDelete(sa.nome||sa.link||'Link',()=>{a.subagentes=(a.subagentes||[]).filter(x=>x.id!==b.dataset.sadel);
+      save();renderDrawer();renderAgents();if(view==='campanha')renderCampanhaDetail();toast('Link removido.','warn');
+    },'Excluir link');
   }));
 }
 function copyText(t){navigator.clipboard?.writeText(t).then(()=>toast('Copiado!','ok')).catch(()=>toast('Não foi possível copiar.','warn'));}
@@ -4958,7 +4971,7 @@ function renderDtabPrompts(a){
     `<button class="btn btn-dark" id="np-add" style="margin-top:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Novo prompt / gerador</button>`;
   $('#np-add').addEventListener('click',()=>openPromptModal(a));
   $$('#dtab-prompts [data-pedit]').forEach(b=>b.addEventListener('click',()=>openPromptModal(a,(a.prompts||[]).find(x=>x.id===b.dataset.pedit))));
-  $$('#dtab-prompts [data-pdel]').forEach(b=>b.addEventListener('click',()=>{a.prompts=a.prompts.filter(x=>x.id!==b.dataset.pdel);save();renderDrawer();renderAgents();if(view==='campanha')renderCampanhaDetail();toast('Prompt removido.','warn');}));
+  $$('#dtab-prompts [data-pdel]').forEach(b=>b.addEventListener('click',()=>{const p=(a.prompts||[]).find(x=>x.id===b.dataset.pdel);if(!p)return;openConfirmDelete(p.titulo||'Prompt',()=>{a.prompts=a.prompts.filter(x=>x.id!==b.dataset.pdel);save();renderDrawer();renderAgents();if(view==='campanha')renderCampanhaDetail();toast('Prompt removido.','warn');},'Excluir prompt');}));
   $$('#dtab-prompts [data-copyraw]').forEach(b=>b.addEventListener('click',()=>copyText((a.prompts.find(x=>x.id===b.dataset.copyraw)||{}).texto)));
   $$('#dtab-prompts [data-showtpl]').forEach(b=>b.addEventListener('click',()=>{const p=a.prompts.find(x=>x.id===b.dataset.showtpl);const out=$('#out-'+p.id);out.textContent=p.texto;out.classList.add('show');}));
   $$('#dtab-prompts [data-gen]').forEach(b=>b.addEventListener('click',()=>{
@@ -5013,7 +5026,9 @@ function renderDtabArquivos(a){
     save();renderDrawer();renderAgents();if(view==='campanha')renderCampanhaDetail();toast('Link adicionado!','ok');
   });
   $$('#dtab-arquivos [data-fdel]').forEach(b=>b.addEventListener('click',()=>{
-    a.arquivos=a.arquivos.filter(x=>x.id!==b.dataset.fdel);save();renderDrawer();renderAgents();if(view==='campanha')renderCampanhaDetail();toast('Link removido.','warn');
+    const f=(a.arquivos||[]).find(x=>x.id===b.dataset.fdel);
+    if(!f)return;
+    openConfirmDelete(f.nome||f.url||'Link',()=>{a.arquivos=a.arquivos.filter(x=>x.id!==b.dataset.fdel);save();renderDrawer();renderAgents();if(view==='campanha')renderCampanhaDetail();toast('Link removido.','warn');},'Excluir link');
   }));
 }
 
@@ -5119,8 +5134,9 @@ function renderAgentModalPrompts(){
     <button class="icon-btn danger" data-fpdel="${p.id}" title="Remover prompt">${RM_SVG}</button>
   </div>`).join(''):'<p class="hint" style="margin:0">Nenhum prompt adicionado neste agente.</p>';
   $$('#f-prompt-list [data-fpdel]').forEach(b=>b.addEventListener('click',()=>{
-    agentModalPrompts=agentModalPrompts.filter(p=>p.id!==b.dataset.fpdel);
-    renderAgentModalPrompts();
+    const p=agentModalPrompts.find(x=>x.id===b.dataset.fpdel);
+    if(!p)return;
+    openConfirmDelete(p.titulo||'Prompt',()=>{agentModalPrompts=agentModalPrompts.filter(x=>x.id!==b.dataset.fpdel);renderAgentModalPrompts();toast('Prompt removido.','warn');},'Excluir prompt');
   }));
 }
 function addAgentModalPrompt(){
@@ -5372,9 +5388,10 @@ document.body.addEventListener('click',e=>{
   const pe=t.closest('[data-postedit]'), pdl=t.closest('[data-postdel]');
   if(pe){const f=findPost(pe.dataset.postedit);if(f)openPostModal(f.campId,f.p);return;}
   if(pdl){const f=findPost(pdl.dataset.postdel);if(f)openConfirmDelete(f.p.titulo,()=>{const store=postStore(f.campId);const i=store?store.indexOf(f.p):-1;if(i>=0)store.splice(i,1);save();syncPosts();toast('Arte removida.','warn');},'Excluir arte');return;}
-  const te=t.closest('[data-taredit]'), tdl=t.closest('[data-tardel]');
-  if(te){openTarefaModal(tarefaById(te.dataset.taredit));return;}
+  const te=t.closest('[data-taredit]'), tdl=t.closest('[data-tardel]'), topen=t.closest('[data-taskopen]');
   if(tdl){const tk=tarefaById(tdl.dataset.tardel);if(tk)openConfirmDelete(tk.titulo,()=>{state.tarefas=state.tarefas.filter(x=>x.id!==tk.id);save();renderTarefas();toast('Tarefa excluída.','warn');},'Excluir tarefa');return;}
+  if(te){openTarefaModal(tarefaById(te.dataset.taredit));return;}
+  if(topen&&!t.closest('button,a,select,input,textarea')){openTarefaModal(tarefaById(topen.dataset.taskopen));return;}
   if(t.closest('[data-close]')){closeAgentModal();closeCampModal();}
   if(t.closest('[data-pclose]')){closePromptModal();}
   if(t.closest('[data-xclose]')){closeConfirmModal();}
@@ -5385,7 +5402,7 @@ document.body.addEventListener('click',e=>{
   if(t.closest('[data-shareclose]')){closeShareModal();}
   if(t.closest('[data-loginclose]')){closeLoginModal();}
 });
-$$('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o){if(o.id==='etapaModal'){closeEtapaModal();return;}closeAgentModal();closeCampModal();closePromptModal();closeConfirmModal();closePostModal();closeTarefaModal();closeFluxoModal();closeShareModal();closeLoginModal();}}));
+$$('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o){if(o.id==='confirmModal'){closeConfirmModal();return;}if(o.id==='etapaModal'){closeEtapaModal();return;}closeAgentModal();closeCampModal();closePromptModal();closeConfirmModal();closePostModal();closeTarefaModal();closeFluxoModal();closeShareModal();closeLoginModal();}}));
 $('#drawerOverlay').addEventListener('click',closeDrawer);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#etapaModal').classList.contains('open')){closeEtapaModal();return;}closeAgentModal();closeCampModal();closePromptModal();closeConfirmModal();closePostModal();closeTarefaModal();closeFluxoModal();closeShareModal();closeLoginModal();closeDrawer();closeSidebar();}});
 
@@ -5431,8 +5448,9 @@ $('#importBtn').addEventListener('click',()=>$('#importFile').click());
 $('#importFile').addEventListener('change',e=>{
   const file=e.target.files[0];if(!file)return;const r=new FileReader();
   r.onload=()=>{try{const data=JSON.parse(r.result);if(!data.agents&&!data.campanhas)throw 0;
-    if(confirm('Importar substituirá os dados atuais. Continuar? (exporte um backup antes)')){
-      state=normalize({agents:data.agents||[],campanhas:data.campanhas||[],posts:data.posts||[],tarefas:data.tarefas||[],projetos:data.projetos||[],sessoes:data.sessoes||[],contatos:data.contatos||[],contatoPastas:data.contatoPastas||[],config:data.config});compactState();save();toast('Dados importados!','ok');go('dashboard');}
+    openConfirmDelete('IMPORTAR DADOS',()=>{
+      state=normalize({agents:data.agents||[],campanhas:data.campanhas||[],posts:data.posts||[],tarefas:data.tarefas||[],projetos:data.projetos||[],sessoes:data.sessoes||[],contatos:data.contatos||[],contatoPastas:data.contatoPastas||[],config:data.config});compactState();save();toast('Dados importados!','ok');go('dashboard');
+    },'Substituir dados atuais','Importar um backup substitui os dados atuais deste navegador. Exporte um backup antes, se quiser preservar a versão atual.',{btnLabel:'Importar backup',btnClass:'btn-danger'});
     }catch(err){toast('Arquivo inválido.','warn');}e.target.value='';};
   r.readAsText(file);
 });
