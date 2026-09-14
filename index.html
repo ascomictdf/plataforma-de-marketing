@@ -292,6 +292,13 @@ select.chip{padding-right:30px;cursor:pointer}
 .meta-i{font-size:11.5px;font-weight:600;color:var(--texto-suave);background:var(--surface-2);padding:3px 9px;border-radius:8px;display:inline-flex;align-items:center;gap:5px}
 .meta-i.note{background:#fff5e6;color:#b45309;cursor:help}
 [data-theme="dark"] .meta-i.note{background:rgba(245,158,11,.16);color:#f0b357}
+.agent-area-folders{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:-6px 0 18px}
+.agent-folder-chip{padding:8px 14px;border-radius:30px;font-size:13px;font-weight:800;cursor:pointer;background:var(--cinza-card);border:1.5px solid var(--cinza-borda);color:var(--texto-suave);transition:.18s;display:inline-flex;align-items:center;gap:7px}
+.agent-folder-chip:hover{border-color:var(--azul-300);color:var(--texto)}
+.agent-folder-chip.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 8px 20px -10px rgba(46,91,190,.8)}
+.agent-folder-chip .cnt{background:rgba(0,0,0,.08);border-radius:20px;padding:1px 8px;font-size:11px}
+.agent-folder-chip.on .cnt{background:rgba(255,255,255,.25)}
+.agent-folder-chip.new-folder{border-style:dashed;color:var(--azul-300)}
 .card-foot{display:flex;align-items:center;gap:8px;padding-top:13px;border-top:1px solid var(--cinza-borda);margin-top:auto}
 .status{font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.4px}
 .status .dot{width:7px;height:7px;border-radius:50%}
@@ -789,7 +796,8 @@ a.open-btn{text-decoration:none}
 .subag-item .sa-ico{width:30px;height:30px;border-radius:9px;background:var(--cinza-card);border:1px solid var(--cinza-borda);display:grid;place-items:center;flex:0 0 30px}
 .subag-item .sa-main{flex:1;min-width:0}
 .subag-item .sa-nome{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.subag-item .sa-link{font-size:11.5px;color:var(--texto-suave);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.subag-item .sa-link{font-size:11.5px;color:var(--azul-300);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;text-decoration:none;font-weight:700}
+.subag-item .sa-link:hover{text-decoration:underline;color:var(--azul)}
 
 /* ===== MODO APROVAÇÃO (tela dedicada via link) ===== */
 #reviewApp{display:none;position:fixed;inset:0;z-index:500;background:var(--cinza-bg);overflow-y:auto}
@@ -1197,6 +1205,7 @@ body.review-on{overflow:hidden}
           <select id="areaFilter" class="chip"></select>
           <span class="count-pill" id="agentCount"></span>
         </div>
+        <div class="agent-area-folders" id="agentAreaFolders"></div>
         <div class="grid" id="agentGrid"></div>
       </section>
 
@@ -1554,6 +1563,7 @@ body.review-on{overflow:hidden}
               <li><b>Prompts / geradores:</b> escreva um modelo com campos entre <code>{{ }}</code> (ex.: <code>{{Tema}}</code>). Na hora de usar, preencha os campos e gere o texto pronto para copiar.</li>
               <li><b>Links:</b> adicione links de referência. Arquivos devem ficar fora da plataforma, por exemplo no Drive, para reduzir o uso do banco de dados.</li>
               <li><b>Subagentes / links:</b> na aba Sobre é possível cadastrar vários chatbots/links secundários no mesmo agente (ex.: versão Claude, gerador de hashtags).</li>
+              <li><b>Pastas por área:</b> na tela de agentes, cada área vira uma pasta clicável com contador. Use "Nova pasta" para criar uma nova área e depois vincule agentes a ela no cadastro/edição.</li>
               <li><b>Campanhas:</b> um agente pode fazer parte de uma ou mais campanhas. Se nenhuma campanha for marcada, ele fica na lista geral de agentes.</li>
               <li><b>Filtros:</b> por tipo, área e busca. Agentes vinculados a campanhas aparecem dentro de cada campanha marcada.</li>
             </ul>
@@ -2619,6 +2629,13 @@ let notifs=[];
 function loadNotifs(){try{notifs=JSON.parse(localStorage.getItem(NOTIF_KEY)||'[]');}catch(e){notifs=[];}}
 function saveNotifs(){try{localStorage.setItem(NOTIF_KEY,JSON.stringify(notifs.slice(0,50)));}catch(e){}}
 function addNotif(n){notifs.unshift(Object.assign({id:id(),ts:Date.now(),read:false},n));saveNotifs();renderNotifs();}
+function notifyAprovDecision(p){
+  if(!p)return;
+  const quem=p.revisadoPor?` por ${p.revisadoPor}`:'';
+  const aprovado=p.aprov==='aprovado';
+  addNotif({tipo:p.aprov,titulo:p.titulo,msg:aprovado?('Arte aprovada'+quem):('Alteração solicitada'+quem+(p.aprovComentario?': '+p.aprovComentario:''))});
+  toast((aprovado?'✅ Aprovada: ':'✏️ Alteração: ')+p.titulo,aprovado?'ok':'warn');
+}
 function notifTime(ts){try{return new Date(ts).toLocaleString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
 function renderNotifs(){
   const u=notifs.filter(n=>!n.read).length, c=$('#notifCount');
@@ -2648,9 +2665,7 @@ async function pollCloud(){
       const prev=aprovSnap[x.p.id];
       const sig=aprovSignature(x.p);
       if(prev!==undefined && prev!==sig && x.p.revisadoEm && (x.p.aprov==='aprovado'||x.p.aprov==='alteracao')){
-        const quem=x.p.revisadoPor?` por ${x.p.revisadoPor}`:'';
-        addNotif({tipo:x.p.aprov,titulo:x.p.titulo,msg:x.p.aprov==='aprovado'?('Arte aprovada'+quem):('Alteração solicitada'+quem+(x.p.aprovComentario?': '+x.p.aprovComentario:''))});
-        toast((x.p.aprov==='aprovado'?'✅ Aprovada: ':'✏️ Alteração: ')+x.p.titulo, x.p.aprov==='aprovado'?'ok':'warn');
+        notifyAprovDecision(x.p);
       }
       aprovSnap[x.p.id]=sig;
       const f=findPost(x.p.id);
@@ -3019,7 +3034,6 @@ function agentCardHTML(a){
     ${tags?`<div class="tags">${tags}</div>`:''}
     <div class="card-foot">
       <span class="cat-pill" style="background:${tipoCor(a.cat)};color:#fff">${esc(tipoNome(a.cat))}</span>
-      <span class="status ${a.status}"><span class="dot"></span>${statusLabel(a.status)}</span>
       <div class="spacer"></div>
       ${np?`<button class="open-btn" data-agent-prompt="${a.id}" title="Abrir prompts do agente">Prompt</button>`:''}
       <button class="open-btn" data-open="${a.id}">Abrir<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -3029,15 +3043,40 @@ function agentCardHTML(a){
 
 /* ============ AGENTES (view) ============ */
 function renderAreaFilter(){
-  const areas=[...new Set(generalAgents().map(a=>a.area).filter(Boolean))].sort();
+  const areas=[...new Set([...(state.config.areas||[]),...generalAgents().map(a=>a.area)].map(a=>(a||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
   const sel=$('#areaFilter');
-  sel.innerHTML=`<option value="todas">Todas as áreas</option>`+areas.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('');
+  const sem=generalAgents().some(a=>!(a.area||'').trim());
+  sel.innerHTML=`<option value="todas">Todas as áreas</option>`+(sem?`<option value="sem">Sem área</option>`:'')+areas.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('');
   sel.value=filters.area;
+}
+function renderAgentAreaFolders(){
+  const bar=$('#agentAreaFolders');if(!bar)return;
+  const base=generalAgents().filter(a=>filters.cat==='todos'||a.cat===filters.cat);
+  const areas=[...new Set([...(state.config.areas||[]),...base.map(a=>a.area)].map(a=>(a||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const count=v=>v==='todas'?base.length:v==='sem'?base.filter(a=>!(a.area||'').trim()).length:base.filter(a=>(a.area||'').trim()===v).length;
+  const chip=(val,label,icon)=>`<div class="agent-folder-chip ${filters.area===val?'on':''}" data-afolder="${esc(val)}">${icon||''}${esc(label)}<span class="cnt">${count(val)}</span></div>`;
+  let html=chip('todas','Todas as áreas','📁 ');
+  areas.forEach(a=>{html+=chip(a,a,'📂 ');});
+  if(count('sem'))html+=chip('sem','Sem área','');
+  html+=`<div class="agent-folder-chip new-folder" id="newAgentAreaFolder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M12 5v14M5 12h14"/></svg>Nova pasta</div>`;
+  bar.innerHTML=html;
+  $$('#agentAreaFolders [data-afolder]').forEach(c=>c.addEventListener('click',()=>{filters.area=c.dataset.afolder;renderAgents();}));
+  $('#newAgentAreaFolder')?.addEventListener('click',addAgentAreaFolder);
+}
+function addAgentAreaFolder(){
+  const v=prompt('Nome da nova pasta/área de agentes:','');
+  if(v==null)return;
+  const nome=v.trim();
+  if(!nome)return;
+  state.config.areas=state.config.areas||[];
+  if(!state.config.areas.some(a=>(a||'').toLowerCase()===nome.toLowerCase()))state.config.areas.push(nome);
+  filters.area=nome;
+  save();renderAreaFilter();renderAgents();if(view==='config')renderConfig();toast('Pasta de área criada!','ok');
 }
 function renderAgents(){
   const list=generalAgents().filter(a=>
     (filters.cat==='todos'||a.cat===filters.cat)&&
-    (filters.area==='todas'||a.area===filters.area)&&
+    (filters.area==='todas'||(filters.area==='sem'?!((a.area||'').trim()):(a.area||'').trim()===filters.area))&&
     matchesSearch(a));
   const grid=$('#agentGrid');
   if(!list.length){
@@ -3046,7 +3085,7 @@ function renderAgents(){
     grid.innerHTML=list.map(agentCardHTML).join('');
   }
   $('#agentCount').textContent=`${list.length} agente${list.length!==1?'s':''}`;
-  renderTipoNav();renderCatFilters();
+  renderTipoNav();renderCatFilters();renderAreaFilter();renderAgentAreaFolders();
   $('#agentesTitle').textContent=filters.cat==='todos'?'Agentes de IA':('Agentes · '+tipoNome(filters.cat));
 }
 function renderTipoNav(){
@@ -4491,9 +4530,9 @@ async function reviewSet(pid,status,comentario,revisor){
   if(status==='alteracao')f.p.aprovComentario=(comentario||'').trim();
   if(status==='aprovado')f.p.aprovComentario='';
   if(revisor){f.p.revisadoPor=revisor;f.p.revisadoEm=new Date().toISOString();try{localStorage.setItem(REVIEW_NAME_KEY,revisor);}catch(e){}}
+  if(status==='aprovado'||status==='alteracao')notifyAprovDecision(f.p);
   aprovSnap[pid]=aprovSignature(f.p);if(!REVIEW_MODE)save();
   renderReview();
-  toast(status==='aprovado'?'Arte aprovada! ✅':'Alteração solicitada. ✏️',status==='aprovado'?'ok':'info');
 }
 function renderReview(){
   const b=brand();
@@ -4916,7 +4955,7 @@ function renderDtabSobre(a){
     ${(a.tags||[]).length?`<div class="info-row"><span class="k">Tags</span><span class="v">${(a.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join(' ')}</span></div>`:''}
     ${a.obs?`<div class="info-obs"><b>Anotações</b>${esc(a.obs)}</div>`:''}
     <div class="add-box" style="margin-top:18px"><h4>🔗 Agentes secundários / Links</h4>
-      ${(a.subagentes||[]).map(sa=>`<div class="subag-item"><span class="sa-ico">🤖</span><div class="sa-main"><div class="sa-nome">${esc(sa.nome||'Link')}</div><div class="sa-link">${esc(sa.link||'')}</div></div><a class="ico-mini" href="${safeUrl(sa.link)}" target="_blank" rel="noopener" title="Abrir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><button class="ico-mini danger" data-sadel="${sa.id}" title="Remover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>`).join('')||'<p class="hint" style="margin:0 0 10px">Adicione outros chatbots/links ligados a este agente (ex.: versão Claude, gerador de hashtags…).</p>'}
+      ${(a.subagentes||[]).map(sa=>`<div class="subag-item"><span class="sa-ico">🤖</span><div class="sa-main"><div class="sa-nome">${esc(sa.nome||'Link')}</div><a class="sa-link" href="${safeUrl(sa.link)}" target="_blank" rel="noopener">${esc(sa.link||'')}</a></div><a class="ico-mini" href="${safeUrl(sa.link)}" target="_blank" rel="noopener" title="Abrir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><button class="ico-mini danger" data-sadel="${sa.id}" title="Remover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>`).join('')||'<p class="hint" style="margin:0 0 10px">Adicione outros chatbots/links ligados a este agente (ex.: versão Claude, gerador de hashtags…).</p>'}
       <div class="field" style="margin-bottom:9px"><input type="text" id="sa-nome" placeholder="Nome (ex.: Versão Claude)" /></div>
       <div class="field" style="margin-bottom:9px"><input type="url" id="sa-link" placeholder="https://…" /></div>
       <button class="btn btn-dark btn-sm" id="sa-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Adicionar link</button>
