@@ -90,6 +90,19 @@ html:not(.platform-locked) .platform-login{display:none}
 .login-visual h3{font-size:42px;line-height:1.05;margin-bottom:12px;color:#fff}
 .login-visual p{font-size:16px;line-height:1.65;color:#dce6f4}
 .top-logout{height:42px;padding:0 14px}
+.login-form .btn{justify-content:center}
+.reset-box{border:1.5px solid var(--cinza-borda);border-radius:14px;padding:16px;background:var(--surface-2)}
+.reset-box h4{font-size:15px;font-weight:800;color:var(--texto);margin-bottom:4px}
+.reset-box p{margin:0 0 12px!important;font-size:13px!important}
+.reset-box input{margin-bottom:12px}
+.reset-box .btn{width:100%;justify-content:center}
+.login-msg{display:none;margin-top:12px;font-size:13px;font-weight:700;line-height:1.5;border-radius:12px;padding:11px 13px}
+.login-msg.show{display:block}
+.login-msg.ok{color:#166534;background:#e7f7ee;border:1px solid #b9e7cc}
+.login-msg.err{color:var(--vermelho);background:#fde8ea;border:1px solid #f7c7c8}
+[data-theme="dark"] .login-msg.ok{color:#7fe0a3;background:rgba(22,163,74,.16);border-color:rgba(22,163,74,.4)}
+[data-theme="dark"] .login-msg.err{background:rgba(229,37,33,.14);border-color:rgba(229,37,33,.36)}
+.login-msg a{color:inherit;word-break:break-all}
 .ia-toggle,.ia-panel,.ia-drawer,.ia-flag,#cfgIA,[data-genai]{display:none!important}
 
 /* ===== SIDEBAR ===== */
@@ -179,7 +192,7 @@ html:not(.platform-locked) .platform-login{display:none}
 [data-theme="dark"] .user-role.editor{background:rgba(46,91,190,.18);color:#9cc0ff}
 
 /* esconde controles de edição no modo somente leitura (a segurança real é a RLS no servidor) */
-body.readonly #addBtn,body.readonly #importBtn,body.readonly #heroAdd,
+body.readonly #addBtn,body.readonly #cfgImport,body.readonly #heroAdd,
 body.readonly #addCampBtn,body.readonly #addCampAgentBtn,body.readonly #addPostBtn,
 body.readonly #gcalAddBtn,body.readonly #addAprovPostBtn,body.readonly #addTarefaBtn,body.readonly #addFluxoBtn,
 body.readonly #campEditBtn,body.readonly #np-add,
@@ -622,7 +635,7 @@ a.open-btn{text-decoration:none}
 .kcol-head .drag-handle{width:16px;height:22px;display:grid;place-items:center;color:var(--texto-suave);flex:0 0 16px}
 .kcol-head .drag-handle svg{width:15px;height:15px}
 .kcol-head .kdot{width:10px;height:10px;border-radius:50%;flex:0 0 10px}
-.kcol-head .col-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.kcol-head .col-title{min-width:0;flex:0 1 auto;overflow-wrap:anywhere;line-height:1.3}
 .kcol-head .kcnt{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--texto-suave);background:var(--cinza-card);border:1px solid var(--cinza-borda);padding:1px 9px;border-radius:20px}
 .kcol-head .col-actions{display:flex;gap:4px;margin-left:2px;opacity:.78;transition:opacity .15s}
 .kcol:hover .col-actions{opacity:1}
@@ -630,15 +643,18 @@ a.open-btn{text-decoration:none}
 .kcol-add{min-height:76px;border:1.5px dashed var(--cinza-borda);background:var(--cinza-card);display:flex;align-items:center;justify-content:center;padding:12px}
 .kcol-add .add-col-btn{width:100%;min-height:50px;border:0;background:transparent;color:var(--texto-suave);font-family:inherit;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border-radius:12px;transition:.15s}
 .kcol-add .add-col-btn:hover{background:var(--surface-2);color:var(--azul)}
-.kcard{height:120px;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-left:4px solid var(--kc,var(--azul));border-radius:12px;padding:12px 54px 12px 13px;box-shadow:var(--sombra);cursor:grab;transition:.15s;animation:cardIn .3s ease both;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.kcard{min-height:110px;flex:0 0 auto;min-width:0;background:var(--cinza-card);border:1px solid var(--cinza-borda);border-left:4px solid var(--kc,var(--azul));border-radius:12px;padding:12px 12px 12px 13px;box-shadow:var(--sombra);cursor:grab;transition:.15s;animation:cardIn .3s ease both;display:flex;flex-direction:column;position:relative}
 .kcard:hover{border-color:var(--azul-300);transform:translateY(-1px)}
 .kcard.dragging{opacity:.5;cursor:grabbing}
-.kcard .kc-title{font-weight:800;font-size:14px;line-height:1.3;color:var(--texto);min-height:36px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
-.kcard .kc-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
-.kcard .kc-foot{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:8px;min-height:28px}
-.kcard .kc-actions{display:flex;gap:4px;margin-left:auto;position:absolute;top:9px;right:9px;z-index:3}
+.kcard .kc-top{display:flex;align-items:flex-start;gap:8px;min-width:0}
+.kcard .kc-title{flex:1;min-width:0;font-weight:800;font-size:14px;line-height:1.35;color:var(--texto);overflow-wrap:anywhere}
+.kcard .kc-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center;min-width:0}
+.kcard .kc-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:auto;padding-top:8px}
+.kcard .kc-foot:empty{display:none}
+.kcard .kc-actions{display:flex;gap:4px;flex:0 0 auto;margin:-3px -3px 0 0}
 .kcard .kc-actions .icon-btn{width:29px;height:29px;border-radius:8px;background:var(--cinza-card);box-shadow:0 8px 18px -16px rgba(7,18,40,.8)}
-.kcamp-chip{font-size:10.5px;font-weight:800;color:#fff;padding:3px 9px;border-radius:7px;white-space:nowrap}
+.kcamp-chip{font-size:10.5px;font-weight:800;color:#fff;padding:3px 9px;border-radius:7px;max-width:100%;overflow-wrap:anywhere;line-height:1.35}
+.kc-hist{font-size:11px;font-weight:700;color:var(--texto-suave);margin-top:6px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .prio-chip{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:7px;text-transform:uppercase;letter-spacing:.3px}
 .prio-chip.alta{background:#fde8ea;color:var(--vermelho)}.prio-chip.media{background:#fef3e2;color:#b45309}.prio-chip.baixa{background:#eef1f5;color:#64748b}
 [data-theme="dark"] .prio-chip.alta{background:rgba(229,37,33,.18);color:#ff9b94}
@@ -653,7 +669,7 @@ a.open-btn{text-decoration:none}
 .tgroup{border:1px solid var(--cinza-borda);border-radius:14px;background:var(--cinza-card);box-shadow:var(--sombra);overflow:hidden;margin-bottom:12px}
 .tgroup-head{display:flex;align-items:center;gap:10px;padding:13px 15px;background:var(--surface-2);border-bottom:1px solid var(--cinza-borda);font-weight:900;font-size:13px}
 .tgroup-head .kdot{width:10px;height:10px;border-radius:50%;flex:0 0 10px}
-.tgroup-head .tg-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.tgroup-head .tg-name{min-width:0;overflow-wrap:anywhere}
 .tgroup-head .tg-count{margin-left:auto;color:var(--texto-suave);font-size:12px}
 .tgroup-head .col-actions{display:flex;gap:4px;margin-left:4px}
 .tgroup-head .icon-btn{width:27px;height:27px;border-radius:8px;flex:0 0 27px}
@@ -994,6 +1010,71 @@ body.review-on{overflow:hidden}
 .intg-log{font-size:12.5px;display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto}
 .intg-log .lg{display:flex;gap:9px;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--cinza-borda)}
 .intg-log .lg .t{color:var(--texto-suave);font-size:11px;white-space:nowrap}
+
+/* ===== ENQUADRAMENTO: nada de conteúdo cortado nos cartões ===== */
+.card h3,.contato-card .ct-nome,.fluxo-head h3,.post-row .pr-title,.trow .tr-title,.review-card .rc-title,.list-item .li-head h4,.subag-item .sa-nome,.share-item .si-t,.up-title{overflow-wrap:anywhere}
+.card-foot{flex-wrap:wrap;row-gap:8px}
+.card-foot .open-btn,.card-foot .cat-pill,.card-foot .status,.card-foot .camp-badge{flex:0 0 auto;white-space:nowrap}
+.card-top .card-menu{flex:0 0 auto}
+.meta-i,.tag,.prio-chip,.aprov-badge,.post-status,.cat-pill,.status,.camp-badge{max-width:100%}
+.meta-i{overflow-wrap:anywhere}
+.up-title,.subag-item .sa-nome,.share-item .si-t{white-space:normal}
+.up-camp{white-space:normal;overflow-wrap:anywhere}
+.contato-card .ct-actions{flex-wrap:wrap}
+.post-row .pr-actions,.trow .tr-actions{flex-wrap:wrap;justify-content:flex-end}
+.fluxo-head .fh-actions{flex:0 0 auto;flex-wrap:wrap}
+.cfg-item{flex-wrap:wrap}
+.cfg-item .nm{overflow-wrap:anywhere}
+@media(max-width:560px){.trow,.post-row{flex-wrap:wrap}.trow .tr-actions,.post-row .pr-actions{width:100%;justify-content:flex-start}}
+
+/* ===== SUA CONTA (Configurações) ===== */
+.session-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.session-who{flex:1;min-width:220px;display:flex;align-items:center;gap:12px}
+.session-who .avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;font-weight:800;font-size:16px}
+.session-who .sw-main{min-width:0}
+.session-who .sw-name{font-weight:800;font-size:15px;overflow-wrap:anywhere}
+.session-who .sw-mail{font-size:12.5px;color:var(--texto-suave);overflow-wrap:anywhere;margin-top:2px}
+.session-actions{display:flex;gap:10px;flex-wrap:wrap}
+.user-role.admin-geral{background:linear-gradient(135deg,#7C3AED,#2E5BBE);color:#fff}
+.user-role.admin{background:#fde8ea;color:var(--vermelho)}
+[data-theme="dark"] .user-role.admin{background:rgba(229,37,33,.18);color:#ff9b94}
+.cfg-item .user-actions{display:flex;gap:6px;margin-left:auto;flex:0 0 auto}
+.cfg-item .user-actions .rm{margin:0}
+.user-meta{display:block;font-size:11.5px;color:var(--texto-suave);font-weight:600;margin-top:2px;overflow-wrap:anywhere}
+
+/* ===== RECONEXÃO ===== */
+.reconnect-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(7,18,40,.38);backdrop-filter:blur(12px) saturate(.8);-webkit-backdrop-filter:blur(12px) saturate(.8)}
+.reconnect-overlay.show{display:flex;animation:fadeIn .3s ease}
+body.reconnect-on{overflow:hidden}
+.reconnect-box{background:var(--cinza-card);border:1px solid var(--cinza-borda);border-radius:24px;box-shadow:var(--sombra-forte);padding:34px 30px 28px;max-width:400px;width:100%;text-align:center;animation:modalIn .35s cubic-bezier(.34,1.56,.64,1)}
+.reconnect-btn{width:88px;height:88px;border-radius:50%;border:none;cursor:pointer;background:var(--grad);color:#fff;display:grid;place-items:center;margin:0 auto 18px;box-shadow:0 16px 34px -12px rgba(46,91,190,.9);transition:transform .2s}
+.reconnect-btn:hover{transform:scale(1.07) rotate(-20deg)}
+.reconnect-btn:focus-visible{outline:3px solid var(--azul-300);outline-offset:4px}
+.reconnect-btn svg{width:40px;height:40px}
+.reconnect-btn.spin svg{animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.reconnect-box h3{font-size:19px;font-weight:800;color:var(--texto);margin-bottom:8px}
+.reconnect-box p{font-size:14px;line-height:1.55;color:var(--texto-suave)}
+
+/* ===== HISTÓRICO DE APROVAÇÃO (cartão da arte) ===== */
+.aprov-locked{background:#fde7ec;border:1px solid #f6c5d1;border-left:4px solid #E11D48;border-radius:12px;padding:12px 14px}
+[data-theme="dark"] .aprov-locked{background:rgba(225,29,72,.12);border-color:rgba(225,29,72,.35)}
+.aprov-locked .al-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11.5px;font-weight:800;color:#be123c;text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px}
+[data-theme="dark"] .aprov-locked .al-head{color:#fb7185}
+.aprov-locked .al-head svg{width:14px;height:14px;flex:0 0 14px}
+.aprov-locked .al-text{font-size:14px;line-height:1.55;color:var(--texto);white-space:pre-wrap;overflow-wrap:anywhere;user-select:text}
+.aprov-locked .al-meta{font-size:12px;color:var(--texto-suave);font-weight:600;margin-top:8px}
+.aprov-timeline{list-style:none;margin:0;padding:0 0 0 4px;position:relative}
+.aprov-timeline::before{content:"";position:absolute;left:10px;top:6px;bottom:6px;width:2px;background:var(--cinza-borda)}
+.aprov-timeline li{position:relative;padding:0 0 14px 28px}
+.aprov-timeline li:last-child{padding-bottom:0}
+.aprov-timeline .tl-dot{position:absolute;left:4px;top:3px;width:14px;height:14px;border-radius:50%;border:3px solid var(--cinza-card);box-shadow:0 0 0 1px var(--cinza-borda)}
+.aprov-timeline .tl-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.aprov-timeline .tl-when{font-size:12px;font-weight:700;color:var(--texto-suave)}
+.aprov-timeline .tl-who{font-size:12.5px;color:var(--texto-suave);margin-top:3px;overflow-wrap:anywhere}
+.aprov-timeline .tl-who b{color:var(--texto)}
+.aprov-timeline .tl-text{margin-top:6px;font-size:13.5px;line-height:1.5;color:var(--texto);background:var(--surface-2);border:1px solid var(--cinza-borda);border-radius:10px;padding:9px 11px;white-space:pre-wrap;overflow-wrap:anywhere}
+.rc-last{margin-top:10px}
 </style>
 </head>
 <body>
@@ -1023,12 +1104,24 @@ body.review-on{overflow:hidden}
       <div class="login-error" id="platformLoginError">Login ou senha inválidos.</div>
       <button class="btn btn-primary" id="platformLoginBtn" type="button">Entrar</button>
       <button class="btn btn-ghost" id="platformForgotBtn" type="button">Esqueci minha senha</button>
-      <div id="platformResetBox" style="display:none">
-        <p style="margin:2px 0 10px">Informe o e-mail do administrador para receber o link de recuperação.</p>
-        <div class="field"><input type="email" id="platformResetEmail" placeholder="ascom@ictdf.org.br" /></div>
-        <div class="field" id="platformNewPassWrap" style="display:none;margin-top:10px"><input type="password" id="platformNewPass" placeholder="Nova senha (mín. 8 caracteres)" /></div>
-        <button class="btn btn-dark" id="platformResetBtn" type="button">Enviar recuperação</button>
-        <div class="login-error" id="platformResetMsg" style="margin-top:10px"></div>
+      <div id="platformResetBox" class="reset-box" style="display:none">
+        <div id="resetRequestStep">
+          <h4>Recuperar acesso</h4>
+          <p>Informe o e-mail que você usa para entrar. Você receberá um link para criar uma nova senha.</p>
+          <label for="platformResetEmail">E-mail do login</label>
+          <input type="email" id="platformResetEmail" autocomplete="username" placeholder="seu.email@ictdf.org.br" />
+          <button class="btn btn-dark" id="platformResetBtn" type="button">Enviar pedido de nova senha</button>
+        </div>
+        <div id="resetNewStep" style="display:none">
+          <h4>Criar nova senha</h4>
+          <p>Conta: <b id="resetForEmail"></b></p>
+          <label for="platformNewPass">Nova senha</label>
+          <input type="password" id="platformNewPass" autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
+          <label for="platformNewPass2">Repita a nova senha</label>
+          <input type="password" id="platformNewPass2" autocomplete="new-password" placeholder="Digite novamente" />
+          <button class="btn btn-dark" id="platformSaveNewPassBtn" type="button">Salvar nova senha</button>
+        </div>
+        <div class="login-msg" id="platformResetMsg" role="status" aria-live="polite"></div>
       </div>
     </div>
   </div>
@@ -1149,15 +1242,6 @@ body.review-on{overflow:hidden}
         <button class="theme-toggle" id="themeToggle" title="Alternar tema claro/escuro">
           <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
-        <button class="btn btn-ghost" id="importBtn" title="Importar dados (JSON)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <span class="label-hide">Importar</span>
-        </button>
-        <button class="btn btn-ghost" id="exportBtn" title="Exportar dados (JSON)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 0 4 4m-4-4-4 4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <span class="label-hide">Exportar</span>
-        </button>
-        <button class="btn btn-ghost top-logout" id="platformLogoutBtn" title="Sair da plataforma">Sair</button>
         <button class="btn btn-primary" id="addBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
           <span class="label-hide">Novo Agente</span>
@@ -1477,6 +1561,17 @@ body.review-on{overflow:hidden}
           <h2><span class="accent"></span>Configurações</h2>
           <p>Personalize a identidade da plataforma e gerencie as opções usadas em agentes, campanhas, tarefas e fluxos.</p>
         </div>
+        <div class="cfg-card cfg-session" style="margin-bottom:20px">
+          <div class="cfg-head"><h3>🔐 Sua conta</h3></div>
+          <div class="session-row">
+            <div class="session-who" id="cfgSessionInfo"></div>
+            <div class="session-actions">
+              <button class="btn btn-ghost" id="cfgChangePass" title="Alterar a sua senha de acesso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Alterar minha senha</button>
+              <button class="btn btn-ghost" id="cfgGoData" title="Ir para Importar / Exportar dados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Importar / Exportar</button>
+              <button class="btn btn-danger" id="platformLogoutBtn" title="Sair da plataforma"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Sair</button>
+            </div>
+          </div>
+        </div>
         <div class="cfg-card" id="cfgBrand" style="margin-bottom:20px"></div>
         <div class="cfg-grid">
           <div class="cfg-card" id="cfgPessoas"></div>
@@ -1485,12 +1580,12 @@ body.review-on{overflow:hidden}
           <div class="cfg-card" id="cfgAreas"></div>
         </div>
         <div class="cfg-card" id="cfgIA" style="margin-top:20px"></div>
-        <div class="cfg-card" style="margin-top:20px">
-          <div class="cfg-head"><h3>💾 Dados</h3></div>
-          <p class="hint" style="margin:0 0 14px">Faça backup ou restaure toda a base (agentes, campanhas e configurações).</p>
+        <div class="cfg-card" id="cfgDados" style="margin-top:20px">
+          <div class="cfg-head"><h3>💾 Dados — importar e exportar</h3></div>
+          <p class="hint" style="margin:0 0 14px">Faça backup (exportar em JSON) ou restaure toda a base (importar) — agentes, campanhas, tarefas, artes e configurações.</p>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-ghost" id="cfgExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 0 4 4m-4-4-4 4"/></svg>Exportar backup</button>
-            <button class="btn btn-ghost" id="cfgImport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/></svg>Importar</button>
+            <button class="btn btn-ghost" id="cfgExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 0 4 4m-4-4-4 4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Exportar dados</button>
+            <button class="btn btn-ghost" id="cfgImport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Importar dados</button>
             <div style="flex:1"></div>
             <button class="btn btn-ghost" id="cfgReset" style="color:var(--vermelho);border-color:var(--vermelho)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0v14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6"/></svg>Apagar tudo (exemplos)</button>
           </div>
@@ -1511,7 +1606,7 @@ body.review-on{overflow:hidden}
         <div class="page-head">
           <button class="btn btn-ghost btn-sm" id="docsBack" style="margin-bottom:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Voltar às configurações</button>
           <h2><span class="accent"></span>Documentação da plataforma</h2>
-          <p>Manual completo de uso e funcionamento. <b>Última atualização:</b> <span id="docVersao">27/06/2026 · v2.3</span></p>
+          <p>Manual completo de uso e funcionamento. <b>Última atualização:</b> <span id="docVersao">14/10/2026 · v2.5</span></p>
         </div>
         <div class="docs">
           <nav class="doc-toc">
@@ -1596,6 +1691,8 @@ body.review-on{overflow:hidden}
               <li>Reúne <b>todas as artes</b> — de campanhas e avulsas.</li>
               <li><b>Integração:</b> arrastar um cartão entre colunas (ou trocar pelo seletor na Lista) muda o status de aprovação <b>também no calendário editorial</b>, automaticamente.</li>
               <li>Filtro por campanha.</li>
+              <li><b>Notificações:</b> mover um cartão para <b>Aprovado</b> ou <b>Em alteração</b> gera uma notificação no sino.</li>
+              <li><b>Cartão da arte:</b> clique no cartão para abrir. A solicitação de alteração escrita pelo revisor aparece <b>travada</b> (não editável), com data e hora, e a <b>linha do tempo</b> mostra todas as movimentações e pedidos de alteração. O servidor impede que o histórico seja editado ou apagado.</li>
               <li><b>Link de aprovação (com seleção):</b> o botão "Gerar link de aprovação" abre uma janela onde você <b>escolhe quais artes</b> entram naquele link (marcar/desmarcar) e, opcionalmente, <b>para quem</b> ele é. Assim dá para mandar artes diferentes para pessoas diferentes. Quem abre vê só as artes selecionadas e pode <b>Aprovar</b> ou <b>Solicitar alteração</b> — sem acesso ao resto. Ao aprovar ou pedir alteração, a pessoa <b>informa o nome dela</b>, que fica registrado no cartão da arte como <b>"Revisado por: [nome]"</b> (embaixo do status), para você saber quem aprovou ou revisou. As decisões salvam na nuvem e você é notificado (sino no topo). Para pessoas externas, o site precisa estar publicado.</li>
             </ul>
           </section>
@@ -1726,6 +1823,7 @@ body.review-on{overflow:hidden}
           <section class="doc-sec" id="doc-changelog">
             <h3>17. Histórico de versões</h3>
             <ul class="doc-log">
+              <li><b>v2.5 — 14/10/2026</b><br><b>Admin Geral</b>: novo nível de acesso que altera login (e-mail), nome, senha e nível de acesso de todos os usuários (lápis em Configurações → Usuários e acessos). Atribuído a thiago.silverio@ictdf.org.br; mudanças de acesso valem na hora. <b>Reconexão</b>: quando o banco desconecta ou a sessão expira por inatividade, a tela fica embaçada com um botão de recarregar que reconecta. <b>Header mais limpo</b>: Importar, Exportar e Sair foram para Configurações. <b>Enquadramento</b>: cartões de tarefas, aprovação e agentes não cortam mais títulos, datas, "Revisado por" nem botões. <b>Campanhas em andamento</b>: ao vincular uma tarefa ou arte, só aparecem campanhas em andamento. <b>Notificações</b>: mover uma arte para Aprovado ou Em alteração gera notificação (também para quem estiver em outro navegador). <b>Esqueci minha senha</b>: corrigido — agora a pessoa cria a nova senha por um link (enviado por e-mail, se configurado, ou gerado pelo Admin Geral a partir do pedido, que chega como notificação). Também dá para trocar a senha logado em Configurações → Sua conta → Alterar minha senha. <b>Solicitação de alteração travada</b>: o texto escrito pelo revisor aparece no cartão da arte, sem edição, com data, hora e linha do tempo de todas as movimentações (protegido também no servidor).</li>
               <li><b>v2.4 — 24/08/2026</b><br><b>Tarefas e agentes mais flexíveis</b>: a tela de tarefas ganhou cards compactos, descrição somente no modal, criação/ordenação/renomeação/exclusão de colunas direto no quadro, além da lista agrupada por etapa. O cadastro de agentes agora permite adicionar prompts na criação, e os cards exibem atalhos para abrir o chat e os prompts quando existirem. A aprovação pública não exige login no link compartilhado. A integração Gemini/Gerar com IA foi retirada da interface.</li>
               <li><b>v2.3 — 27/06/2026</b><br><b>Contatos — setor e pastas</b>: o cadastro de contato ganhou o campo <b>Setor</b> (com sugestões dos setores já usados) e a opção de organizar os contatos em <b>pastas</b> — com filtro por pasta no topo e um gerenciador para criar, renomear e remover pastas.</li>
               <li><b>v2.2 — 27/06/2026</b><br><b>Lista de contatos</b>: nova seção para cadastrar contatos (nome, celular e observações), com busca e atalho para o WhatsApp. <b>Aprovação — quem revisou</b>: ao aprovar ou solicitar alteração pelo link, a pessoa informa o nome, que aparece no cartão da arte como "Revisado por: [nome]". <b>Link de aprovação</b>: a lista "Artes neste link" ficou mais alta, facilitando a seleção.</li>
@@ -1969,7 +2067,7 @@ body.review-on{overflow:hidden}
       <div class="field">
         <label>Campanha</label>
         <select id="po-campsel"></select>
-        <div class="hint">Vincule a uma campanha ou deixe como "Sem campanha (geral)".</div>
+        <div class="hint">Só aparecem campanhas <b>em andamento</b>. Vincule a uma delas ou deixe como "Sem campanha (geral)".</div>
       </div>
       <div class="field-row">
         <div class="field">
@@ -2003,8 +2101,12 @@ body.review-on{overflow:hidden}
         <div class="ia-slot" id="iaPost"></div>
       </div>
       <div class="field" id="po-coment-field" style="display:none">
-        <label>✏️ Comentário da revisão (o que alterar)</label>
-        <textarea id="po-coment" placeholder="Preenchido por quem solicitou alteração."></textarea>
+        <label>✏️ O que precisa ser alterado</label>
+        <div id="po-coment"></div>
+      </div>
+      <div class="field" id="po-hist-field" style="display:none">
+        <label>🕒 Linha do tempo da aprovação</label>
+        <div id="po-hist"></div>
       </div>
     </div>
     <div class="modal-foot">
@@ -2045,7 +2147,7 @@ body.review-on{overflow:hidden}
       <div class="field-row">
         <div class="field">
           <label>Campanha</label>
-          <select id="tk-camp"></select>
+          <select id="tk-camp" title="Somente campanhas em andamento"></select>
         </div>
         <div class="field">
           <label>Prazo</label>
@@ -2263,6 +2365,60 @@ body.review-on{overflow:hidden}
   </div>
 </div>
 
+<!-- MODAL EDITAR USUÁRIO (exclusivo do Admin Geral) -->
+<div class="overlay" id="userModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <h3>Editar login e acesso</h3>
+      <button class="x" data-userclose><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="um-orig" />
+      <p class="hint" style="margin:0">Como <b>Admin Geral</b>, você pode alterar o login (e-mail), o nome, a senha e o nível de acesso deste usuário. As mudanças de acesso valem na hora.</p>
+      <div class="field"><label>Nome</label><input type="text" id="um-nome" placeholder="Nome da pessoa" /></div>
+      <div class="field"><label>Login (e-mail) <span class="req">*</span></label><input type="email" id="um-email" autocomplete="off" spellcheck="false" /></div>
+      <div class="field"><label>Nova senha <span style="font-weight:600;color:var(--texto-suave)">(deixe em branco para manter a atual)</span></label><input type="password" id="um-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password" /></div>
+      <div class="field"><label>Nível de acesso</label><select id="um-role"></select><div class="hint" id="um-role-hint"></div></div>
+      <div class="confirm-aviso" id="um-err" style="display:none"></div>
+      <div class="add-box" style="margin-top:0">
+        <h4>🔑 Link para a pessoa criar a nova senha</h4>
+        <p class="hint" style="margin:0 0 10px" id="um-reset-hint">Gere um link (vale 24 horas) e envie para a pessoa por WhatsApp ou e-mail. Ela mesma escolhe a nova senha.</p>
+        <button class="btn btn-dark btn-sm" id="um-reset-link" type="button">Gerar link de nova senha</button>
+        <div id="um-reset-out" style="display:none;margin-top:10px">
+          <div style="display:flex;gap:8px"><input type="text" id="um-reset-url" readonly style="flex:1;min-width:0" /><button class="btn btn-primary btn-sm" id="um-reset-copy" type="button">Copiar</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-userclose>Cancelar</button>
+      <button class="btn btn-primary" id="um-save">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ALTERAR MINHA SENHA -->
+<div class="overlay" id="pwModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <h3>Alterar minha senha</h3>
+      <button class="x" data-pwclose><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Senha atual</label><input type="password" id="pw-cur" autocomplete="current-password" /></div>
+      <div class="field"><label>Nova senha</label><input type="password" id="pw-new" autocomplete="new-password" placeholder="Mínimo 6 caracteres" /></div>
+      <div class="field"><label>Repita a nova senha</label><input type="password" id="pw-new2" autocomplete="new-password" /></div>
+      <p class="hint" style="margin:0">Esqueceu a senha atual? Saia da plataforma e use <b>Esqueci minha senha</b> na tela de login.</p>
+      <div class="confirm-aviso" id="pw-err" style="display:none"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-pwclose>Cancelar</button>
+      <button class="btn btn-primary" id="pw-save">Salvar nova senha</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL OPERADOR (login local de colaborador) -->
 <div class="overlay" id="opModal">
   <div class="modal" style="max-width:480px">
@@ -2283,6 +2439,17 @@ body.review-on{overflow:hidden}
       <button class="btn btn-ghost" data-opclose>Cancelar</button>
       <button class="btn btn-primary" id="opConfirm" style="display:none">Entrar</button>
     </div>
+  </div>
+</div>
+
+<!-- RECONEXÃO (banco desconectado / sessão ociosa) -->
+<div class="reconnect-overlay" id="reconnectOverlay" role="alertdialog" aria-modal="true" aria-labelledby="reconnectTitle" aria-hidden="true">
+  <div class="reconnect-box">
+    <button class="reconnect-btn" id="reconnectBtn" type="button" title="Recarregar e reconectar" aria-label="Recarregar a página e reconectar ao banco">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+    </button>
+    <h3 id="reconnectTitle">Conexão com o banco perdida</h3>
+    <p id="reconnectMsg">A plataforma ficou muito tempo ociosa ou a conexão caiu. Clique no ícone para recarregar e reconectar.</p>
   </div>
 </div>
 
@@ -2334,64 +2501,100 @@ async function doPlatformLogout(){
   try{await fetch('/api/auth/logout',{method:'POST',credentials:'include'});}catch(e){}
   setPlatformLocked(true);
 }
+/* ----- Esqueci minha senha ----- */
+function resetMsg(text,kind,html){
+  const msg=document.getElementById('platformResetMsg');if(!msg)return;
+  if(!text){msg.className='login-msg';msg.textContent='';return;}
+  msg.className='login-msg show '+(kind||'ok');
+  if(html)msg.innerHTML=text;else msg.textContent=text;
+}
 async function requestPasswordReset(){
-  const email=(document.getElementById('platformResetEmail')?.value||document.getElementById('platformLoginEmail')?.value||'').trim();
-  const msg=document.getElementById('platformResetMsg'), btn=document.getElementById('platformResetBtn');
-  if(msg){msg.style.display='none';msg.textContent='';}
+  const input=document.getElementById('platformResetEmail'), btn=document.getElementById('platformResetBtn');
+  const email=platformCred(input?.value);
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){resetMsg('Digite o e-mail que você usa para entrar na plataforma.','err');input?.focus();return;}
+  resetMsg('');
   if(btn){btn.disabled=true;btn.textContent='Enviando...';}
   try{
     const r=await fetch('/api/auth/request-reset',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({email})});
     const d=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error('Falha ao solicitar recuperação.');
-    if(msg){msg.style.display='flex';msg.style.color='var(--ok)';msg.textContent=d.devLink?('Ambiente local: '+d.devLink):'Se o e-mail estiver cadastrado, enviaremos um link de recuperação.';}
+    if(!r.ok)throw new Error(r.status>=500?'O servidor não conseguiu registrar o pedido. Tente novamente em instantes.':'Não foi possível enviar o pedido.');
+    if(d.devLink)resetMsg('Ambiente local (sem e-mail): <a href="'+esc(d.devLink)+'">abrir link de redefinição</a>','ok',true);
+    else if(d.delivery==='email')resetMsg('Pedido enviado! Se este e-mail tiver acesso à plataforma, você receberá em instantes um link para criar a nova senha (confira também o spam). O link vale 30 minutos.','ok');
+    else resetMsg('Pedido enviado ao Admin Geral da plataforma. Se este e-mail tiver acesso, você receberá dele um link para criar a sua nova senha.','ok');
   }catch(e){
-    if(msg){msg.style.display='flex';msg.style.color='var(--vermelho)';msg.textContent=e.message||'Falha ao solicitar recuperação.';}
+    resetMsg(e.message||'Falha ao solicitar recuperação.','err');
   }finally{
-    if(btn){btn.disabled=false;btn.textContent='Enviar recuperação';}
+    if(btn){btn.disabled=false;btn.textContent='Enviar pedido de nova senha';}
   }
 }
-async function submitPasswordResetFromLink(){
+const RESET_ERRORS={PASSWORD_TOO_SHORT:'A nova senha precisa de pelo menos 6 caracteres.',INVALID_OR_EXPIRED_TOKEN:'Este link é inválido, já foi usado ou expirou. Peça um novo em "Esqueci minha senha".',INVALID_RESET_DATA:'Link incompleto. Abra novamente o link recebido.'};
+async function saveNewPasswordFromLink(){
   const params=new URLSearchParams(location.search);
   const token=params.get('reset'), email=params.get('email');
-  if(!token||!email)return;
-  const box=document.getElementById('platformResetBox'), resetEmail=document.getElementById('platformResetEmail'), wrap=document.getElementById('platformNewPassWrap'), btn=document.getElementById('platformResetBtn');
-  if(box)box.style.display='';
-  if(resetEmail)resetEmail.value=email;
-  if(wrap)wrap.style.display='';
-  if(btn)btn.textContent='Salvar nova senha';
-  btn?.addEventListener('click',async()=>{
-    const msg=document.getElementById('platformResetMsg'), pass=document.getElementById('platformNewPass')?.value||'';
-    if(msg){msg.style.display='none';msg.textContent='';}
-    try{
-      const r=await fetch('/api/auth/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,token,password:pass})});
-      if(!r.ok)throw new Error('Link inválido, expirado ou senha muito curta.');
-      if(msg){msg.style.display='flex';msg.style.color='var(--ok)';msg.textContent='Senha alterada. Entre com a nova senha.';}
-      history.replaceState(null,'',location.pathname);
-      if(wrap)wrap.style.display='none';
-      if(btn)btn.textContent='Enviar recuperação';
-    }catch(e){
-      if(msg){msg.style.display='flex';msg.style.color='var(--vermelho)';msg.textContent=e.message;}
-    }
-  },{once:true});
+  const p1=document.getElementById('platformNewPass'), p2=document.getElementById('platformNewPass2'), btn=document.getElementById('platformSaveNewPassBtn');
+  const pass=p1?.value||'';
+  if(pass.length<6){resetMsg('A nova senha precisa de pelo menos 6 caracteres.','err');p1?.focus();return;}
+  if(pass!==(p2?.value||'')){resetMsg('As duas senhas não são iguais.','err');p2?.focus();return;}
+  resetMsg('');
+  if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+  try{
+    const r=await fetch('/api/auth/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,token,password:pass})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(RESET_ERRORS[d.error]||'Não foi possível salvar a nova senha. Tente novamente.');
+    history.replaceState(null,'',location.pathname);
+    document.getElementById('resetNewStep').style.display='none';
+    const loginEmail=document.getElementById('platformLoginEmail');if(loginEmail)loginEmail.value=email;
+    resetMsg('Senha alterada com sucesso! Agora é só entrar com a nova senha.','ok');
+    if(p1)p1.value='';if(p2)p2.value='';
+    document.getElementById('platformLoginPass')?.focus();
+  }catch(e){
+    resetMsg(e.message,'err');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Salvar nova senha';}
+  }
+}
+function openResetFromLink(){
+  const params=new URLSearchParams(location.search);
+  const token=params.get('reset'), email=params.get('email');
+  if(!token||!email)return false;
+  document.getElementById('platformResetBox').style.display='';
+  document.getElementById('resetRequestStep').style.display='none';
+  document.getElementById('resetNewStep').style.display='';
+  document.getElementById('resetForEmail').textContent=email;
+  setTimeout(()=>document.getElementById('platformNewPass')?.focus(),120);
+  return true;
 }
 async function bindPlatformLogin(){
   if(typeof REVIEW_MODE!=='undefined'&&REVIEW_MODE){setPlatformLocked(false);return;}
-  const logged=await platformMe();
-  setPlatformLocked(!logged);
-  const err=document.getElementById('platformLoginError');
-  if(!logged&&window.__platformDbError&&err){err.textContent='Servidor/banco não configurado: '+window.__platformDbError;err.style.display='flex';}
+  const fromLink=!!new URLSearchParams(location.search).get('reset');
+  if(fromLink){ // quem abre o link de redefinição sempre vê a tela de nova senha
+    try{await fetch('/api/auth/logout',{method:'POST',credentials:'include'});}catch(e){}
+    window.__platformUser=null;setPlatformLocked(true);
+  }else{
+    const logged=await platformMe();
+    setPlatformLocked(!logged);
+    const err=document.getElementById('platformLoginError');
+    if(!logged&&window.__platformDbError&&err){err.textContent='Servidor/banco não configurado: '+window.__platformDbError;err.style.display='flex';}
+  }
   document.getElementById('platformLoginBtn')?.addEventListener('click',doPlatformLogin);
   document.getElementById('platformLoginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')doPlatformLogin();});
   document.getElementById('platformLoginEmail')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('platformLoginPass')?.focus();});
   document.getElementById('platformForgotBtn')?.addEventListener('click',()=>{
     const box=document.getElementById('platformResetBox');
-    if(box)box.style.display=box.style.display==='none'?'':'none';
+    const abrir=box.style.display==='none';
+    box.style.display=abrir?'':'none';
+    document.getElementById('resetRequestStep').style.display='';
+    document.getElementById('resetNewStep').style.display='none';
+    resetMsg('');
     const resetEmail=document.getElementById('platformResetEmail'), loginEmail=document.getElementById('platformLoginEmail');
-    if(resetEmail&&!resetEmail.value)resetEmail.value=loginEmail?.value||'ascom@ictdf.org.br';
+    if(abrir){if(resetEmail&&!resetEmail.value)resetEmail.value=loginEmail?.value||'';setTimeout(()=>resetEmail?.focus(),60);}
   });
-  submitPasswordResetFromLink();
-  if(!new URLSearchParams(location.search).get('reset'))document.getElementById('platformResetBtn')?.addEventListener('click',requestPasswordReset);
+  document.getElementById('platformResetBtn')?.addEventListener('click',requestPasswordReset);
+  document.getElementById('platformResetEmail')?.addEventListener('keydown',e=>{if(e.key==='Enter')requestPasswordReset();});
+  document.getElementById('platformSaveNewPassBtn')?.addEventListener('click',saveNewPasswordFromLink);
+  document.getElementById('platformNewPass2')?.addEventListener('keydown',e=>{if(e.key==='Enter')saveNewPasswordFromLink();});
   document.getElementById('platformLogoutBtn')?.addEventListener('click',()=>{if(confirm('Sair da plataforma?'))doPlatformLogout();});
+  if(fromLink)openResetFromLink();
 }
 const EMOJIS=['🤖','✍️','📣','📊','🎯','🔍','🎨','💬','📧','🎬','🧠','💡','🚀','📱','🛍️','❤️','📈','🗂️'];
 const CAMP_COLORS=['#E52521','#173A86','#2E5BBE','#7C3AED','#0EA5A4','#DB2777','#F59E0B','#16A34A','#0EA5E9','#EA580C'];
@@ -2610,10 +2813,12 @@ return `-- Confirma o e-mail e dá acesso de EDITOR (rode no SQL Editor do Supab
 let syncStatus='local'; // local | ok | saving | erro
 function syncLabel(){return {local:'Somente neste navegador',ok:'Conectado ao Neon',saving:'Sincronizando…',erro:'Erro de conexão'}[syncStatus]||syncStatus;}
 function syncColor(){return {local:'#64748b',ok:'#16A34A',saving:'#F59E0B',erro:'#E52521'}[syncStatus]||'#64748b';}
-function setSync(st){
+function setSync(st,motivo){
   const prev=syncStatus;syncStatus=st;updateSyncUI();
   if(prev==='ok'&&st==='erro'){toast('⚠️ Banco de dados desconectado.','warn');try{addNotif({tipo:'erro',titulo:'Banco de dados desconectado',msg:'A conexão com o Neon/Vercel caiu'});}catch(e){}}
   if(prev==='erro'&&st==='ok'){toast('Banco de dados reconectado.','ok');}
+  if(st==='erro')showReconnect(motivo);
+  else if(st==='ok')hideReconnect();
 }
 function syncShort(){return {local:'Local',ok:'Conectado',saving:'Salvando…',erro:'Desconectado'}[syncStatus]||syncStatus;}
 function updateSyncUI(){
@@ -2650,12 +2855,19 @@ function renderNotifs(){
 
 /* ============ SINCRONIZAÇÃO EM TEMPO QUASE-REAL (polling) ============ */
 let aprovSnap={}, pollTimer=null;
-function aprovSignature(p){return [p.aprov||'',p.revisadoEm||'',p.revisadoPor||'',p.aprovComentario||''].join('|');}
+function aprovSignature(p){return [p.aprov||'',p.revisadoEm||'',p.revisadoPor||'',p.aprovComentario||'',(p.aprovHistorico||[]).length].join('|');}
 function buildAprovSnap(){aprovSnap={};allPostsFlat().forEach(x=>{aprovSnap[x.p.id]=aprovSignature(x.p);});}
+async function loadReviewData(){
+  const r=await fetch('/api/review',{credentials:'include'});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json();
+  return d.data||{};
+}
 async function pollCloud(){
   if(!DataBackend.connected())return;
+  if(!REVIEW_MODE&&!Auth.loggedIn())return; // tela de login: nada a sincronizar
   try{
-    const remote=await DataBackend.loadAll(false);
+    const remote=REVIEW_MODE?await loadReviewData():await DataBackend.loadAll(false);
     setSync('ok');
     const flat=[];
     (remote.campanhas||[]).forEach(c=>(c.posts||[]).forEach(p=>flat.push({p,campId:c.id})));
@@ -2664,19 +2876,55 @@ async function pollCloud(){
     flat.forEach(x=>{
       const prev=aprovSnap[x.p.id];
       const sig=aprovSignature(x.p);
-      if(prev!==undefined && prev!==sig && x.p.revisadoEm && (x.p.aprov==='aprovado'||x.p.aprov==='alteracao')){
-        notifyAprovDecision(x.p);
+      if(prev!==undefined && prev!==sig && (x.p.aprov==='aprovado'||x.p.aprov==='alteracao')){
+        const [prevAprov,prevRevEm]=prev.split('|');
+        if(x.p.revisadoEm&&x.p.revisadoEm!==prevRevEm)notifyAprovDecision(x.p); // decisão pelo link de aprovação
+        else if(prevAprov!==x.p.aprov){ // cartão movido por outra pessoa da equipe
+          const last=aprovHistory(x.p).slice(-1)[0];
+          addNotif({tipo:x.p.aprov,titulo:x.p.titulo,msg:(x.p.aprov==='aprovado'?'Arte movida para Aprovado':'Arte movida para Em alteração')+(last&&last.autor?' por '+last.autor:'')});
+          toast((x.p.aprov==='aprovado'?'✅ Aprovada: ':'✏️ Em alteração: ')+x.p.titulo,x.p.aprov==='aprovado'?'ok':'warn');
+        }
       }
       aprovSnap[x.p.id]=sig;
       const f=findPost(x.p.id);
       if(f){
         ['aprov','aprovComentario','revisadoPor','revisadoEm'].forEach(k=>{if(f.p[k]!==x.p[k]){f.p[k]=x.p[k];mudou=true;}});
+        if(JSON.stringify(f.p.aprovHistorico||[])!==JSON.stringify(x.p.aprovHistorico||[])){f.p.aprovHistorico=x.p.aprovHistorico||[];mudou=true;}
       }
     });
     if(mudou){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}renderBadges();if(view==='aprovacao')renderAprov();if(view==='calendario')renderGeralCalendar();if(view==='campanha')renderCampCalendar();if(document.body.classList.contains('review-on'))renderReview();}
-  }catch(err){console.error(err);setSync('erro');}
+  }catch(err){console.error(err);setSync('erro',err&&err.message==='UNAUTHORIZED'?'sessao':'');}
 }
 function startPolling(){clearInterval(pollTimer);pollTimer=null;if(DataBackend.connected())pollTimer=setInterval(pollCloud,20000);}
+/* ---- reconexão: tela embaçada + botão de recarregar ---- */
+function showReconnect(motivo){
+  const ov=$('#reconnectOverlay');if(!ov)return;
+  if(!REVIEW_MODE&&!Auth.loggedIn())return; // ainda/já na tela de login
+  const sessao=motivo==='sessao';
+  $('#reconnectTitle').textContent=sessao?'Sua sessão expirou':'Conexão com o banco perdida';
+  $('#reconnectMsg').textContent=sessao?'A plataforma ficou muito tempo ociosa e a sessão foi encerrada. Clique no ícone para recarregar e entrar novamente.':'A plataforma ficou muito tempo ociosa ou a conexão caiu. Clique no ícone para recarregar e reconectar ao banco.';
+  ov.classList.add('show');ov.setAttribute('aria-hidden','false');document.body.classList.add('reconnect-on');
+  setTimeout(()=>$('#reconnectBtn')?.focus(),60);
+}
+function hideReconnect(){const ov=$('#reconnectOverlay');if(!ov)return;ov.classList.remove('show');ov.setAttribute('aria-hidden','true');document.body.classList.remove('reconnect-on');}
+async function reconnectNow(){
+  const btn=$('#reconnectBtn');if(btn){btn.classList.add('spin');btn.disabled=true;}
+  // antes de recarregar, tenta enviar ao banco alguma alteração que não chegou a ser salva
+  if(_pendingSave&&!REVIEW_MODE){try{if(await platformMe())await DataBackend._remoteSave(state);}catch(e){console.error(e);}}
+  location.reload();
+}
+function bindReconnect(){
+  $('#reconnectBtn').addEventListener('click',reconnectNow);
+  // ao voltar para a aba depois de um tempo parado, confere a conexão na hora
+  let hiddenAt=0;
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){hiddenAt=Date.now();return;}
+    if(hiddenAt&&Date.now()-hiddenAt>60000)pollCloud();
+    hiddenAt=0;
+  });
+  window.addEventListener('offline',()=>{if(REVIEW_MODE||Auth.loggedIn())setSync('erro');});
+  window.addEventListener('online',()=>pollCloud());
+}
 
 /* ============ UI DE AUTENTICAÇÃO ============ */
 const LOGIN_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>';
@@ -2742,7 +2990,13 @@ let tarView='kanban', tarCamp='todas', tarPrio='todas', tarSort='recentes', tarD
 let aprView='kanban', aprCamp='todas', aprStatus='todos', aprSort='data', aprDateMode='todos', aprDateStart='', aprDateEnd='';
 let fluxCamp='todas', fluxSort='recentes';
 
-function normPost(p){return {canal:'',status:'planejado',aprov:'enviar',aprovComentario:'',revisadoPor:'',revisadoEm:'',link:'',obs:'',...p}}
+function normPost(p){
+  const n={canal:'',status:'planejado',aprov:'enviar',aprovComentario:'',revisadoPor:'',revisadoEm:'',link:'',obs:'',...p};
+  n.aprovHistorico=Array.isArray(n.aprovHistorico)?n.aprovHistorico:[];
+  // artes antigas: transforma a solicitação já registrada na primeira entrada do histórico (id fixo, igual em todos os navegadores)
+  if(!n.aprovHistorico.length&&n.aprov==='alteracao'&&n.aprovComentario)n.aprovHistorico.push({id:'legado-'+n.id,ts:n.revisadoEm||n.createdAt||'',status:'alteracao',de:'',autor:n.revisadoPor||'',origem:'link',comentario:n.aprovComentario});
+  return n;
+}
 function defaultTipos(){return [{id:'interno',nome:'Interno',cor:'#173A86'},{id:'externo',nome:'Externo',cor:'#E52521'}]}
 function defaultTarCols(){return [{id:'afazer',nome:'A fazer',cor:'#64748b'},{id:'fazendo',nome:'Em andamento',cor:'#F59E0B'},{id:'concluido',nome:'Concluída',cor:'#16A34A'}]}
 function normalize(s){
@@ -2791,7 +3045,7 @@ function normalize(s){
   });
   return s;
 }
-let _remoteTimer=null;
+let _remoteTimer=null, _pendingSave=false;
 function compactState(){
   delete state.taskNotes;
   if(state.config)delete state.config.pastas;
@@ -2810,10 +3064,10 @@ function save(){
   if(REVIEW_MODE)return;
   if(!DataBackend.connected())return;
   if(readonly())return; // somente leitura: não envia à nuvem (precisa entrar para editar)
-  setSync('saving');
+  setSync('saving');_pendingSave=true;
   clearTimeout(_remoteTimer);
   _remoteTimer=setTimeout(()=>{
-    DataBackend._remoteSave(state).then(()=>setSync('ok')).catch(err=>{console.error(err);setSync('erro');if(err&&err.message==='UNAUTHORIZED')toast('Sessão expirada. Entre novamente para salvar.','warn');else toast('Falha ao salvar no banco (dados guardados localmente).','warn');});
+    DataBackend._remoteSave(state).then(()=>{_pendingSave=false;setSync('ok');}).catch(err=>{console.error(err);const sessao=err&&err.message==='UNAUTHORIZED';setSync('erro',sessao?'sessao':'');if(sessao)toast('Sessão expirada. Entre novamente para salvar.','warn');else toast('Falha ao salvar no banco (dados guardados localmente).','warn');});
   },700);
 }
 
@@ -3371,6 +3625,12 @@ function gcalSortCmp(a,b){
   else {const av=pa.data||'￿',bv=pb.data||'￿';r=av.localeCompare(bv);}
   return r!==0?r:(pa.data||'').localeCompare(pb.data||'')||((pa.titulo||'').toLowerCase().localeCompare((pb.titulo||'').toLowerCase()));
 }
+// Seleção de campanha em tarefas/artes: só campanhas "Em andamento" (mantém a já vinculada, mesmo encerrada)
+function campAtiva(cid){const c=campById(cid);return !!(c&&c.status==='andamento');}
+function activeCampOptions(sel,emptyLabel){
+  const list=state.campanhas.filter(c=>c.status==='andamento'||(sel&&c.id===sel));
+  return `<option value="">${esc(emptyLabel)}</option>`+list.map(c=>`<option value="${c.id}"${c.id===sel?' selected':''}>${esc(c.nome)}${c.status!=='andamento'?' (encerrada)':''}</option>`).join('');
+}
 function campSelectHTML(extra){return `<option value="todas">Todas as campanhas</option><option value="sem">Sem campanha</option>`+state.campanhas.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');}
 function renderGeralCalendar(){
   renderBadges();
@@ -3451,9 +3711,8 @@ function tarefasFiltered(){
 function tarefaCardHTML(t){
   const camp=t.campanhaId?campById(t.campanhaId):null;
   return `<div class="kcard" style="--kc:${tarStatusCor(t.status)}" draggable="true" data-kcard="${t.id}" data-taskopen="${t.id}" title="Clique para abrir a tarefa">
-    <div class="kc-title">${esc(t.titulo||'Sem título')}</div>
-    <div class="kc-meta"><span class="prio-chip ${t.prioridade}">${prioLabel(t.prioridade)}</span>${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:''}${t.prazo?`<span class="meta-i">🗓️ ${fmtShort(t.prazo)}</span>`:''}</div>
-    <div class="kc-foot"><div class="kc-actions"><button class="icon-btn" data-taredit="${t.id}" title="Editar">${EDIT_SVG}</button><button class="icon-btn danger" data-tardel="${t.id}" title="Excluir">${RM_SVG}</button></div></div>
+    <div class="kc-top"><div class="kc-title">${esc(t.titulo||'Sem título')}</div><div class="kc-actions"><button class="icon-btn" data-taredit="${t.id}" title="Editar">${EDIT_SVG}</button><button class="icon-btn danger" data-tardel="${t.id}" title="Excluir">${RM_SVG}</button></div></div>
+    <div class="kc-meta"><span class="prio-chip ${t.prioridade}">${prioLabel(t.prioridade)}</span>${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:''}${t.prazo?`<span class="meta-i">🗓️ ${fmtShort(t.prazo)}</span>`:''}${t.responsavel?`<span class="meta-i">👤 ${esc(t.responsavel)}</span>`:''}</div>
   </div>`;
 }
 function tarefaRowHTML(t){
@@ -3606,8 +3865,9 @@ window.openTarefaModal=function(t){
   $('#tk-status').innerHTML=tarCols().map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
   $('#tk-status').value=t?t.status:(tarCols()[0]||{}).id;
   $('#tk-prio').value=t?t.prioridade:'media';
-  $('#tk-camp').innerHTML=`<option value="">— Sem campanha —</option>`+state.campanhas.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
-  $('#tk-camp').value=t?(t.campanhaId||''):(tarCamp!=='todas'&&tarCamp!=='sem'?tarCamp:'');
+  const tkCamp=t?(t.campanhaId||''):(tarCamp!=='todas'&&tarCamp!=='sem'&&campAtiva(tarCamp)?tarCamp:'');
+  $('#tk-camp').innerHTML=activeCampOptions(tkCamp,'— Sem campanha —');
+  $('#tk-camp').value=tkCamp;
   $('#tk-prazo').value=t?(t.prazo||''):'';
   $('#tk-resp').innerHTML=pessoaOptions(t?(t.responsavel||''):'');
   $('#tarefaModal').classList.add('open');setTimeout(()=>$('#tk-titulo').focus(),100);
@@ -4421,20 +4681,53 @@ function aprovFiltered(){
 }
 function aprovCardHTML(x){
   const p=x.p, camp=x.campId?campById(x.campId):null;
-  return `<div class="kcard" style="--kc:${aprovColor(p.aprov)}" draggable="true" data-kcard="${p.id}">
-    <div class="kc-title">${esc(p.titulo)}</div>
+  const req=lastChangeRequest(p), nReq=aprovHistory(p).filter(h=>h.status==='alteracao').length;
+  return `<div class="kcard" style="--kc:${aprovColor(p.aprov)}" draggable="true" data-kcard="${p.id}" data-aprovopen="${p.id}" title="Clique para abrir a arte">
+    <div class="kc-top"><div class="kc-title">${esc(p.titulo)}</div><div class="kc-actions"><button class="icon-btn" data-postedit="${p.id}" title="Editar arte">${EDIT_SVG}</button></div></div>
     <div class="kc-meta">${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:`<span class="kcamp-chip" style="background:#94A3B8">Sem campanha</span>`}${p.canal?`<span class="meta-i">📣 ${esc(p.canal)}</span>`:''}${p.data?`<span class="meta-i">🗓️ ${fmtShort(p.data)}</span>`:''}</div>
     ${revisadoLine(p)}
-    ${p.aprov==='alteracao'&&p.aprovComentario?`<div class="kc-coment">✏️ ${esc(p.aprovComentario)}</div>`:''}
-    <div class="kc-foot">${p.link?`<a class="open-btn btn-sm" href="${safeUrl(p.link)}" target="_blank" rel="noopener">Abrir<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>`:''}<div class="kc-actions"><button class="icon-btn" data-postedit="${p.id}" title="Editar arte">${EDIT_SVG}</button></div></div>
+    ${p.aprov==='alteracao'&&req?`<div class="kc-coment">✏️ ${esc(req.comentario)}<div class="kc-hist">🕒 ${esc(fmtDateTime(req.ts))}${req.autor?' · '+esc(req.autor):''}</div></div>`:''}
+    ${nReq?`<div class="kc-hist">🔒 ${nReq} solicitaç${nReq>1?'ões':'ão'} de alteração no histórico</div>`:''}
+    <div class="kc-foot">${p.link?`<a class="open-btn btn-sm" href="${safeUrl(p.link)}" target="_blank" rel="noopener">Abrir<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>`:''}</div>
   </div>`;
+}
+/* ---- histórico de aprovação (somente acréscimo; o servidor impede edição) ---- */
+function fmtDateTime(iso){try{const d=new Date(iso);if(isNaN(d))return '';return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+function aprovHistory(p){return (Array.isArray(p&&p.aprovHistorico)?p.aprovHistorico:[]).slice().sort((a,b)=>(a.ts||'').localeCompare(b.ts||''));}
+function lastChangeRequest(p){const h=aprovHistory(p).filter(e=>e.status==='alteracao'&&e.comentario);return h[h.length-1]||null;}
+function currentAuthorName(){const u=window.__platformUser||{};return Operator.nome||u.name||u.email||'Equipe';}
+function pushAprovHistory(p,status,de,extra){
+  p.aprovHistorico=Array.isArray(p.aprovHistorico)?p.aprovHistorico:[];
+  p.aprovHistorico.push(Object.assign({id:'h'+id(),ts:new Date().toISOString(),status,de:de||'',autor:currentAuthorName(),origem:'plataforma',comentario:''},extra||{}));
+}
+function aprovTimelineHTML(p){
+  const h=aprovHistory(p);
+  if(!h.length)return '<p class="hint" style="margin:0">Nenhuma movimentação registrada ainda.</p>';
+  return `<ol class="aprov-timeline">${h.slice().reverse().map(e=>{
+    const cor=aprovColor(e.status);
+    const acao=e.status==='alteracao'?(e.comentario?'Alteração solicitada':'Movida para Em alteração'):'Movida para '+aprovLabel(e.status);
+    return `<li><span class="tl-dot" style="background:${cor}"></span>
+      <div class="tl-head"><span class="aprov-badge ${esc(e.status)}"><span class="dot"></span>${esc(acao)}</span><span class="tl-when">${esc(fmtDateTime(e.ts))}</span></div>
+      <div class="tl-who">por <b>${esc(e.autor||'—')}</b>${e.origem==='link'?' · pelo link de aprovação':''}${e.de&&e.de!==e.status?' · antes: '+esc(aprovLabel(e.de)):''}</div>
+      ${e.comentario?`<div class="tl-text">${esc(e.comentario)}</div>`:''}
+    </li>`;}).join('')}</ol>`;
+}
+function notifyAprovMove(p,ns){
+  if(ns!=='aprovado'&&ns!=='alteracao')return;
+  addNotif({tipo:ns,titulo:p.titulo,msg:(ns==='aprovado'?'Arte movida para Aprovado':'Arte movida para Em alteração')+' por '+currentAuthorName()});
 }
 function setPostApproval(p,ns){
   p.aprov=ns;
   if(ns==='pendente')p.status='produzido';
   if(ns!=='alteracao')p.aprovComentario='';
 }
-function moveAprov(pid,ns){const f=findPost(pid);if(f&&f.p.aprov!==ns){setPostApproval(f.p,ns);aprovSnap[pid]=aprovSignature(f.p);save();syncPosts();toast(ns==='pendente'?'Aprovação: '+aprovLabel(ns)+' · publicação marcada como Produzido':'Aprovação: '+aprovLabel(ns),'info');}}
+function moveAprov(pid,ns){
+  const f=findPost(pid);if(!f||f.p.aprov===ns)return;
+  const de=f.p.aprov;
+  setPostApproval(f.p,ns);pushAprovHistory(f.p,ns,de);
+  aprovSnap[pid]=aprovSignature(f.p);save();syncPosts();notifyAprovMove(f.p,ns);
+  toast(ns==='pendente'?'Aprovação: '+aprovLabel(ns)+' · publicação marcada como Produzido':'Aprovação: '+aprovLabel(ns),ns==='aprovado'?'ok':'info');
+}
 function renderAprov(){
   renderBadges();
   $('#aprCampFilter').innerHTML=campSelectHTML();$('#aprCampFilter').value=aprCamp;
@@ -4458,7 +4751,7 @@ function renderAprov(){
     if(!list.length){board.innerHTML=`<div class="empty"><div class="big">🖼️</div><h3>Nenhuma arte</h3><p>Crie artes aqui ou no calendário editorial para acompanhá-las nos dois lugares.</p><button class="btn btn-primary" onclick="openPostModal('',null,null,{aprov:'enviar'})">Nova arte</button></div>`;return;}
     board.innerHTML=`<div class="tlist">`+list.map(x=>{
       const p=x.p,camp=x.campId?campById(x.campId):null;
-      return `<div class="trow" style="--kc:${aprovColor(p.aprov)}"><div class="tr-main"><div class="tr-title">${esc(p.titulo)}</div><div class="tr-meta">${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:`<span class="kcamp-chip" style="background:#94A3B8">Sem campanha</span>`}${p.canal?`<span class="chan">📣 ${esc(p.canal)}</span>`:''}${p.data?`<span class="meta-i">🗓️ ${fmtShort(p.data)}</span>`:''}</div>${revisadoLine(p)}${p.aprov==='alteracao'&&p.aprovComentario?`<div class="kc-coment" style="margin-top:7px">✏️ ${esc(p.aprovComentario)}</div>`:''}</div><div class="tr-actions"><select class="tstat" data-aprid="${p.id}">${APROV_COLS.map(c=>`<option value="${c.id}"${p.aprov===c.id?' selected':''}>${c.nome}</option>`).join('')}</select><button class="icon-btn" data-postedit="${p.id}" title="Editar arte">${EDIT_SVG}</button></div></div>`;
+      const req=lastChangeRequest(p);return `<div class="trow" style="--kc:${aprovColor(p.aprov)}" data-aprovopen="${p.id}" title="Clique para abrir a arte"><div class="tr-main"><div class="tr-title">${esc(p.titulo)}</div><div class="tr-meta">${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:`<span class="kcamp-chip" style="background:#94A3B8">Sem campanha</span>`}${p.canal?`<span class="chan">📣 ${esc(p.canal)}</span>`:''}${p.data?`<span class="meta-i">🗓️ ${fmtShort(p.data)}</span>`:''}</div>${revisadoLine(p)}${p.aprov==='alteracao'&&req?`<div class="kc-coment" style="margin-top:7px">✏️ ${esc(req.comentario)}<div class="kc-hist">🕒 ${esc(fmtDateTime(req.ts))}${req.autor?' · '+esc(req.autor):''}</div></div>`:''}</div><div class="tr-actions"><select class="tstat" data-aprid="${p.id}">${APROV_COLS.map(c=>`<option value="${c.id}"${p.aprov===c.id?' selected':''}>${c.nome}</option>`).join('')}</select><button class="icon-btn" data-postedit="${p.id}" title="Editar arte">${EDIT_SVG}</button></div></div>`;
     }).join('')+`</div>`;
     $$('#aprovBoard .tstat').forEach(sel=>sel.addEventListener('change',()=>moveAprov(sel.dataset.aprid,sel.value)));
   }
@@ -4519,17 +4812,24 @@ function reviewName(){try{return localStorage.getItem(REVIEW_NAME_KEY)||'';}catc
 async function reviewSet(pid,status,comentario,revisor){
   const f=findPost(pid);if(!f)return;
   revisor=(revisor||'').trim();
+  comentario=(comentario||'').trim();
+  if(status==='alteracao'&&!comentario){toast('Descreva o que precisa ser alterado.','warn');$('#rct-'+pid)?.focus();return;}
+  let entry=null;
   if(REVIEW_MODE){
     try{
       const r=await fetch('/api/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({postId:pid,status,comentario,revisor})});
       const d=await r.json().catch(()=>({}));
-      if(!r.ok)throw new Error(d.message||d.error||'Falha ao registrar aprovação.');
+      if(!r.ok)throw new Error(d.error==='MISSING_CHANGE_REQUEST'?'Descreva o que precisa ser alterado.':(d.message||d.error||'Falha ao registrar aprovação.'));
+      entry=d.entry||null;
     }catch(err){toast(err.message||'Falha ao registrar aprovação.','warn');return;}
   }
+  const de=f.p.aprov;
   f.p.aprov=status;
-  if(status==='alteracao')f.p.aprovComentario=(comentario||'').trim();
+  if(status==='alteracao')f.p.aprovComentario=comentario;
   if(status==='aprovado')f.p.aprovComentario='';
-  if(revisor){f.p.revisadoPor=revisor;f.p.revisadoEm=new Date().toISOString();try{localStorage.setItem(REVIEW_NAME_KEY,revisor);}catch(e){}}
+  if(revisor){f.p.revisadoPor=revisor;f.p.revisadoEm=entry?entry.ts:new Date().toISOString();try{localStorage.setItem(REVIEW_NAME_KEY,revisor);}catch(e){}}
+  if(entry){f.p.aprovHistorico=(f.p.aprovHistorico||[]).concat(entry);}
+  else pushAprovHistory(f.p,status,de,{autor:revisor||currentAuthorName(),origem:'link',comentario:status==='alteracao'?comentario:''});
   if(status==='aprovado'||status==='alteracao')notifyAprovDecision(f.p);
   aprovSnap[pid]=aprovSignature(f.p);if(!REVIEW_MODE)save();
   renderReview();
@@ -4559,6 +4859,7 @@ function renderReview(){
         <div class="rc-meta">${camp?`<span class="kcamp-chip" style="background:${camp.cor}">${esc(camp.nome)}</span>`:`<span class="kcamp-chip" style="background:#94A3B8">Sem campanha</span>`}${p.canal?`<span class="meta-i">📣 ${esc(p.canal)}</span>`:''}${p.data?`<span class="meta-i">🗓️ ${fmtShort(p.data)}</span>`:''}<span class="aprov-badge ${p.aprov}"><span class="dot"></span>${aprovLabel(p.aprov)}</span></div>
         ${revisadoLine(p)}
         ${p.obs?`<div class="rc-obs">${esc(p.obs)}</div>`:''}
+        ${(()=>{const req=lastChangeRequest(p);return req?`<div class="aprov-locked rc-last"><div class="al-head">🔒 Última alteração solicitada</div><div class="al-text">${esc(req.comentario)}</div><div class="al-meta">Por <b>${esc(req.autor||'—')}</b> em ${esc(fmtDateTime(req.ts))}</div></div>`:'';})()}
         ${p.link?`<a class="open-btn btn-sm" href="${safeUrl(p.link)}" target="_blank" rel="noopener" style="margin-top:10px">Ver a arte<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>`:`<div class="hint" style="margin-top:10px">Sem link da arte.</div>`}
       </div>
       <div class="rc-actions">
@@ -4576,8 +4877,9 @@ function renderReview(){
       <div class="rc-comment" id="rcc-${p.id}" style="display:none">
         <label>Seu nome <span class="req">*</span></label>
         <input type="text" id="rccn-${p.id}" placeholder="Digite seu nome" value="${esc(reviewName())}" style="margin-bottom:10px" />
-        <label>O que precisa ser alterado?</label>
-        <textarea id="rct-${p.id}" placeholder="Descreva o que deve mudar nesta arte…">${esc(p.aprovComentario||'')}</textarea>
+        <label>O que precisa ser alterado? <span class="req">*</span></label>
+        <textarea id="rct-${p.id}" placeholder="Descreva o que deve mudar nesta arte…"></textarea>
+        <div class="hint">Depois de enviada, a solicitação fica registrada com data e hora e não pode mais ser editada.</div>
         <div class="rc-comment-actions">
           <button class="btn btn-ghost btn-sm" data-rccancel="${p.id}">Cancelar</button>
           <button class="btn btn-danger btn-sm" data-rcsend="${p.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Enviar solicitação</button>
@@ -4791,6 +5093,28 @@ async function iaSaveTest(){
     toast('Falha na IA: '+err.message,'warn');
   }
 }
+const ROLE_INFO={
+  admin_geral:{label:'👑 Admin Geral',cls:'admin-geral',desc:'Tudo, inclusive alterar login, senha e nível de acesso dos outros usuários.'},
+  admin:{label:'🛡️ Administrador',cls:'admin',desc:'Edita tudo e cadastra novos usuários.'},
+  editor:{label:'✏️ Editor',cls:'editor',desc:'Edita tudo e cadastra novos usuários.'},
+  visualizador:{label:'👁️ Visualizador',cls:'viewer',desc:'Entra na plataforma em modo somente leitura.'}
+};
+function roleBadgeHTML(r){const i=ROLE_INFO[r]||ROLE_INFO.editor;return `<span class="user-role ${i.cls}">${i.label}</span>`;}
+function isAdminGeral(){return currentPlatformRole()==='admin_geral';}
+function roleOptionsHTML(sel,allowGeral){return Object.keys(ROLE_INFO).filter(r=>r!=='admin_geral'||allowGeral||sel==='admin_geral').map(r=>`<option value="${r}"${r===sel?' selected':''}>${ROLE_INFO[r].label}</option>`).join('');}
+const USER_ERRORS={ADMIN_GERAL_ONLY:'Somente o Admin Geral pode fazer esta alteração.',USER_EXISTS:'Já existe um usuário com este e-mail. Somente o Admin Geral pode alterar usuários existentes.',EMAIL_IN_USE:'Este e-mail já está em uso por outro usuário.',INVALID_EMAIL:'E-mail inválido.',INVALID_USER_DATA:'Confira o e-mail e a senha (mín. 6 caracteres).',PASSWORD_TOO_SHORT:'A senha precisa de pelo menos 6 caracteres.',CANNOT_DEMOTE_ADMIN_GERAL:'A conta do Admin Geral não pode perder esse nível de acesso.',SUPERADMIN_EMAIL_LOCKED:'O login da conta principal do Admin Geral é fixo (definido no servidor).',SUPERADMIN_PROTECTED:'A conta principal do Admin Geral não pode ser removida.',CANNOT_DELETE_SELF:'Você não pode remover a sua própria conta.',USER_NOT_FOUND:'Usuário não encontrado.',FORBIDDEN:'Sem permissão para esta ação.'};
+async function usersApi(method,body){
+  const r=await fetch('/api/users',{method,headers:{'Content-Type':'application/json'},credentials:'include',body:body?JSON.stringify(body):undefined});
+  let d={};try{d=await r.json();}catch(e){}
+  if(!r.ok)throw new Error(USER_ERRORS[d.error]||d.message||d.error||('Erro '+r.status));
+  return d;
+}
+function renderSessionCard(){
+  const box=$('#cfgSessionInfo');if(!box)return;
+  const u=window.__platformUser||{};
+  const nome=u.name||u.email||'—';
+  box.innerHTML=`<span class="avatar">${esc((nome||'?').trim().charAt(0).toUpperCase())}</span><div class="sw-main"><div class="sw-name">${esc(nome)} ${u.role?roleBadgeHTML(u.role):''}</div><div class="sw-mail">${esc(u.email||'')}</div></div>`;
+}
 function renderUsuariosConfig(){
   const card=$('#cfgUsuarios');if(!card)return;
   if(!DataBackend.connected()){card.style.display='none';return;}
@@ -4798,31 +5122,35 @@ function renderUsuariosConfig(){
   if(Auth.loggedIn()&&!window.__usersLoaded&&!window.__usersLoading){
     window.__usersLoading=true;
     fetch('/api/users',{credentials:'include'}).then(r=>r.ok?r.json():Promise.reject(r)).then(d=>{
-      state.config.usuarios=(d.users||[]).map(u=>({nome:u.name||u.email,email:u.email,role:u.role}));
-      window.__usersLoaded=true;
+      state.config.usuarios=(d.users||[]).map(u=>({nome:u.name||u.email,email:u.email,role:u.role,updatedAt:u.updated_at||'',resetPedidoEm:u.reset_requested_at||''}));
+      window.__usersLoaded=true;window.__usersLoading=false;
       renderUsuariosConfig();
-    }).catch(()=>{}).finally(()=>{window.__usersLoading=false;});
+    }).catch(()=>{}).finally(()=>{if(window.__usersLoading){window.__usersLoading=false;renderUsuariosConfig();}});
   }
-  const us=(state.config.usuarios||[]), podeGerir=['admin','editor'].includes(currentPlatformRole());
-  const roleBadge=r=>r==='visualizador'?'<span class="user-role viewer">👁️ Visualizador</span>':'<span class="user-role editor">🛡️ Editor</span>';
+  const us=(state.config.usuarios||[]), geral=isAdminGeral(), podeGerir=['admin_geral','admin','editor'].includes(currentPlatformRole());
+  const me=((window.__platformUser||{}).email||'').toLowerCase();
+  const podeRemover=u=>podeGerir&&(u.email||'').toLowerCase()!==me&&(u.role!=='admin_geral'||geral);
   card.innerHTML=`<div class="cfg-head"><h3>👥 Usuários e acessos</h3><span class="cfg-cnt">${us.length}</span></div>
-    <p class="hint" style="margin:-6px 0 14px">Crie logins para a equipe direto aqui. Os usuários são salvos na tabela <code>app_users</code> do Neon Postgres. <b>Editor</b> edita tudo; <b>Visualizador</b> entra na plataforma em modo somente leitura.</p>
+    <p class="hint" style="margin:-6px 0 14px">Crie logins para a equipe direto aqui (tabela <code>app_users</code> do Neon Postgres). <b>Admin Geral</b> altera login, senha e nível de acesso de todos; <b>Administrador</b> e <b>Editor</b> editam tudo e cadastram usuários; <b>Visualizador</b> só vê.</p>
+    ${geral?'<p class="hint" style="margin:-4px 0 14px">👑 Você é <b>Admin Geral</b>: use o lápis ao lado de cada usuário para alterar login, senha e nível de acesso.</p>':''}
+    ${geral&&us.some(u=>u.resetPedidoEm)?`<div class="confirm-aviso" style="margin:0 0 14px">${WARN_ICO}<span><b>${us.filter(u=>u.resetPedidoEm).length} pedido(s) de nova senha.</b> Clique no lápis da pessoa e use "Gerar link de nova senha" para enviar a ela.</span></div>`:''}
     ${window.__usersLoading?'<p class="hint" style="margin:0 0 12px">Carregando usuários do banco...</p>':''}
-    ${us.map((u,i)=>`<div class="cfg-item">${roleBadge(u.role)}<span class="nm">${esc(u.nome||u.email)} <small style="color:var(--texto-suave)">· ${esc(u.email)}</small></span>${podeGerir?`<button class="rm" data-rmuser="${i}" data-email="${esc(u.email)}" title="Remover usuário">${RM_SVG}</button>`:''}</div>`).join('')||'<p class="hint" style="margin:0 0 12px">Nenhum usuário cadastrado por aqui ainda.</p>'}
+    ${us.map((u,i)=>`<div class="cfg-item">${roleBadgeHTML(u.role)}<span class="nm">${esc(u.nome||u.email)}<span class="user-meta">${esc(u.email)}${(u.email||'').toLowerCase()===me?' · você':''}${geral&&u.resetPedidoEm?` · <b style="color:#b45309">🔑 pediu nova senha em ${esc(fmtDateTime(u.resetPedidoEm))}</b>`:''}</span></span><span class="user-actions">${geral?`<button class="rm" data-edituser="${esc(u.email)}" title="Alterar login, senha e acesso">${EDIT_SVG}</button>`:''}${podeRemover(u)?`<button class="rm" data-rmuser="${i}" data-email="${esc(u.email)}" title="Remover usuário">${RM_SVG}</button>`:''}</span></div>`).join('')||'<p class="hint" style="margin:0 0 12px">Nenhum usuário cadastrado por aqui ainda.</p>'}
     ${podeGerir?`<div class="add-box" style="margin-top:8px"><h4>Novo usuário</h4>
       <div class="field" style="margin-bottom:9px"><input type="text" id="nu-nome" placeholder="Nome da pessoa" /></div>
       <div class="field" style="margin-bottom:9px"><input type="email" id="nu-email" placeholder="email@exemplo.com" autocomplete="off" /></div>
       <div class="field" style="margin-bottom:9px"><input type="password" id="nu-pass" placeholder="Senha (mín. 6 caracteres)" autocomplete="new-password" /></div>
-      <div class="field" style="margin-bottom:9px"><select id="nu-role"><option value="editor">🛡️ Administrador / Editor (edita tudo)</option><option value="visualizador">👁️ Visualizador (só vê)</option></select></div>
+      <div class="field" style="margin-bottom:9px"><select id="nu-role">${roleOptionsHTML('editor',geral)}</select></div>
       <button class="btn btn-dark btn-sm" id="nu-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Criar usuário</button>
       <div class="ia-test" id="nu-out" style="display:none"></div>
-    </div>`:'<p class="hint" style="margin:0">Entre como editor/administrador (botão <b>Entrar</b>, no topo) para cadastrar novos usuários.</p>'}`;
+    </div>`:'<p class="hint" style="margin:0">Somente administradores e editores cadastram novos usuários.</p>'}`;
   $('#nu-add')?.addEventListener('click',createUserFlow);
+  $$('#cfgUsuarios [data-edituser]').forEach(b=>b.addEventListener('click',()=>openUserModal(b.dataset.edituser)));
   $$('#cfgUsuarios [data-rmuser]').forEach(b=>b.addEventListener('click',async()=>{
     const email=b.dataset.email;
     openConfirmDelete(email,async()=>{
       try{
-        await Auth.deleteUser(email);
+        await usersApi('DELETE',{email});
         state.config.usuarios.splice(+b.dataset.rmuser,1);
         window.__usersLoaded=false;
         renderUsuariosConfig();
@@ -4838,23 +5166,105 @@ async function createUserFlow(){
   const out=$('#nu-out');out.style.display='';out.className='ia-test';out.textContent='Criando usuário…';
   const btn=$('#nu-add');btn.disabled=true;
   try{
-    const d=await Auth.createUser(nome,email,pass,role);
+    const d=await usersApi('POST',{nome,email,password:pass,role});
+    const saved=(d&&d.user)||{nome,email,role};
     state.config.usuarios=state.config.usuarios||[];
-    const cleanEmail=email.toLowerCase().replace(/\\@/g,'@');
+    const cleanEmail=(saved.email||email).toLowerCase().replace(/\\@/g,'@');
     const existing=state.config.usuarios.find(u=>(u.email||'').toLowerCase()===cleanEmail);
-    if(existing){existing.nome=nome||cleanEmail;existing.role=role;}
-    else state.config.usuarios.push({nome:nome||cleanEmail,email:cleanEmail,role});
+    if(existing){existing.nome=saved.name||nome||cleanEmail;existing.role=saved.role;}
+    else state.config.usuarios.push({nome:saved.name||nome||cleanEmail,email:cleanEmail,role:saved.role});
     window.__usersLoaded=false;
-    let msg='✅ Usuário salvo no banco! Já pode entrar com e-mail e senha.';
     toast('Usuário criado!','ok');
     renderUsuariosConfig();
-    const o=$('#nu-out');if(o){o.style.display='';o.className='ia-test ok';o.textContent=msg;}
+    const o=$('#nu-out');if(o){o.style.display='';o.className='ia-test ok';o.textContent='✅ Usuário salvo no banco como '+(ROLE_INFO[saved.role]||{label:saved.role}).label+'! Já pode entrar com e-mail e senha.';}
   }catch(err){out.className='ia-test err';out.textContent='❌ '+err.message;toast('Falha ao criar usuário: '+err.message,'warn');}
+  finally{btn.disabled=false;}
+}
+/* ---- Admin Geral: alterar login, senha e nível de acesso ---- */
+function openUserModal(email){
+  if(!isAdminGeral()){toast('Somente o Admin Geral pode alterar logins e acessos.','warn');return;}
+  const u=(state.config.usuarios||[]).find(x=>(x.email||'').toLowerCase()===(email||'').toLowerCase());if(!u)return;
+  $('#um-orig').value=u.email;
+  $('#um-nome').value=u.nome||'';
+  $('#um-email').value=u.email;
+  $('#um-pass').value='';
+  $('#um-role').innerHTML=roleOptionsHTML(u.role,true);
+  const hint=()=>{$('#um-role-hint').textContent=(ROLE_INFO[$('#um-role').value]||{}).desc||'';};
+  $('#um-role').onchange=hint;hint();
+  $('#um-err').style.display='none';
+  $('#um-reset-out').style.display='none';$('#um-reset-url').value='';
+  $('#um-reset-hint').innerHTML=(u.resetPedidoEm?'<b>Esta pessoa pediu uma nova senha em '+esc(fmtDateTime(u.resetPedidoEm))+'.</b> ':'')+'Gere um link (vale 24 horas) e envie para a pessoa por WhatsApp ou e-mail. Ela mesma escolhe a nova senha.';
+  $('#userModal').classList.add('open');setTimeout(()=>$('#um-nome').focus(),100);
+}
+function closeUserModal(){$('#userModal').classList.remove('open');}
+async function generateResetLink(){
+  const email=$('#um-orig').value, btn=$('#um-reset-link');btn.disabled=true;
+  try{
+    const d=await usersApi('POST',{action:'reset-link',email});
+    $('#um-reset-url').value=d.link;$('#um-reset-out').style.display='';
+    const u=(state.config.usuarios||[]).find(x=>x.email===email);if(u)u.resetPedidoEm='';
+    renderUsuariosConfig();
+    toast('Link gerado! Copie e envie para a pessoa.','ok');
+  }catch(e){toast('Falha ao gerar link: '+e.message,'warn');}
+  finally{btn.disabled=false;}
+}
+/* ---- Alterar a própria senha ---- */
+function openPwModal(){['pw-cur','pw-new','pw-new2'].forEach(i=>$('#'+i).value='');$('#pw-err').style.display='none';$('#pwModal').classList.add('open');setTimeout(()=>$('#pw-cur').focus(),100);}
+function closePwModal(){$('#pwModal').classList.remove('open');}
+async function saveOwnPassword(){
+  const cur=$('#pw-cur').value, n1=$('#pw-new').value, n2=$('#pw-new2').value, err=$('#pw-err');
+  const fail=m=>{err.style.display='';err.innerHTML=WARN_ICO+'<span>'+esc(m)+'</span>';};
+  err.style.display='none';
+  if(!cur)return fail('Informe a sua senha atual.');
+  if(n1.length<6)return fail('A nova senha precisa de pelo menos 6 caracteres.');
+  if(n1!==n2)return fail('As duas senhas novas não são iguais.');
+  const btn=$('#pw-save');btn.disabled=true;
+  try{
+    const r=await fetch('/api/auth/change-password',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({currentPassword:cur,newPassword:n1})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.error==='WRONG_PASSWORD'?'A senha atual está incorreta.':d.error==='PASSWORD_TOO_SHORT'?'A nova senha precisa de pelo menos 6 caracteres.':'Não foi possível alterar a senha.');
+    closePwModal();toast('Senha alterada com sucesso!','ok');
+  }catch(e){fail(e.message);}
+  finally{btn.disabled=false;}
+}
+/* ---- Admin Geral: avisa no sino quando alguém pede nova senha ---- */
+const RESET_SEEN_KEY='ictdf_reset_seen';
+async function checkResetRequests(){
+  if(!isAdminGeral())return;
+  try{
+    const r=await fetch('/api/users',{credentials:'include'});if(!r.ok)return;
+    const d=await r.json();
+    let seen=[];try{seen=JSON.parse(localStorage.getItem(RESET_SEEN_KEY)||'[]');}catch(e){}
+    (d.users||[]).filter(u=>u.reset_requested_at).forEach(u=>{
+      const k=u.email+'|'+u.reset_requested_at;if(seen.includes(k))return;seen.push(k);
+      addNotif({tipo:'senha',titulo:'Pedido de nova senha',msg:(u.name||u.email)+' ('+u.email+') usou "Esqueci minha senha" — gere o link em Configurações'});
+    });
+    try{localStorage.setItem(RESET_SEEN_KEY,JSON.stringify(seen.slice(-100)));}catch(e){}
+  }catch(e){}
+}
+async function saveUserModal(){
+  const orig=$('#um-orig').value, nome=$('#um-nome').value.trim(), email=$('#um-email').value.trim(), pass=$('#um-pass').value, role=$('#um-role').value;
+  const err=$('#um-err');err.style.display='none';
+  const fail=m=>{err.style.display='';err.innerHTML=WARN_ICO+'<span>'+esc(m)+'</span>';};
+  if(!email)return fail('Informe o login (e-mail).');
+  if(pass&&pass.length<6)return fail('A senha precisa de pelo menos 6 caracteres.');
+  const btn=$('#um-save');btn.disabled=true;
+  try{
+    const body={email:orig,newEmail:email,nome,role};if(pass)body.password=pass;
+    const d=await usersApi('PATCH',body);
+    const u=(state.config.usuarios||[]).find(x=>x.email===orig);
+    if(u){u.nome=d.user.name;u.email=d.user.email;u.role=d.user.role;}
+    window.__usersLoaded=false;
+    if(orig.toLowerCase()===((window.__platformUser||{}).email||'').toLowerCase()){await platformMe();renderSessionCard();}
+    closeUserModal();renderUsuariosConfig();
+    toast('Usuário atualizado'+(d.passwordChanged?' · senha alterada':'')+'.','ok');
+  }catch(e){fail(e.message);}
   finally{btn.disabled=false;}
 }
 function renderConfig(){
   const cfg=state.config;
   renderSupabaseConfig();
+  renderSessionCard();
   renderUsuariosConfig();
   renderBrandConfig();
   // Tipos de demanda
@@ -5312,7 +5722,7 @@ $('#savePrompt').addEventListener('click',()=>{
 /* ============ MODAL POST (calendário) ============ */
 window.openPostModal=function(campId,p,dataPrefill,opts){
   opts=opts||{};
-  $('#po-campsel').innerHTML=`<option value="">— Sem campanha (geral) —</option>`+state.campanhas.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+  $('#po-campsel').innerHTML=activeCampOptions(campId||'','— Sem campanha (geral) —');
   $('#po-campsel').value=campId||'';
   $('#postModalTitle').textContent=p?'Editar arte / post':'Nova arte / post';
   $('#po-id').value=p?p.id:'';
@@ -5324,25 +5734,37 @@ window.openPostModal=function(campId,p,dataPrefill,opts){
   $('#po-aprov').value=p?(p.aprov||'enviar'):defaultAprov;
   $('#po-link').value=p?(p.link||''):'';
   $('#po-obs').value=p?(p.obs||''):'';
-  const com=p?(p.aprovComentario||''):'';
-  $('#po-coment').value=com;
-  $('#po-coment-field').style.display=(com||(p&&p.aprov==='alteracao'))?'':'none';
+  renderPostApprovalInfo(p);
   resetIaBox('iaPost');$('#postModal').classList.add('open');setTimeout(()=>$('#po-titulo').focus(),100);
 };
+// Solicitação de alteração: somente leitura (texto travado) + linha do tempo
+function renderPostApprovalInfo(p){
+  const req=p?lastChangeRequest(p):null, hist=p?aprovHistory(p):[];
+  const box=$('#po-coment');
+  if(req){
+    box.innerHTML=`<div class="aprov-locked"><div class="al-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Solicitação travada · não editável${p.aprov!=='alteracao'?' · já tratada':''}</div><div class="al-text">${esc(req.comentario)}</div><div class="al-meta">Solicitado por <b>${esc(req.autor||'—')}</b> em ${esc(fmtDateTime(req.ts))}</div></div>`;
+  }else box.innerHTML='';
+  $('#po-coment-field').style.display=req?'':'none';
+  $('#po-hist').innerHTML=hist.length?aprovTimelineHTML(p):'';
+  $('#po-hist-field').style.display=hist.length?'':'none';
+}
 function closePostModal(){$('#postModal').classList.remove('open');}
 $('#savePost').addEventListener('click',()=>{
   const titulo=$('#po-titulo').value.trim(), data=$('#po-data').value;
   if(!titulo){toast('Dê um título à arte.','warn');$('#po-titulo').focus();return;}
   if(!data){toast('Escolha a data de publicação.','warn');$('#po-data').focus();return;}
   const targetCamp=$('#po-campsel').value||'';
-  const d={titulo,data,canal:$('#po-canal').value.trim(),status:$('#po-status').value,aprov:$('#po-aprov').value,aprovComentario:$('#po-coment').value.trim(),link:$('#po-link').value.trim(),obs:$('#po-obs').value.trim()};
+  // o texto da solicitação de alteração não é editável aqui: vem do revisor e fica no histórico
+  const d={titulo,data,canal:$('#po-canal').value.trim(),status:$('#po-status').value,aprov:$('#po-aprov').value,link:$('#po-link').value.trim(),obs:$('#po-obs').value.trim()};
   if(d.aprov==='pendente')d.status='produzido';
   if(d.aprov!=='alteracao')d.aprovComentario='';
   const eid=$('#po-id').value;
   if(eid){
     const f=findPost(eid);
     if(f){
+      const de=f.p.aprov;
       Object.assign(f.p,d);
+      if(de!==d.aprov){pushAprovHistory(f.p,d.aprov,de);aprovSnap[f.p.id]=aprovSignature(f.p);notifyAprovMove(f.p,d.aprov);}
       if((f.campId||'')!==(targetCamp||'')){ // moveu de/para campanha
         const oldStore=postStore(f.campId); const i=oldStore?oldStore.indexOf(f.p):-1; if(i>=0)oldStore.splice(i,1);
         const newStore=postStore(targetCamp); if(newStore)newStore.push(f.p);
@@ -5350,7 +5772,8 @@ $('#savePost').addEventListener('click',()=>{
       toast('Arte atualizada!','ok');
     }
   }else{
-    const store=postStore(targetCamp); if(store)store.push({id:id(),...d}); toast('Arte adicionada!','ok');
+    const np={id:id(),...d};pushAprovHistory(np,d.aprov,'');
+    const store=postStore(targetCamp); if(store)store.push(np); toast('Arte adicionada!','ok');
   }
   save();closePostModal();syncPosts();
 });
@@ -5363,7 +5786,6 @@ $('#calDateFilter').addEventListener('change',e=>{calDateMode=e.target.value;cal
 $('#calDateStart').addEventListener('input',e=>{calDateStart=e.target.value;calShowAll=false;renderCampCalendar();});
 $('#calDateEnd').addEventListener('input',e=>{calDateEnd=e.target.value;calShowAll=false;renderCampCalendar();});
 $('#po-aprov').addEventListener('change',e=>{
-  $('#po-coment-field').style.display=e.target.value==='alteracao'?'':'none';
   if(e.target.value==='pendente')$('#po-status').value='produzido';
 });
 
@@ -5425,6 +5847,8 @@ document.body.addEventListener('click',e=>{
   if(upg){if(t.closest('a'))return;go('calendario');return;}
   const pe=t.closest('[data-postedit]'), pdl=t.closest('[data-postdel]');
   if(pe){const f=findPost(pe.dataset.postedit);if(f)openPostModal(f.campId,f.p);return;}
+  const apo=t.closest('[data-aprovopen]');
+  if(apo&&!t.closest('button,a,select,input,textarea')){const f=findPost(apo.dataset.aprovopen);if(f)openPostModal(f.campId,f.p);return;}
   if(pdl){const f=findPost(pdl.dataset.postdel);if(f)openConfirmDelete(f.p.titulo,()=>{const store=postStore(f.campId);const i=store?store.indexOf(f.p):-1;if(i>=0)store.splice(i,1);save();syncPosts();toast('Arte removida.','warn');},'Excluir arte');return;}
   const te=t.closest('[data-taredit]'), tdl=t.closest('[data-tardel]'), topen=t.closest('[data-taskopen]');
   if(tdl){const tk=tarefaById(tdl.dataset.tardel);if(tk)openConfirmDelete(tk.titulo,()=>{state.tarefas=state.tarefas.filter(x=>x.id!==tk.id);save();renderTarefas();toast('Tarefa excluída.','warn');},'Excluir tarefa');return;}
@@ -5439,10 +5863,18 @@ document.body.addEventListener('click',e=>{
   if(t.closest('[data-etclose]')){closeEtapaModal();}
   if(t.closest('[data-shareclose]')){closeShareModal();}
   if(t.closest('[data-loginclose]')){closeLoginModal();}
+  if(t.closest('[data-userclose]')){closeUserModal();}
+  if(t.closest('[data-pwclose]')){closePwModal();}
 });
-$$('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o){if(o.id==='confirmModal'){closeConfirmModal();return;}if(o.id==='etapaModal'){closeEtapaModal();return;}closeAgentModal();closeCampModal();closePromptModal();closeConfirmModal();closePostModal();closeTarefaModal();closeFluxoModal();closeShareModal();closeLoginModal();}}));
+$('#um-save').addEventListener('click',saveUserModal);
+$('#um-reset-link').addEventListener('click',generateResetLink);
+$('#um-reset-copy').addEventListener('click',()=>{copyText($('#um-reset-url').value);});
+$('#cfgChangePass').addEventListener('click',openPwModal);
+$('#pw-save').addEventListener('click',saveOwnPassword);
+$('#pw-new2').addEventListener('keydown',e=>{if(e.key==='Enter')saveOwnPassword();});
+$$('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o){if(o.id==='confirmModal'){closeConfirmModal();return;}if(o.id==='etapaModal'){closeEtapaModal();return;}closeAgentModal();closeCampModal();closePromptModal();closeConfirmModal();closePostModal();closeTarefaModal();closeFluxoModal();closeShareModal();closeLoginModal();closeUserModal();closePwModal();}}));
 $('#drawerOverlay').addEventListener('click',closeDrawer);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#etapaModal').classList.contains('open')){closeEtapaModal();return;}closeAgentModal();closeCampModal();closePromptModal();closeConfirmModal();closePostModal();closeTarefaModal();closeFluxoModal();closeShareModal();closeLoginModal();closeDrawer();closeSidebar();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#etapaModal').classList.contains('open')){closeEtapaModal();return;}closeAgentModal();closeCampModal();closePromptModal();closeConfirmModal();closePostModal();closeTarefaModal();closeFluxoModal();closeShareModal();closeLoginModal();closeUserModal();closePwModal();closeDrawer();closeSidebar();}});
 
 /* drawer tabs */
 $$('.drawer-tab').forEach(tb=>tb.addEventListener('click',()=>{
@@ -5451,6 +5883,7 @@ $$('.drawer-tab').forEach(tb=>tb.addEventListener('click',()=>{
 
 /* ============ TRIGGERS ============ */
 bindPlatformLogin();
+bindReconnect();
 $('#addBtn').addEventListener('click',()=>openAgentModal());
 $('#heroAdd').addEventListener('click',()=>openAgentModal());
 bindAuthUI();
@@ -5481,8 +5914,7 @@ function doExport(){
   a.href=url;a.download='hub-agentes-ictdf-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);
   toast('Backup exportado!','ok');
 }
-$('#exportBtn').addEventListener('click',doExport);
-$('#importBtn').addEventListener('click',()=>$('#importFile').click());
+$('#cfgGoData').addEventListener('click',()=>{const el=$('#cfgDados');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});});
 $('#importFile').addEventListener('change',e=>{
   const file=e.target.files[0];if(!file)return;const r=new FileReader();
   r.onload=()=>{try{const data=JSON.parse(r.result);if(!data.agents&&!data.campanhas)throw 0;
@@ -5507,7 +5939,7 @@ async function boot(){
       console.error(err);state=normalize(DataBackend._localOrSeed());compactState();setSync('erro');
     }
   }else{
-    const logged=await platformMe();
+    const logged=!new URLSearchParams(location.search).get('reset')&&await platformMe(); // link de nova senha: fica na tela de login
     if(logged){
     try{
       state=normalize(await DataBackend.loadAll(false));compactState();
@@ -5529,6 +5961,7 @@ async function boot(){
   loadNotifs();renderNotifs();buildAprovSnap();startPolling();startIntegrationPolling();applyReadonly();updateOpUI();
   renderStats();renderRecent();renderUpcoming();renderAreaFilter();renderAgents();renderCampanhas();renderBadges();
   if(REVIEW_MODE)enterReviewMode();
+  else if(Auth.loggedIn()){checkResetRequests();setInterval(checkResetRequests,120000);}
 }
 /* ----- assistentes de IA nos formulários ----- */
 /* Agente de IA: o painel é controlado pelo checkbox #f-ia (propriedade do agente) */

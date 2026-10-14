@@ -11,7 +11,8 @@ module.exports = async function handler(req, res) {
     const email = String(body.email || '').trim().toLowerCase().replace(/\\@/g, '@');
     const token = String(body.token || '');
     const password = String(body.password || '');
-    if (!email || !token || password.length < 8) return res.status(400).json({ error: 'INVALID_RESET_DATA' });
+    if (!email || !token) return res.status(400).json({ error: 'INVALID_RESET_DATA' });
+    if (password.length < 6) return res.status(400).json({ error: 'PASSWORD_TOO_SHORT' });
 
     const tokenHash = sha256(token);
     const db = sql();
@@ -30,6 +31,7 @@ module.exports = async function handler(req, res) {
       set password_hash = ${passwordHash},
           reset_token_hash = null,
           reset_expires_at = null,
+          reset_requested_at = null,
           updated_at = now()
       where email = ${email}
     `;

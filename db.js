@@ -2,6 +2,11 @@ const { neon } = require('@neondatabase/serverless');
 const bcrypt = require('bcryptjs');
 
 let sqlClient;
+
+// Conta "Admin Geral": pode alterar login, senha e nível de acesso de todos os usuários.
+function superAdminEmail() {
+  return (process.env.SUPERADMIN_EMAIL || 'thiago.silverio@ictdf.org.br').trim().toLowerCase();
+}
 let initPromise;
 
 function sql() {
@@ -36,6 +41,7 @@ async function ensureDb() {
       )
     `;
     await db`alter table app_users add column if not exists name text`;
+    await db`alter table app_users add column if not exists reset_requested_at timestamptz`;
 
     const email = (process.env.ADMIN_EMAIL || 'ascom@ictdf.org.br').trim().toLowerCase();
     const password = process.env.ADMIN_PASSWORD || 'ascomictdf';
@@ -44,8 +50,20 @@ async function ensureDb() {
       const hash = await bcrypt.hash(password, 12);
       await db`insert into app_users (name, email, password_hash, role) values ('Administrador', ${email}, ${hash}, 'admin')`;
     }
+
+    // Garante o papel admin_geral para a conta definida em SUPERADMIN_EMAIL.
+    // Se ela ainda não existir e SUPERADMIN_PASSWORD estiver definida, é criada aqui;
+    // caso contrário, qualquer administrador pode cadastrá-la e o papel é aplicado automaticamente.
+    const superEmail = superAdminEmail();
+    const superRows = await db`select id from app_users where email = ${superEmail} limit 1`;
+    if (superRows.length) {
+      await db`update app_users set role = 'admin_geral', updated_at = now() where email = ${superEmail} and role <> 'admin_geral'`;
+    } else if (process.env.SUPERADMIN_PASSWORD) {
+      const hash = await bcrypt.hash(process.env.SUPERADMIN_PASSWORD, 12);
+      await db`insert into app_users (name, email, password_hash, role) values ('Thiago Silvério', ${superEmail}, ${hash}, 'admin_geral')`;
+    }
   })();
   return initPromise;
 }
 
-module.exports = { sql, ensureDb };
+module.exports = { sql, ensureDb, superAdminEmail };

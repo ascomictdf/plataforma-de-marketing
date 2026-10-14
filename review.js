@@ -1,16 +1,17 @@
 const { ensureDb, sql } = require('./_lib/db');
 const { method, readBody } = require('./_lib/http');
+const { historyId } = require('./_lib/history');
 
-function updatePostInData(data, postId, patch) {
+function updatePostInData(data, postId, apply) {
   let changed = false;
-  const apply = post => {
+  const visit = post => {
     if (post && post.id === postId) {
-      Object.assign(post, patch);
+      apply(post);
       changed = true;
     }
   };
-  (data.posts || []).forEach(apply);
-  (data.campanhas || []).forEach(camp => (camp.posts || []).forEach(apply));
+  (data.posts || []).forEach(visit);
+  (data.campanhas || []).forEach(camp => (camp.posts || []).forEach(visit));
   return changed;
 }
 
@@ -34,16 +35,24 @@ module.exports = async function handler(req, res) {
     if (!data || !postId || !['aprovado', 'alteracao'].includes(status) || !revisor) {
       return res.status(400).json({ error: 'INVALID_REVIEW_DATA' });
     }
+    if (status === 'alteracao' && !comentario) {
+      return res.status(400).json({ error: 'MISSING_CHANGE_REQUEST' });
+    }
 
+    const now = new Date().toISOString();
     const patch = {
       aprov: status,
       revisadoPor: revisor,
-      revisadoEm: new Date().toISOString()
+      revisadoEm: now,
+      aprovComentario: status === 'alteracao' ? comentario : ''
     };
-    if (status === 'alteracao') patch.aprovComentario = comentario;
-    if (status === 'aprovado') patch.aprovComentario = '';
+    const entry = { id: historyId(), ts: now, status, de: '', autor: revisor, origem: 'link', comentario: status === 'alteracao' ? comentario : '' };
 
-    const changed = updatePostInData(data, postId, patch);
+    const changed = updatePostInData(data, postId, post => {
+      entry.de = post.aprov || '';
+      Object.assign(post, patch);
+      post.aprovHistorico = (Array.isArray(post.aprovHistorico) ? post.aprovHistorico : []).concat(entry).slice(-200);
+    });
     if (!changed) return res.status(404).json({ error: 'POST_NOT_FOUND' });
 
     await db`
@@ -51,7 +60,7 @@ module.exports = async function handler(req, res) {
       values ('main', ${JSON.stringify(data)}::jsonb, now())
       on conflict (id) do update set data = excluded.data, updated_at = now()
     `;
-    return res.status(200).json({ ok: true, patch });
+    return res.status(200).json({ ok: true, patch, entry });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'REVIEW_FAILED', message: err.message });
